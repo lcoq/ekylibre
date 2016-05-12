@@ -240,6 +240,8 @@ Rails.application.routes.draw do
       end
     end
 
+    resources :bank_statement_items, only: [:new]
+
     resources :beehives, only: [:update] do
       member do
         post :reset

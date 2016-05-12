@@ -86,4 +86,23 @@ class BankStatement < Ekylibre::Record::Base
   def next
     self.class.where('started_at >= ?', stopped_at).reorder(started_at: :asc).first
   end
+
+  def save_with_items(statement_items)
+    ActiveRecord::Base.transaction do
+      saved = save
+      items.clear
+      statement_items.each_index do |index|
+        statement_items[index] = items.build(statement_items[index])
+        if saved && !statement_items[index].save
+          saved = false
+        end
+      end
+      if saved && reload.save
+        return true
+      else
+        raise ActiveRecord::Rollback
+      end
+    end
+    false
+  end
 end
