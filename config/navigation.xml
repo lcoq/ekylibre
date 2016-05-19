@@ -1715,6 +1715,13 @@
     </group>
   </inaccessible-actions>
   <untreated-actions>
-    <group/>
+    <group>
+      <item name="bank_statement_items">
+        <page to="backend/bank_statement_items#new"/>
+      </item>
+      <item name="bank_statements">
+        <page to="backend/bank_statements#edit_items"/>
+      </item>
+    </group>
   </untreated-actions>
 </navigation>

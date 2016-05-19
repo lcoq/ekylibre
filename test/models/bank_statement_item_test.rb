@@ -54,7 +54,26 @@ class BankStatementItemTest < ActiveSupport::TestCase
     assert item.valid?, inspect_errors(item)
   end
 
-  def inspect_errors(item)
-    item.inspect + "\n" + item.errors.full_messages.to_sentence
+  test "currency is set on validations from the bank statement" do
+    item = bank_statement_items(:bank_statement_items_001)
+    item.currency = nil
+    assert item.valid?, inspect_errors(item)
+    assert_equal item.bank_statement.currency, item.currency
+  end
+
+  test "debit or credit is set to 0 on validations when nil" do
+    item = bank_statement_items(:bank_statement_items_001)
+    item.credit = 15.3
+    item.debit = nil
+    assert item.valid?, inspect_errors(item)
+    assert_equal 0.0, item.debit
+    item.credit = nil
+    item.debit = 15.3
+    assert item.valid?, inspect_errors(item)
+    assert_equal 0.0, item.credit
+  end
+
+  def inspect_errors(object)
+    object.inspect + "\n" + object.errors.full_messages.to_sentence
   end
 end

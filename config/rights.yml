@@ -26,6 +26,8 @@
 #     - "backend/attachments#create"
 #     - "backend/attachments#destroy"
 #     - "backend/attachments#show"
+#     - "backend/bank_statement_items#new"
+#     - "backend/bank_statements#edit_items"
 #     - "backend/beehives#reset"
 #     - "backend/beehives#update"
 #     - "backend/building_divisions#take"
