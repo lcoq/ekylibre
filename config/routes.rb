@@ -238,7 +238,12 @@ Rails.application.routes.draw do
       collection do
         get :list_items
       end
+      member do
+        match :edit_items, via: [:get, :post]
+      end
     end
+
+    resources :bank_statement_items, only: [:new]
 
     resources :beehives, only: [:update] do
       member do
