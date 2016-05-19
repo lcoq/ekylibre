@@ -45,6 +45,12 @@ class BankStatementItem < Ekylibre::Record::Base
   has_one :journal, through: :cash
   has_one :account, through: :cash
 
+  before_validation do
+    self.currency = bank_statement.currency if bank_statement
+    self.debit ||= 0
+    self.credit ||= 0
+  end
+
   # [VALIDATORS[ Do not edit these lines directly. Use `rake clean:validations`.
   validates_date :initiated_on, :transfered_on, allow_blank: true, on_or_after: -> { Time.new(1, 1, 1).in_time_zone }, on_or_before: -> { Time.zone.today + 50.years }
   validates_numericality_of :credit, :debit, allow_nil: true
