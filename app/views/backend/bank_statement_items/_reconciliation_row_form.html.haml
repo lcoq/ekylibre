@@ -1,0 +1,26 @@
+:ruby
+  item = reconciliation_row_form || {}
+  @@item_count = 0 unless defined?(@@item_count)
+  id = "e" + @@item_count.to_s(36)
+  @@item_count += 1
+
+%tr.bank-statement-item-type{ class: "#{id}-bank-statement-item" }
+  %td.hidden= hidden_field_tag "items[#{id}][transfered_on]", item.transfered_on
+  %td.hidden= hidden_field_tag "items[#{id}][letter]", item.letter
+  %td.hidden= hidden_field_tag "items[#{id}][initiated_on]", item.initiated_on
+  %td.hidden= hidden_field_tag "items[#{id}][transaction_number]", item.transaction_number
+
+  %td.del
+    = link_to "#", class: "destroy" do
+      %i
+  %td.type-icon
+    %i
+  %td.name= text_field_tag("items[#{id}][name]", item.name)
+  %td
+  %td.center= text_field_tag "items[#{id}][debit]", (item.debit || 0.0), id: "items_#{id}_debit", class: "center", data: { exclusive_nullify: "#items_#{id}_credit" }
+  %td.center= text_field_tag "items[#{id}][credit]", (item.credit || 0.0), id: "items_#{id}_credit", class: "center", data: { exclusive_nullify: "#items_#{id}_debit" }
+  %td.center= item.letter
+  %td.clear
+    %a
+      %i
+      Effacer

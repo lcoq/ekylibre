@@ -1,0 +1,52 @@
+.active-list .list.bank-reconciliation-items {
+  tbody tr {
+    cursor: pointer;
+  }
+  .center {
+    text-align: center;
+  }
+  .tmpl-date {
+    display: none;
+  }
+  .date-separator {
+    border-top: 1px solid red;
+
+    .add-line-inline {
+      font-weight: normal;
+      i {
+        @include is-icon;
+        @include use-icon(add);
+      }
+    }
+  }
+  .del {
+    font-weight: bold;
+    i {
+      @include is-icon;
+      @include use-icon(clear);
+    }
+  }
+  .bank-statement-item-type {
+    .name {
+      width: 90%;
+      font-style: italic;
+    }
+    .type-icon i {
+      @include is-icon;
+      @include use-icon(university);
+    }
+  }
+  .journal-entry-item-type {
+    .type-icon i {
+      @include is-icon;
+      @include use-icon(book);
+    }
+  }
+  .add-bank-statement-item-cont .ui-datepicker-trigger {
+    width: 85%;
+  }
+  .clear i {
+    @include is-icon;
+    @include use-icon(eraser);
+  }
+}

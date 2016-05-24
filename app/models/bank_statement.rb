@@ -60,6 +60,8 @@ class BankStatement < Ekylibre::Record::Base
     self.currency = cash_currency if cash
     self.debit  = items.sum(:debit)
     self.credit = items.sum(:credit)
+    self.initial_balance_debit ||= 0
+    self.initial_balance_credit ||= 0
   end
 
   # A bank account statement has to contain.all the planned records.
@@ -68,6 +70,9 @@ class BankStatement < Ekylibre::Record::Base
       if started_at >= stopped_at
         errors.add(:stopped_at, :posterior, to: started_at.l)
       end
+    end
+    if initial_balance_debit != 0 && initial_balance_credit != 0
+      errors.add(:initial_balance_credit, :unvalid_amounts)
     end
   end
 
@@ -87,16 +92,45 @@ class BankStatement < Ekylibre::Record::Base
     self.class.where('started_at >= ?', stopped_at).reorder(started_at: :asc).first
   end
 
+  def eligible_journal_entry_items
+    margin = 20.days
+    unpointed = JournalEntryItem.where(account_id: cash_account_id).unpointed.between(started_at - margin, stopped_at + margin)
+    pointed = JournalEntryItem.pointed_by(self)
+    unpointed + pointed
+  end
+
   def save_with_items(statement_items)
     ActiveRecord::Base.transaction do
       saved = save
+
+      previous_journal_entry_item_ids_by_letter = items.each_with_object({}) do |item, hash|
+        item.associated_journal_entry_items.each do |journal_entry_item|
+          ids = (hash[journal_entry_item.bank_statement_letter] ||= [])
+          ids << journal_entry_item.id
+        end
+      end
+
       items.clear
+
       statement_items.each_index do |index|
         statement_items[index] = items.build(statement_items[index])
         if saved && !statement_items[index].save
           saved = false
         end
       end
+
+      previous_journal_entry_item_ids_by_letter.each do |letter, journal_entry_item_ids|
+        new_item_with_letter = items.detect { |item| item.letter == letter}
+        if new_item_with_letter
+          bank_statement_id = id
+          bank_statement_letter = letter
+        end
+        JournalEntryItem.where(id: journal_entry_item_ids).update_all(
+          bank_statement_id: bank_statement_id,
+          bank_statement_letter: bank_statement_letter
+        )
+      end
+
       if saved && reload.save
         return true
       else

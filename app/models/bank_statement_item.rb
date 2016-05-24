@@ -60,4 +60,18 @@ class BankStatementItem < Ekylibre::Record::Base
   validate do
     errors.add(:credit, :unvalid_amounts) if debit != 0 && credit != 0
   end
+
+  before_destroy do
+    journal_entry_items = associated_journal_entry_items
+    return unless journal_entry_items.any?
+    journal_entry_items.update_all(
+      bank_statement_id: nil,
+      bank_statement_letter: nil
+    )
+  end
+
+  def associated_journal_entry_items
+    return [] unless bank_statement && letter
+    JournalEntryItem.pointed_by(bank_statement).where(bank_statement_letter: letter)
+  end
 end

@@ -101,6 +101,12 @@ class JournalEntryItem < Ekylibre::Record::Base
   }
   scope :opened, -> { where.not(state: 'closed') }
   scope :unpointed, -> { where(bank_statement_letter: nil) }
+  scope :pointed_by, lambda { |bank_statement|
+    where('bank_statement_letter IS NOT NULL').where(bank_statement_id: bank_statement.id)
+  }
+  scope :pointed_by_with_letter, lambda { |bank_statement, letter|
+    where(bank_statement_letter: letter).where(bank_statement_id: bank_statement.id)
+  }
 
   state_machine :state, initial: :draft do
     state :draft
@@ -169,6 +175,11 @@ class JournalEntryItem < Ekylibre::Record::Base
 
   after_save do
     followings.update_all("cumulated_absolute_debit = cumulated_absolute_debit + #{absolute_debit}, cumulated_absolute_credit = cumulated_absolute_credit + #{absolute_credit}")
+  end
+
+  before_destroy do
+    return unless bank_statement && bank_statement_letter
+    bank_statement.items.where(letter: bank_statement_letter).update_all(letter: nil)
   end
 
   protect do

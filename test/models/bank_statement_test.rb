@@ -45,6 +45,14 @@ require "test_helper"
 class BankStatementTest < ActiveSupport::TestCase
   test_model_actions
 
+  test "the validity of bank statements" do
+    bank_statement = bank_statements(:bank_statements_001)
+    assert bank_statement.valid?, inspect_errors(bank_statement)
+    bank_statement.initial_balance_debit = 5
+    bank_statement.initial_balance_credit = 5
+    assert !bank_statement.valid?, inspect_errors(bank_statement)
+  end
+
   test "debit, credit and currency are computed during validations" do
     bank_statement = bank_statements(:bank_statements_001)
     bank_statement.debit = 0
@@ -56,6 +64,15 @@ class BankStatementTest < ActiveSupport::TestCase
     assert_equal bank_statement.cash.currency, bank_statement.currency
   end
 
+  test "initial_balance_debit and initial_balance_credit are set to 0 on validations when nil" do
+    bank_statement = bank_statements(:bank_statements_001)
+    bank_statement.initial_balance_debit = nil
+    bank_statement.initial_balance_credit = nil
+    bank_statement.valid?
+    assert_equal 0.0, bank_statement.initial_balance_debit
+    assert_equal 0.0, bank_statement.initial_balance_credit
+  end
+
   test "save with items replace its items with the new items attributes" do
     bank_statement = bank_statements(:bank_statements_001)
     new_items = [
@@ -63,16 +80,16 @@ class BankStatementTest < ActiveSupport::TestCase
         name: "Bank statement item 1",
         credit: 15.3,
         debit: nil,
-        letter: "A",
+        letter: "F",
         transfered_on: Date.parse("2016-05-11"),
         transaction_number: "119X6731"
       }, {
-        name: "Bank statement item 1",
-        credit: 15.3,
-        debit: nil,
-        letter: "A",
-        transfered_on: Date.parse("2016-05-11"),
-        transaction_number: "119X6731"
+        name: "Bank statement item 2",
+        credit: nil,
+        debit: 12.14,
+        letter: "G",
+        transfered_on: Date.parse("2016-05-12"),
+        transaction_number: "119X6734"
       }
     ]
 
@@ -103,6 +120,60 @@ class BankStatementTest < ActiveSupport::TestCase
     assert !bank_statement.save_with_items(new_invalid_items), inspect_errors(bank_statement)
     bank_statement.reload
     assert_equal bank_statement_item_names.to_set, bank_statement.items.map(&:name).to_set
+  end
+
+  test "save with items removes the journal entry items bank statement and letter when previous items are removed" do
+    bank_statement = bank_statements(:bank_statements_001)
+    previous_jeis = bank_statement.items.map { |bsi| bsi.associated_journal_entry_items.to_a }.flatten
+    assert bank_statement.save_with_items([]), inspect_errors(bank_statement)
+    assert_equal 0, bank_statement.items.count
+    previous_jeis.each do |jei|
+      jei.reload
+      assert jei.bank_statement_id.nil? && jei.bank_statement_letter.nil?
+    end
+  end
+
+  test "save with items keeps the journal entry items bank statement letter when previous items are kept" do
+    bank_statement = bank_statements(:bank_statements_001)
+    jeis_to_keep = bank_statement.items.detect { |item| item.letter == "F" }.associated_journal_entry_items.to_a
+    assert jeis_to_keep.any?
+    new_items = [
+      {
+        name: "Bank statement item 1",
+        credit: 15.3,
+        debit: nil,
+        letter: "F",
+        transfered_on: Date.parse("2016-05-11"),
+        transaction_number: "119X6731"
+      }
+    ]
+    assert bank_statement.save_with_items(new_items), inspect_errors(bank_statement)
+    jeis_to_keep.each do |jei|
+      jei.reload
+      assert_equal "F", jei.bank_statement_letter
+      assert_equal bank_statement.id, jei.bank_statement_id
+    end
+  end
+
+  test "eligible journal entry items includes journal entry items pointed by the bank statement and unpointed around bank statement range with same account" do
+    bank_statement = bank_statements(:bank_statements_001)
+
+    pointed = JournalEntryItem.pointed_by(bank_statement)
+    assert pointed.any?
+
+    unpointed_in_range = JournalEntryItem.where(account_id: bank_statement.cash_account_id).unpointed.between(bank_statement.started_at, bank_statement.stopped_at)
+    assert unpointed_in_range.any?
+
+    unpointed_around_started_at = JournalEntryItem.where(account_id: bank_statement.cash_account_id).unpointed.between(bank_statement.started_at - 20.days, bank_statement.started_at)
+    unpointed_around_stopped_at = JournalEntryItem.where(account_id: bank_statement.cash_account_id).unpointed.between(bank_statement.stopped_at, bank_statement.stopped_at + 20.days)
+    unpointed_around_range = unpointed_around_started_at + unpointed_around_stopped_at
+    assert unpointed_around_range.any?
+
+    eligible_journal_entry_item_ids = bank_statement.eligible_journal_entry_items.to_a.map(&:id)
+    assert eligible_journal_entry_item_ids.any?
+    assert pointed.all? { |jei| eligible_journal_entry_item_ids.include?(jei.id) }
+    assert unpointed_in_range.all? { |jei| eligible_journal_entry_item_ids.include?(jei.id) }
+    assert unpointed_around_range.all? { |jei| eligible_journal_entry_item_ids.include?(jei.id) }
   end
 
   def inspect_errors(object)

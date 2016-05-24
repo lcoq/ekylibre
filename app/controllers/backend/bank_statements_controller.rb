@@ -29,6 +29,7 @@ module Backend
 
     list(order: { started_at: :desc }) do |t|
       t.action :edit_items
+      t.action :reconciliation
       t.action :edit
       t.action :destroy
       t.column :number, url: true
@@ -73,6 +74,30 @@ module Backend
         return
       end
       t3e @bank_statement.attributes
+    end
+
+    def reconciliation
+      return unless @bank_statement = find_and_check
+      if request.post?
+        @bank_statement.attributes = permitted_params
+        items = (params[:items] || {}).values
+        if @bank_statement.save_with_items(items)
+          redirect_to params[:redirect] || { action: :show, id: @bank_statement.id }
+          return
+        end
+      end
+      bank_statement_items = @bank_statement.items
+      journal_entry_items = @bank_statement.eligible_journal_entry_items
+      # TODO restore :need_entries_to_point translation
+      unless journal_entry_items.any?
+        notify_error :need_entries_to_point
+        redirect_to params[:redirect] || { action: :show, id: @bank_statement.id }
+        return
+      end
+      @items = bank_statement_items + journal_entry_items
+      @items_grouped_by_date = @items.group_by do |item|
+        BankStatementItem === item ? item.transfered_on : item.printed_on
+      end.sort
     end
   end
 end

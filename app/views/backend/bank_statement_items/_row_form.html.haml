@@ -14,9 +14,9 @@
   %td.hidden= hidden_field_tag "items[#{id}][letter]", item.letter
   %td= text_field_tag("items[#{id}][name]", item.name, id: "items_#{id}_name", data: {parameter_name: "name", autofocus: (controller_name.to_s == "backend/bank_statements" ? "false" : "true")})
   %td= date_field_tag "items[#{id}][transfered_on]", item.transfered_on
-  %td.dec= text_field_tag "items[#{id}][debit]", (item.debit||0.0), size: 10, id: "items_#{id}_debit", class: "debit"
+  %td.dec= text_field_tag "items[#{id}][debit]", (item.debit||0.0), size: 10, id: "items_#{id}_debit", class: "debit", data: { exclusive_nullify: "#items_#{id}_credit" }
   %td= item.bank_statement.currency
-  %td.dec= text_field_tag "items[#{id}][credit]", (item.credit||0.0), size: 10, id: "items_#{id}_credit", class: "credit"
+  %td.dec= text_field_tag "items[#{id}][credit]", (item.credit||0.0), size: 10, id: "items_#{id}_credit", class: "credit", data: { exclusive_nullify: "#items_#{id}_debit" }
   %td= item.bank_statement.currency
   %td.act
     = link_to("#", data: {remove: ".#{id}-item"}, class: "destroy") do

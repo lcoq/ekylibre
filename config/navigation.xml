@@ -179,6 +179,8 @@
         <page to="backend/bank_statements#show"/>
         <page to="backend/bank_statements#unroll"/>
         <page to="backend/bank_statements#update"/>
+        <page to="backend/bank_statements#edit_items"/>
+        <page to="backend/bank_statements#reconciliation"/>
       </item>
       <item name="loans">
         <page to="backend/loans#index"/>
@@ -1718,9 +1720,6 @@
     <group>
       <item name="bank_statement_items">
         <page to="backend/bank_statement_items#new"/>
-      </item>
-      <item name="bank_statements">
-        <page to="backend/bank_statements#edit_items"/>
       </item>
     </group>
   </untreated-actions>

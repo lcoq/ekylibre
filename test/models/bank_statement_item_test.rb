@@ -73,6 +73,14 @@ class BankStatementItemTest < ActiveSupport::TestCase
     assert_equal 0.0, item.credit
   end
 
+  test "destroy clears the journal entry items associated" do
+    bsi = bank_statement_items(:bank_statement_items_002)
+    jeis = JournalEntryItem.pointed_by_with_letter(bsi.bank_statement, bsi.letter)
+    assert jeis.any?
+    bsi.destroy
+    assert jeis.all? { |jei| jei.bank_statement_letter.nil? && jei.bank_statement_id.nil? }
+  end
+
   def inspect_errors(object)
     object.inspect + "\n" + object.errors.full_messages.to_sentence
   end
