@@ -1,55 +1,71 @@
 ((E, $) ->
   "use strict"
 
-  # Show date picker without its date input
+  # Create bank statement items and date sections
+
   $ ->
-    datePicker = $("#add-bank-statement-item-date")
-    datePicker.hide()
+    container = $(".add-bank-statement-item-cont")
+    new DatePickerButton(container, createBankStatementItemAndDateSection)
 
-    options =
-      showOn: "button"
-      buttonText: datePicker.data("label")
-      onSelect: addBankStatementItem
+  class DatePickerButton
+    # Used to display a datepicker on a button click while the date input
+    # remains hidden
+    constructor: (@container, @onSelect) ->
+      @dateInput = @container.find("input[type=date]")
+      @_initializeDatePicker()
 
-    locale = datePicker.attr("lang")
-    $.extend options, $.datepicker.regional[null], dateFormat: "yy-mm-dd"
+    _initializeDatePicker: ->
+      @dateInput.hide()
 
-    datePicker.datepicker options
-    datePicker.attr "autocomplete", "off"
+      options =
+        showOn: "button"
+        buttonText: @dateInput.data("label")
+        onSelect: @onSelect
 
-    datePickerButton = $(".bank-reconciliation-items .ui-datepicker-trigger")
-    datePickerButton.addClass "btn"
+      locale = @dateInput.attr("lang")
+      $.extend options, $.datepicker.regional[null], dateFormat: "yy-mm-dd"
 
-  addBankStatementItem = (date) ->
-    if $(".#{date} a").length
-      # section for this date exists
-      $(".#{date} a").click()
-      return
+      @dateInput.datepicker options
+      @dateInput.attr "autocomplete", "off"
 
-    # Insert new date section at the right place, and add a new bank statement
-    # item
-    sectionHTML = $(".tmpl-date")[0].outerHTML.replace(/tmpl-date/g, date)
+      @button = @container.find(".ui-datepicker-trigger")
+      @button.addClass "btn"
 
+  createBankStatementItemInDateSection = (date) ->
+    buttonInDateSection = $(".#{date} a")
+    return false unless buttonInDateSection.length
+    buttonInDateSection.click()
+    true
+
+  insertDateSection = (date) ->
+    html = $(".tmpl-date")[0].outerHTML.replace(/tmpl-date/g, date)
     dateSections = $(".date-separator:not(.tmpl-date)")
-    dates = $.map(dateSections, (d) -> $(d).data("date"))
-    index = dates.findIndex (d) -> d > date
-    if index is -1
-      $(".bank-reconciliation-items tbody").append(sectionHTML)
+    nextDateSection = dateSections.filter( -> $(@).data("date") > date).first()
+    if nextDateSection.length
+      nextDateSection.before html
     else
-      dateSections.eq(index).before(sectionHTML)
+      $(".bank-reconciliation-items tbody").append html
 
-    $(".#{date} a").trigger "click"
+  createBankStatementItemAndDateSection = (date) ->
+    return if createBankStatementItemInDateSection(date)
+    insertDateSection(date)
+    createBankStatementItemInDateSection(date)
 
-  # Remove date section when it becomes empty
+  # Destroy bank statement items and date sections
+
   $(document).on "click", "a.destroy", ->
-    itemTr = $(@).closest("tr")
-    prevTr = itemTr.prev("tr")
-    nextTr = itemTr.next("tr")
+    bankStatementItem = $(@).closest("tr")
+    destroyBankStatementItem(bankStatementItem)
 
-    prevTrIsDateSeparator = prevTr.hasClass("date-separator")
-    nextTrIsDateSeparator = !nextTr.length || nextTr.hasClass("date-separator")
+  isDateSection = (tableRow) ->
+    return tableRow.hasClass("date-separator")
 
-    prevTr.deepRemove() if prevTrIsDateSeparator && nextTrIsDateSeparator
-    itemTr.deepRemove()
+  destroyBankStatementItem = (bankStatementItemTableRow) ->
+    previousTableRow = bankStatementItemTableRow.prev("tr")
+    nextTableRow = bankStatementItemTableRow.next("tr")
+
+    if isDateSection(previousTableRow) && (!nextTableRow.length || isDateSection(nextTableRow))
+      previousTableRow.deepRemove()
+    bankStatementItemTableRow.deepRemove()
 
 ) ekylibre, jQuery
