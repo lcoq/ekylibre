@@ -74,6 +74,7 @@ class JournalEntryItemTest < ActiveSupport::TestCase
   test "journal entry items pointed by a bank statement" do
     bank_statement = bank_statements(:bank_statements_001)
     pointed_ids_by_bank_statement = [
+      journal_entry_items(:journal_entry_items_037),
       journal_entry_items(:journal_entry_items_039),
       journal_entry_items(:journal_entry_items_053),
       journal_entry_items(:journal_entry_items_196)

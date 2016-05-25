@@ -80,14 +80,14 @@ class BankStatementTest < ActiveSupport::TestCase
         name: "Bank statement item 1",
         credit: 15.3,
         debit: nil,
-        letter: "F",
+        letter: "E",
         transfered_on: Date.parse("2016-05-11"),
         transaction_number: "119X6731"
       }, {
         name: "Bank statement item 2",
         credit: nil,
         debit: 12.14,
-        letter: "G",
+        letter: "F",
         transfered_on: Date.parse("2016-05-12"),
         transaction_number: "119X6734"
       }
@@ -135,14 +135,14 @@ class BankStatementTest < ActiveSupport::TestCase
 
   test "save with items keeps the journal entry items bank statement letter when previous items are kept" do
     bank_statement = bank_statements(:bank_statements_001)
-    jeis_to_keep = bank_statement.items.detect { |item| item.letter == "F" }.associated_journal_entry_items.to_a
+    jeis_to_keep = bank_statement.items.detect { |item| item.letter == "E" }.associated_journal_entry_items.to_a
     assert jeis_to_keep.any?
     new_items = [
       {
         name: "Bank statement item 1",
         credit: 15.3,
         debit: nil,
-        letter: "F",
+        letter: "E",
         transfered_on: Date.parse("2016-05-11"),
         transaction_number: "119X6731"
       }
@@ -150,7 +150,7 @@ class BankStatementTest < ActiveSupport::TestCase
     assert bank_statement.save_with_items(new_items), inspect_errors(bank_statement)
     jeis_to_keep.each do |jei|
       jei.reload
-      assert_equal "F", jei.bank_statement_letter
+      assert_equal "E", jei.bank_statement_letter
       assert_equal bank_statement.id, jei.bank_statement_id
     end
   end

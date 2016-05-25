@@ -120,7 +120,7 @@ bank_statement_items_006:
   debit: 0.0
   currency: EUR
   transfered_on: 2014-11-07
-  letter: E
+  letter: D
   name: "[Décaissement OP001] Par chèque  pour Busbest Andrew"
   created_at: 2016-05-11 09:18:04.608827000 Z
   creator_id: 1
@@ -134,7 +134,7 @@ bank_statement_items_007:
   debit: 0.0
   currency: EUR
   transfered_on: 2014-11-08
-  letter: F
+  letter: E
   name: "[Décaissement OP002] Par chèque  pour Busbest Andrew"
   created_at: 2016-05-11 09:18:04.608827000 Z
   creator_id: 1
@@ -148,7 +148,7 @@ bank_statement_items_008:
   debit: 1314.67
   currency: EUR
   transfered_on: 2014-11-09
-  letter: G
+  letter: F
   name: "[Décaissement OP002] Par chèque pour Busbest Andrew ET [Remboursement d’emprunt Tracteur de folie] Remboursement n°37"
   created_at: 2016-05-11 09:19:24.214827000 Z
   creator_id: 1
