@@ -26,9 +26,13 @@
       @include use-icon(clear);
     }
   }
+  .bank-statement-item-type, .journal-entry-item-type {
+    &.selected {
+      background-color: $active-color;
+    }
+  }
   .bank-statement-item-type {
     font-style: italic;
-
     .name {
       width: 90%;
     }
@@ -49,8 +53,23 @@
   .add-bank-statement-item-cont .ui-datepicker-trigger {
     width: 85%;
   }
-  .clear i {
-    @include is-icon;
-    @include use-icon(eraser);
+  .bank-statement-letter {
+    font-style: normal;
+    font-weight: bold;
+  }
+  .clear {
+    a {
+      display: none;
+    }
+    i {
+      @include is-icon;
+      @include use-icon(eraser);
+    }
+  }
+  .complete a {
+    display: none;
+  }
+  .remaining-reconciliation-balance {
+    display: none;
   }
 }

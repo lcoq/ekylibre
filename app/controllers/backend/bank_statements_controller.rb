@@ -86,8 +86,8 @@ module Backend
           return
         end
       end
-      bank_statement_items = @bank_statement.items
-      journal_entry_items = @bank_statement.eligible_journal_entry_items
+      bank_statement_items = @bank_statement.items.order("ABS(debit-credit)")
+      journal_entry_items = @bank_statement.eligible_journal_entry_items.order("ABS(real_debit-real_credit)")
       # TODO restore :need_entries_to_point translation
       unless journal_entry_items.any?
         notify_error :need_entries_to_point

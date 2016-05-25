@@ -2,6 +2,12 @@ module Backend
   class BankStatementItemsController < Backend::BaseController
     def new
       @bank_statement_item = BankStatementItem.new
+      if params[:debit]
+        @bank_statement_item.debit = params[:debit]
+      end
+      if params[:credit]
+        @bank_statement_item.credit = params[:credit]
+      end
       if params[:transfered_on]
         @bank_statement_item.transfered_on = params[:transfered_on]
       end

@@ -30,7 +30,7 @@
             %td Total rapproché
             %td.center 0.0
             %td.center 0.0
-          %tr
+          %tr.remaining-reconciliation-balance
             %td{colspan: 3}
             %td Reste à rapprocher
             %td.center 0.0
@@ -38,8 +38,8 @@
           %tr
             %td{colspan: 3}
             %td Solde final
-            %td.center 0.0
-            %td.center 0.0
+            %td.center{ data: { use: "#initial_balance_debit,.bank-statement-item-type .debit" } } 0.0
+            %td.center{ data: { use: "#initial_balance_credit,.bank-statement-item-type .credit" } } 0.0
 
         %tbody.items
           = render partial: "reconciliation_date_section" # template used by JS
@@ -52,7 +52,7 @@
                   %td.hidden= hidden_field_tag "items[#{item.id}][transfered_on]", item.transfered_on
                   %td.hidden= hidden_field_tag "items[#{item.id}][debit]", item.debit
                   %td.hidden= hidden_field_tag "items[#{item.id}][credit]", item.credit
-                  %td.hidden= hidden_field_tag "items[#{item.id}][letter]", item.letter
+                  %td.hidden= hidden_field_tag "items[#{item.id}][letter]", item.letter, class: "bank-statement-letter"
                   %td.hidden= hidden_field_tag "items[#{item.id}][initiated_on]", item.initiated_on
                   %td.hidden= hidden_field_tag "items[#{item.id}][transaction_number]", item.transaction_number
 
@@ -63,29 +63,33 @@
                     %i
                   %td.name= item.name
                   %td
-                  %td.center= item.debit || 0.0
-                  %td.center= item.credit || 0.0
-                  %td.center= item.letter
+                  %td.center.debit= item.debit || 0.0
+                  %td.center.credit= item.credit || 0.0
+                  %td.center.bank-statement-letter= item.letter
                   %td.clear
-                    %a
+                    %a{ href: "#" }
                       %i
                       Effacer
+                  %td
 
               - else
-                %td.hidden= hidden_field_tag "journal_entry_items[#{item.id}][bank_statement_letter]", item.bank_statement_letter
                 %tr.journal-entry-item-type
+                  %td.hidden= hidden_field_tag "journal_entry_items[#{item.id}][bank_statement_letter]", item.bank_statement_letter, class: "bank-statement-letter"
                   %td.del
                   %td.type-icon
                     %i
                   %td.name= item.name
                   %td
-                  %td.center= item.real_debit || 0.0
-                  %td.center= item.real_credit || 0.0
-                  %td.center= item.bank_statement_letter
+                  %td.center.debit= item.real_debit || 0.0
+                  %td.center.credit= item.real_credit || 0.0
+                  %td.center.bank-statement-letter= item.bank_statement_letter
                   %td.clear
-                    %a
+                    %a{ href: "#" }
                       %i
                       Effacer
+                  %td.complete
+                    %a{ href: "#" }
+                      Compléter
 
   = form_actions do
     = submit_tag :save.tl
