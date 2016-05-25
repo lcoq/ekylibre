@@ -73,7 +73,16 @@
 
   # Select/deselect lines
 
+  nextReconciliationLetters = null
+
+  getNextReconciliationLetter = ->
+    nextReconciliationLetters.shift()
+
+  releaseReconciliationLetter = (letter) ->
+    nextReconciliationLetters.unshift letter
+
   $ ->
+    nextReconciliationLetters = $(".bank-reconciliation-items").data("next-letters")
     showOrHideClearButtons()
 
   $(document).on "click", ".bank-statement-item-type:not(.selected), .journal-entry-item-type:not(.selected)", (event) ->
@@ -112,6 +121,7 @@
     linesWithLetter.find(".bank-statement-letter:not(input)").text("")
     linesWithLetter.find("input.bank-statement-letter").val(null)
     showOrHideClearButtons()
+    releaseReconciliationLetter(letter)
 
   showOrHideClearButtons = ->
     notReconciliatedLines().find(".clear a").hide()

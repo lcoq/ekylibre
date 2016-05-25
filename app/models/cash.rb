@@ -223,6 +223,20 @@ class Cash < Ekylibre::Record::Base
     end
   end
 
+  def next_reconciliation_letters
+    # TODO performance
+    Enumerator.new do |yielder|
+      letter_column = "#{BankStatementItem.table_name}.letter"
+      letter = "A"
+      loop do
+        if bank_statements.joins(:items).where(letter_column => letter).blank?
+          yielder << letter
+        end
+        letter = letter.succ
+      end
+    end
+  end
+
   # Returns cash balance in the global currency
   def balance(at = Time.zone.now)
     closure = FinancialYear.last_closure || Date.civil(-1, 12, 31)

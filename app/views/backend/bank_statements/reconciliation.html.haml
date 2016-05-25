@@ -10,7 +10,8 @@
 
   = field_set(:entries_to_point) do
     .active-list
-      %table.list.bank-reconciliation-items
+      / Prepare more reconciliation letters than required
+      %table.list.bank-reconciliation-items{ data: { next_letters: @bank_statement.cash_next_reconciliation_letters.take(@items.size) } }
 
         %thead
           %tr

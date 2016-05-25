@@ -54,7 +54,7 @@ class BankStatement < Ekylibre::Record::Base
   validates_length_of :currency, allow_nil: true, maximum: 3
   validates_uniqueness_of :number, scope: :cash_id
 
-  delegate :name, :currency, :account_id, to: :cash, prefix: true
+  delegate :name, :currency, :account_id, :next_reconciliation_letters, to: :cash, prefix: true
 
   before_validation do
     self.currency = cash_currency if cash
