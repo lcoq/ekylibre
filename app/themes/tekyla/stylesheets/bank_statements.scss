@@ -27,9 +27,13 @@
     }
   }
   .bank-statement-item-type {
+    font-style: italic;
+
     .name {
       width: 90%;
-      font-style: italic;
+    }
+    .clear {
+      font-style: normal;
     }
     .type-icon i {
       @include is-icon;

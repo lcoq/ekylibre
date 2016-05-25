@@ -56,6 +56,7 @@
   $(document).on "click", "a.destroy", ->
     bankStatementItem = $(@).closest("tr")
     destroyBankStatementItem(bankStatementItem)
+    return false
 
   isDateSection = (tableRow) ->
     return tableRow.hasClass("date-separator")
