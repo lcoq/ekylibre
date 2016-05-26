@@ -81,7 +81,15 @@ module Backend
       if request.post?
         @bank_statement.attributes = permitted_params
         items = (params[:items] || {}).values
+        journal_entry_items = (params[:journal_entry_items] || {})
         if @bank_statement.save_with_items(items)
+          journal_entry_items.each do |journal_entry_item_id, attributes|
+            letter = attributes[:bank_statement_letter].presence
+            JournalEntryItem.where(id: journal_entry_item_id).update_all(
+              bank_statement_id: @bank_statement.id,
+              bank_statement_letter: letter
+            )
+          end
           redirect_to params[:redirect] || { action: :show, id: @bank_statement.id }
           return
         end
