@@ -49,6 +49,7 @@ class BankStatementItem < Ekylibre::Record::Base
     self.currency = bank_statement.currency if bank_statement
     self.debit ||= 0
     self.credit ||= 0
+    self.letter = nil if letter.blank?
   end
 
   # [VALIDATORS[ Do not edit these lines directly. Use `rake clean:validations`.

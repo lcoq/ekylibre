@@ -73,6 +73,13 @@ class BankStatementItemTest < ActiveSupport::TestCase
     assert_equal 0.0, item.credit
   end
 
+  test "letter is set to nil on validations when blank" do
+    item = bank_statement_items(:bank_statement_items_001)
+    item.letter = " "
+    assert item.valid?, inspect_errors(item)
+    assert_nil item.letter
+  end
+
   test "destroy clears the journal entry items associated" do
     bsi = bank_statement_items(:bank_statement_items_002)
     jeis = JournalEntryItem.pointed_by_with_letter(bsi.bank_statement, bsi.letter)
