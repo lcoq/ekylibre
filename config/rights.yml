@@ -26,6 +26,8 @@
 #     - "backend/attachments#create"
 #     - "backend/attachments#destroy"
 #     - "backend/attachments#show"
+#     - "backend/bank_statement_items#new"
+#     - "backend/bank_statements#edit_items"
 #     - "backend/beehives#reset"
 #     - "backend/beehives#update"
 #     - "backend/building_divisions#take"
@@ -340,9 +342,7 @@ bank_statements:
     - "backend/bank_statements#destroy"
     - "backend/bank_statements#edit"
     - "backend/bank_statements#new"
-    - "backend/bank_statements#point"
     - "backend/bank_statements#update"
-    - "backend/cashes#point"
 
 building_divisions:
   read:
