@@ -92,4 +92,10 @@ class JournalEntryItemTest < ActiveSupport::TestCase
     associated_bank_statement_items.map &:reload
     assert associated_bank_statement_items.all? { |bsi| bsi.letter.nil? }
   end
+  test "bank statement letter is set to nil on validations when blank" do
+    item = journal_entry_items(:journal_entry_items_001)
+    item.bank_statement_letter = " "
+    assert item.valid?
+    assert_nil item.bank_statement_letter
+  end
 end

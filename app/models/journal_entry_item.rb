@@ -118,6 +118,7 @@ class JournalEntryItem < Ekylibre::Record::Base
   before_validation do
     self.name = name.to_s[0..254]
     self.letter = nil if letter.blank?
+    self.bank_statement_letter = nil if bank_statement_letter.blank?
     # computes the values depending on currency rate
     # for debit and credit.
     self.real_debit ||= 0
