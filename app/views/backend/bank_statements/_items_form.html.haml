@@ -14,9 +14,9 @@
         %th{colspan: 2}
           = tool_to(:new.ta, {controller: :bank_statement_items, action: :new, bank_statement_id: resource.id}, remote: true, tabindex: -1, method: :get, data: {update: "#items-table", update_at: :bottom, type: :html})
           %span= :total.tl
-        %td#debit.decimal{data: {use: "input.debit"}}=  resource.debit
+        %td#debit.decimal{data: {use: "input.debit", calculate_round: 2}}=  resource.debit
         %td.txt= resource.currency
-        %td#credit.decimal{data: {use: "input.credit"}}= resource.credit
+        %td#credit.decimal{data: {use: "input.credit", calculate_round: 2}}= resource.credit
         %td.txt= resource.currency
         %th.act
 
