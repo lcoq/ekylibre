@@ -1,7 +1,7 @@
 :ruby
   item = row_form || {}
   @@item_count = 0 unless defined?(@@item_count)
-  id = 'e' + @@item_count.to_s(36)
+  id = "e" + @@item_count.to_s(36)
   @@item_count += 1
 
 - if item.errors.any?

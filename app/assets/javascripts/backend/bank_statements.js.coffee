@@ -96,11 +96,11 @@
     updateReconciliationBalances()
 
   $(document).on "click", ".bank-statement-item-type:not(.selected), .journal-entry-item-type:not(.selected)", (event) ->
-    return if $(event.target).is('input,a')
+    return if $(event.target).is("input,a")
     selectLine $(@)
 
   $(document).on "click", ".bank-statement-item-type.selected, .journal-entry-item-type.selected", (event) ->
-    return if $(event.target).is('input,a')
+    return if $(event.target).is("input,a")
     deselectLine $(@)
 
   $(document).on "click", ".bank-statement-item-type .clear a, .journal-entry-item-type .clear a", ->

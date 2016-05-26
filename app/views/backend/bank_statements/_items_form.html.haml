@@ -21,5 +21,5 @@
         %th.act
 
     %tbody#items-table.items
-      = render partial: 'backend/bank_statement_items/row_form', collection: @bank_statement.items
-      = render partial: 'backend/bank_statement_items/row_form', object: @bank_statement.items.new if @bank_statement.items.empty?
+      = render partial: "backend/bank_statement_items/row_form", collection: @bank_statement.items
+      = render partial: "backend/bank_statement_items/row_form", object: @bank_statement.items.new if @bank_statement.items.empty?

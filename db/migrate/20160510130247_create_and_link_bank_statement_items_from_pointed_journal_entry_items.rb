@@ -57,12 +57,12 @@ class CreateAndLinkBankStatementItemsFromPointedJournalEntryItems < ActiveRecord
       VALUES (
         CURRENT_TIMESTAMP,
         CURRENT_TIMESTAMP,
-        #{quote(entry_item['bank_statement_id'])},
-        #{quote(entry_item['name'])},
-        #{quote(entry_item['real_debit'])},
-        #{quote(entry_item['real_credit'])},
-        #{quote(entry_item['bank_statement_currency'])},
-        #{quote(entry_item['printed_on'])},
+        #{quote(entry_item["bank_statement_id"])},
+        #{quote(entry_item["name"])},
+        #{quote(entry_item["real_debit"])},
+        #{quote(entry_item["real_credit"])},
+        #{quote(entry_item["bank_statement_currency"])},
+        #{quote(entry_item["printed_on"])},
         #{quote(bank_statement_letter)}
       )
     SQL
@@ -76,7 +76,7 @@ class CreateAndLinkBankStatementItemsFromPointedJournalEntryItems < ActiveRecord
         updated_at = CURRENT_TIMESTAMP,
         bank_statement_letter = #{quote(bank_statement_letter)}
       WHERE
-        id = #{quote(entry_item['id'])}
+        id = #{quote(entry_item["id"])}
     SQL
   end
 
