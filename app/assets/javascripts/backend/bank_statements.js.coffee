@@ -110,6 +110,8 @@
     if lineIsReconciliated(line)
       letter = lineReconciliationLetter(line)
       clearReconciliatedLinesWithLetter(letter)
+    else if line.is(".selected")
+      reconciliateLinesIfValid()
     updateReconciliationBalances()
 
   selectLine = (line) ->
