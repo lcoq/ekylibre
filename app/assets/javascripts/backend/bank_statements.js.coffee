@@ -105,6 +105,10 @@
     completeJournalEntryItems $(@).closest(".journal-entry-item-type")
     return false
 
+  $(document).on "change keyup", ".bank-statement-item-type input.debit, .bank-statement-item-type input.credit", ->
+    line = $(@).closest(lines())
+    updateReconciliationBalances()
+
   selectLine = (line) ->
     return if lineIsReconciliated(line)
     line.addClass "selected"
