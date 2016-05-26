@@ -85,6 +85,7 @@
     nextReconciliationLetters = $(".bank-reconciliation-items").data("next-letters")
     showOrHideClearButtons()
     updateReconciliationBalance()
+    updateRemainingReconciliationBalance()
 
   $(document).on "click", ".bank-statement-item-type:not(.selected), .journal-entry-item-type:not(.selected)", (event) ->
     return if $(event.target).is('input,a')
@@ -127,9 +128,11 @@
     bankStatementItems = lines.filter(".bank-statement-item-type")
     journalEntryItemsDebit = journalEntryItems.find(".debit").sum()
     journalEntryItemsCredit = journalEntryItems.find(".credit").sum()
+    journalEntryItemsBalance = journalEntryItemsDebit - journalEntryItemsCredit
     bankStatementItemsDebit = bankStatementItems.find(".debit").sum()
     bankStatementItemsCredit = bankStatementItems.find(".credit").sum()
-    journalEntryItemsDebit is bankStatementItemsCredit && journalEntryItemsCredit is bankStatementItemsDebit
+    bankStatementItemsBalance = bankStatementItemsDebit - bankStatementItemsCredit
+    journalEntryItemsBalance is -bankStatementItemsBalance
 
   reconciliateLines = (lines, letter) ->
     lines.find(".bank-statement-letter:not(input)").text(letter)
@@ -159,39 +162,31 @@
     all = lines().filter(".bank-statement-item-type")
     allDebit = all.find(".debit").sum()
     allCredit = all.find(".credit").sum()
+    allBalance = allDebit - allCredit
     reconciliated = reconciliatedLines().filter(".bank-statement-item-type")
     reconciliatedDebit = reconciliated.find(".debit").sum()
     reconciliatedCredit = reconciliated.find(".credit").sum()
+    reconciliatedBalance = reconciliatedDebit - reconciliatedCredit
 
-    if allDebit is reconciliatedDebit
-      $(".reconciliated-debit").closest("tr").addClass("valid")
+    if allBalance is reconciliatedBalance
+      $(".reconciliated-debit,.reconciliated-credit").closest("tr").addClass("valid")
     else
-      $(".reconciliated-debit").closest("tr").removeClass("valid")
+      $(".reconciliated-debit,.reconciliated-credit").closest("tr").removeClass("valid")
+
     $(".reconciliated-debit").text(reconciliatedDebit.toFixed(2))
-
-    if allCredit is reconciliatedCredit
-      $(".reconciliated-credit").closest("tr").addClass("valid")
-    else
-      $(".reconciliated-credit").closest("tr").removeClass("valid")
     $(".reconciliated-credit").text(reconciliatedCredit.toFixed(2))
 
   updateRemainingReconciliationBalance = ->
-    if lines().filter(".selected").length >= 2
-      $(".remaining-reconciliation-balance").show()
-
-      all = lines().filter(".bank-statement-item-type")
-      allDebit = all.find(".debit").sum()
-      allCredit = all.find(".credit").sum()
-      reconciliated = reconciliatedLines().filter(".bank-statement-item-type")
-      reconciliatedDebit = reconciliated.find(".debit").sum()
-      reconciliatedCredit = reconciliated.find(".credit").sum()
-      debit = allDebit - reconciliatedDebit
-      credit = allCredit - reconciliatedCredit
-
-      $(".remaining-reconciliated-debit").text(debit.toFixed(2))
-      $(".remaining-reconciliated-credit").text(credit.toFixed(2))
-    else
-      $(".remaining-reconciliation-balance").hide()
+    all = lines().filter(".bank-statement-item-type")
+    allDebit = all.find(".debit").sum()
+    allCredit = all.find(".credit").sum()
+    reconciliated = reconciliatedLines().filter(".bank-statement-item-type")
+    reconciliatedDebit = reconciliated.find(".debit").sum()
+    reconciliatedCredit = reconciliated.find(".credit").sum()
+    debit = allDebit - reconciliatedDebit
+    credit = allCredit - reconciliatedCredit
+    $(".remaining-reconciliated-debit").text(debit.toFixed(2))
+    $(".remaining-reconciliated-credit").text(credit.toFixed(2))
 
   hideOrShowCompleteButtons = ->
     $(".journal-entry-item-type.selected .complete a").show()
