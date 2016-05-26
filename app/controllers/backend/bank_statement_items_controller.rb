@@ -11,6 +11,9 @@ module Backend
       if params[:transfered_on]
         @bank_statement_item.transfered_on = params[:transfered_on]
       end
+      if params[:letter]
+        @bank_statement_item.letter = params[:letter]
+      end
       if params[:bank_statement_id]
         bank_statement = BankStatement.find_by(id: params[:bank_statement_id])
         @bank_statement_item.bank_statement = bank_statement

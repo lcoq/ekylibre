@@ -84,6 +84,7 @@
   $ ->
     nextReconciliationLetters = $(".bank-reconciliation-items").data("next-letters")
     showOrHideClearButtons()
+    updateReconciliationBalance()
 
   $(document).on "click", ".bank-statement-item-type:not(.selected), .journal-entry-item-type:not(.selected)", (event) ->
     return if $(event.target).is('input,a')
@@ -106,6 +107,7 @@
   selectLine = (line) ->
     return if lineIsReconciliated(line)
     line.addClass "selected"
+    reconciliateLinesIfValid()
     updateRemainingReconciliationBalance()
     hideOrShowCompleteButtons()
 
@@ -113,6 +115,30 @@
     line.removeClass "selected"
     updateRemainingReconciliationBalance()
     hideOrShowCompleteButtons()
+
+  reconciliateLinesIfValid = ->
+    selectedLines = lines().filter(".selected")
+    return unless linesAreValidForReconciliation(selectedLines)
+    letter = getNextReconciliationLetter()
+    reconciliateLines(selectedLines, letter)
+
+  linesAreValidForReconciliation = (lines) ->
+    journalEntryItems = lines.filter(".journal-entry-item-type")
+    bankStatementItems = lines.filter(".bank-statement-item-type")
+    journalEntryItemsDebit = journalEntryItems.find(".debit").sum()
+    journalEntryItemsCredit = journalEntryItems.find(".credit").sum()
+    bankStatementItemsDebit = bankStatementItems.find(".debit").sum()
+    bankStatementItemsCredit = bankStatementItems.find(".credit").sum()
+    journalEntryItemsDebit is bankStatementItemsCredit && journalEntryItemsCredit is bankStatementItemsDebit
+
+  reconciliateLines = (lines, letter) ->
+    lines.find(".bank-statement-letter:not(input)").text(letter)
+    lines.find("input.bank-statement-letter").val(letter)
+    lines.removeClass("selected")
+    hideOrShowCompleteButtons()
+    showOrHideClearButtons()
+    updateReconciliationBalance()
+    updateRemainingReconciliationBalance()
 
   clearReconciliatedLinesWithLetter = (letter) ->
     return unless letter
@@ -122,38 +148,62 @@
     linesWithLetter.find("input.bank-statement-letter").val(null)
     showOrHideClearButtons()
     releaseReconciliationLetter(letter)
+    updateReconciliationBalance()
+    updateRemainingReconciliationBalance()
 
   showOrHideClearButtons = ->
     notReconciliatedLines().find(".clear a").hide()
     reconciliatedLines().find(".clear a").show()
 
+  updateReconciliationBalance = ->
+    reconciliated = reconciliatedLines().filter(".bank-statement-item-type")
+    debit = reconciliated.find(".debit").sum()
+    credit = reconciliated.find(".credit").sum()
+    $(".reconciliated-debit").text(debit.toFixed(2))
+    $(".reconciliated-credit").text(credit.toFixed(2))
+
   updateRemainingReconciliationBalance = ->
-    selectedLines = lines().filter(".selected")
-    if selectedLines.length >= 2
+    if lines().filter(".selected").length >= 2
       $(".remaining-reconciliation-balance").show()
+
+      all = lines().filter(".bank-statement-item-type")
+      allDebit = all.find(".debit").sum()
+      allCredit = all.find(".credit").sum()
+      reconciliated = reconciliatedLines().filter(".bank-statement-item-type")
+      reconciliatedDebit = reconciliated.find(".debit").sum()
+      reconciliatedCredit = reconciliated.find(".credit").sum()
+      debit = allDebit - reconciliatedDebit
+      credit = allCredit - reconciliatedCredit
+
+      $(".remaining-reconciliated-debit").text(debit.toFixed(2))
+      $(".remaining-reconciliated-credit").text(credit.toFixed(2))
     else
       $(".remaining-reconciliation-balance").hide()
-    # TODO update balance
 
   hideOrShowCompleteButtons = ->
     $(".journal-entry-item-type.selected .complete a").show()
     $(".journal-entry-item-type:not(.selected) .complete a").hide()
 
-  selectedJournalEntryItemsBalance = ->
+  completeJournalEntryItems = (clickedLine) ->
     selectedJournalEntryItems = $(".journal-entry-item-type.selected")
     debit = selectedJournalEntryItems.find(".debit").sum()
     credit = selectedJournalEntryItems.find(".credit").sum()
-    debit - credit
+    balance = debit - credit
+    balanceParam = if balance > 0 then "credit=#{balance}" else "debit=#{-balance}"
 
-  completeJournalEntryItems = (clickedLine) ->
-    balance = selectedJournalEntryItemsBalance()
-    urlParam = if balance > 0 then "credit=#{balance}" else "debit=#{-balance}"
+    reconciliationLetter = getNextReconciliationLetter()
+    reconciliationLetterParam = "letter=#{reconciliationLetter}"
+
+    urlParams = "#{balanceParam}&#{reconciliationLetterParam}"
     date = clickedLine.prevAll(".date-separator:first").data("date")
     buttonInDateSection = $(".#{date} a")
     buttonInDateSection.one "ajax:beforeSend", (event, xhr, settings) ->
-      settings.url += "&#{urlParam}"
+      settings.url += "&#{urlParams}"
+    buttonInDateSection.one "ajax:complete", (event, xhr, status) ->
+      # use ajax:complete to ensure elements are already added to the DOM
+      return unless status is "success"
+      reconciliateLines(selectedJournalEntryItems, reconciliationLetter)
     buttonInDateSection.click()
-    # TODO reconciliate
 
   lines = ->
     $(".bank-statement-item-type,.journal-entry-item-type")

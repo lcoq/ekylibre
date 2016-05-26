@@ -2,6 +2,9 @@
   tbody tr {
     cursor: pointer;
   }
+  tfoot tr, tfoot tr td {
+    font-weight: bold;
+  }
   .center {
     text-align: center;
   }

@@ -29,13 +29,13 @@
             %td.add-bank-statement-item-cont{colspan: 3}
               = date_field_tag "add-bank-statement-item-date", nil, id: "add-bank-statement-item-date", data: { label: "Ajouter une ligne" }
             %td Total rapproché
-            %td.center 0.0
-            %td.center 0.0
+            %td.center.reconciliated-debit 0.0
+            %td.center.reconciliated-credit 0.0
           %tr.remaining-reconciliation-balance
             %td{colspan: 3}
             %td Reste à rapprocher
-            %td.center 0.0
-            %td.center 0.0
+            %td.center.remaining-reconciliated-debit 0.0
+            %td.center.remaining-reconciliated-credit 0.0
           %tr
             %td{colspan: 3}
             %td Solde final
