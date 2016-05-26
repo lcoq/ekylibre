@@ -41,8 +41,8 @@
           %tr.total
             %th{colspan: 4}
               Solde final
-            %td.center{ data: { use: "#initial_balance_debit,.bank-statement-item-type .debit" } } 0.0
-            %td.center{ data: { use: "#initial_balance_credit,.bank-statement-item-type .credit" } } 0.0
+            %td.center{ data: { use: "#initial_balance_debit,.bank-statement-item-type .debit", calculate_round: 2 } } 0.0
+            %td.center{ data: { use: "#initial_balance_credit,.bank-statement-item-type .credit", calculate_round: 2 } } 0.0
             %th{colspan: 3}
 
         %tbody.items
