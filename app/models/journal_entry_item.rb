@@ -178,7 +178,9 @@ class JournalEntryItem < Ekylibre::Record::Base
     followings.update_all("cumulated_absolute_debit = cumulated_absolute_debit + #{absolute_debit}, cumulated_absolute_credit = cumulated_absolute_credit + #{absolute_credit}")
   end
 
-  before_destroy do
+  before_destroy :clear_bank_statement_reconciliation
+
+  def clear_bank_statement_reconciliation
     return unless bank_statement && bank_statement_letter
     bank_statement.items.where(letter: bank_statement_letter).update_all(letter: nil)
   end
