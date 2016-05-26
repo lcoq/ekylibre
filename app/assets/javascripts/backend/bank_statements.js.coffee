@@ -1,6 +1,14 @@
 ((E, $) ->
   "use strict"
 
+  ### Bank statement items edit ###
+
+  $(document).on "change keyup", "#items-form input.debit, #items-form input.credit", ->
+    line = $(@).closest("tr")
+    line.find("input.letter").val(null)
+
+  ### Bank reconciliation ###
+
   # Create bank statement items and date sections
 
   $ ->
