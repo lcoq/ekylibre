@@ -29,7 +29,7 @@
       @dateInput.attr "autocomplete", "off"
 
       @button = @container.find(".ui-datepicker-trigger")
-      @button.addClass "btn"
+      @button.addClass(classes) if classes = @dateInput.data("classes")
 
   createBankStatementItemInDateSection = (date) ->
     buttonInDateSection = $(".#{date} a")
@@ -156,11 +156,24 @@
     reconciliatedLines().find(".clear a").show()
 
   updateReconciliationBalance = ->
+    all = lines().filter(".bank-statement-item-type")
+    allDebit = all.find(".debit").sum()
+    allCredit = all.find(".credit").sum()
     reconciliated = reconciliatedLines().filter(".bank-statement-item-type")
-    debit = reconciliated.find(".debit").sum()
-    credit = reconciliated.find(".credit").sum()
-    $(".reconciliated-debit").text(debit.toFixed(2))
-    $(".reconciliated-credit").text(credit.toFixed(2))
+    reconciliatedDebit = reconciliated.find(".debit").sum()
+    reconciliatedCredit = reconciliated.find(".credit").sum()
+
+    if allDebit is reconciliatedDebit
+      $(".reconciliated-debit").closest("tr").addClass("valid")
+    else
+      $(".reconciliated-debit").closest("tr").removeClass("valid")
+    $(".reconciliated-debit").text(reconciliatedDebit.toFixed(2))
+
+    if allCredit is reconciliatedCredit
+      $(".reconciliated-credit").closest("tr").addClass("valid")
+    else
+      $(".reconciliated-credit").closest("tr").removeClass("valid")
+    $(".reconciliated-credit").text(reconciliatedCredit.toFixed(2))
 
   updateRemainingReconciliationBalance = ->
     if lines().filter(".selected").length >= 2

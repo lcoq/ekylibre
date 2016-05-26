@@ -25,22 +25,25 @@
             %th.center= text_field_tag("bank_statement[initial_balance_credit]", @bank_statement.initial_balance_credit || 0.0, id: "initial_balance_credit", class: "center", data: { exclusive_nullify: "#initial_balance_debit" })
 
         %tfoot
-          %tr
-            %td.add-bank-statement-item-cont{colspan: 3}
-              = date_field_tag "add-bank-statement-item-date", nil, id: "add-bank-statement-item-date", data: { label: "Ajouter une ligne" }
-            %td Total rapproché
+          %tr.total
+            %th.add-bank-statement-item-cont{colspan: 4}
+              = date_field_tag "add-bank-statement-item-date", nil, id: "add-bank-statement-item-date", data: { label: "Ajouter une ligne", classes: "btn btn-new icn" }
+              Total rapproché
             %td.center.reconciliated-debit 0.0
             %td.center.reconciliated-credit 0.0
-          %tr.remaining-reconciliation-balance
-            %td{colspan: 3}
-            %td Reste à rapprocher
+            %th{colspan: 3}
+          %tr.total.remaining-reconciliation-balance
+            %th{colspan: 4}
+              Reste à rapprocher
             %td.center.remaining-reconciliated-debit 0.0
             %td.center.remaining-reconciliated-credit 0.0
-          %tr
-            %td{colspan: 3}
-            %td Solde final
+            %th{colspan: 3}
+          %tr.total
+            %th{colspan: 4}
+              Solde final
             %td.center{ data: { use: "#initial_balance_debit,.bank-statement-item-type .debit" } } 0.0
             %td.center{ data: { use: "#initial_balance_credit,.bank-statement-item-type .credit" } } 0.0
+            %th{colspan: 3}
 
         %tbody.items
           = render partial: "reconciliation_date_section" # template used by JS
