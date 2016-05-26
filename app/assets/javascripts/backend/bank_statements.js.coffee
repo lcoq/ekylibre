@@ -107,6 +107,9 @@
 
   $(document).on "change keyup", ".bank-statement-item-type input.debit, .bank-statement-item-type input.credit", ->
     line = $(@).closest(lines())
+    if lineIsReconciliated(line)
+      letter = lineReconciliationLetter(line)
+      clearReconciliatedLinesWithLetter(letter)
     updateReconciliationBalances()
 
   selectLine = (line) ->
