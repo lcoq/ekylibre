@@ -17,8 +17,16 @@
     %i
   %td.name= text_field_tag("items[#{id}][name]", item.name)
   %td
-  %td.center= text_field_tag "items[#{id}][debit]", (item.debit || 0.0), id: "items_#{id}_debit", class: "center debit", data: { exclusive_nullify: "#items_#{id}_credit" }
-  %td.center= text_field_tag "items[#{id}][credit]", (item.credit || 0.0), id: "items_#{id}_credit", class: "center credit", data: { exclusive_nullify: "#items_#{id}_debit" }
+  - if item.debit != 0 || item.credit != 0
+    %td.center.debit= item.debit
+  - else
+    %td.center
+      = text_field_tag "items[#{id}][debit]", (item.debit || 0.0), id: "items_#{id}_debit", class: "center debit", data: { exclusive_nullify: "#items_#{id}_credit" }
+  - if item.debit != 0 || item.credit != 0
+    %td.center.credit= item.credit
+  - else
+    %td.center
+      = text_field_tag "items[#{id}][credit]", (item.credit || 0.0), id: "items_#{id}_credit", class: "center credit", data: { exclusive_nullify: "#items_#{id}_debit" }
   %td.center.bank-statement-letter= item.letter
   %td.clear
     %a{ href: "#" }
