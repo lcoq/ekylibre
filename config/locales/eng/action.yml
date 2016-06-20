@@ -81,7 +81,6 @@ eng:
       # new: "New bank statement item"
     backend/bank_statements:
       edit: "Edit bank statement %{number}"
-      # edit_items: "Edit items bank statement: %{name}"
       index: "Bank statements"
       new: "New bank statement"
       # reconciliation: "Reconciliation bank statement: %{name}"
@@ -1849,7 +1848,6 @@ eng:
       down: "Down"
       duplicate: "Duplicate"
       edit: "Edit"
-      # edit_items: "Edit items"
       evaluate: "Evaluate"
       export: "Export"
       extract: "Extract"

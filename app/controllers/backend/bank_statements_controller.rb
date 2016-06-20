@@ -19,16 +19,13 @@
 module Backend
   class BankStatementsController < Backend::BaseController
     manage_restfully(
-      except: :update,
       started_at: 'Cash.find(params[:cash_id]).last_bank_statement.stopped_at+1 rescue (Time.zone.today-1.month-2.days)'.c,
-      stopped_at: "Cash.find(params[:cash_id]).last_bank_statement.stopped_at>>1 rescue (Time.zone.today-2.days)".c,
-      redirect_to: "{action: :edit_items, id: 'id'.c}".c
+      stopped_at: "Cash.find(params[:cash_id]).last_bank_statement.stopped_at>>1 rescue (Time.zone.today-2.days)".c
     )
 
     unroll
 
     list(order: { started_at: :desc }) do |t|
-      t.action :edit_items
       t.action :reconciliation
       t.action :edit
       t.action :destroy
@@ -52,28 +49,6 @@ module Backend
       t.column :account, url: true
       t.column :debit, currency: :currency
       t.column :credit, currency: :currency
-    end
-
-    def edit_items
-      return unless @bank_statement = find_and_check
-      if request.post?
-        items = (params[:items] || {}).values
-        if @bank_statement.save_with_items(items)
-          redirect_to params[:redirect] || { action: :show, id: @bank_statement.id }
-          return
-        end
-      end
-    end
-
-    def update
-      return unless @bank_statement = find_and_check
-      @bank_statement.attributes = permitted_params
-      items = (params[:items] || {}).values
-      if @bank_statement.save_with_items(items)
-        redirect_to params[:redirect] || { action: :show, id: @bank_statement.id }
-        return
-      end
-      t3e @bank_statement.attributes
     end
 
     def reconciliation
