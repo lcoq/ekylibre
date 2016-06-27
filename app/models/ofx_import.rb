@@ -2,7 +2,7 @@ class OfxImport
   class InvalidOfxFile < RuntimeError; end
   class OfxFileHasMultipleAccounts < RuntimeError; end
 
-  attr_reader :error, :internal_error, :bank_statement
+  attr_reader :error, :internal_error, :cash, :bank_statement
 
   def initialize(file, cash = nil)
     @file = file
@@ -12,7 +12,7 @@ class OfxImport
   def run
     read_and_parse_file or return false
     ensure_file_has_a_single_account or return false
-    @cash = find_cash_from_ofx_bank_account unless cash
+    @cash = find_or_build_cash_from_ofx_bank_account unless cash
     @bank_statement = build_bank_statement_with_items
     save_bank_statement
   end
@@ -22,7 +22,7 @@ class OfxImport
   end
 
   private
-  attr_reader :file, :cash, :parsed
+  attr_reader :file, :parsed
 
   def read_and_parse_file
     begin
@@ -49,6 +49,25 @@ class OfxImport
     parsed.bank_accounts.first
   end
 
+  def find_or_build_cash_from_ofx_bank_account
+    find_cash_from_ofx_bank_account || build_cash_from_ofx_bank_account
+  end
+
+  def find_cash_from_ofx_bank_account
+    number = parsed.bank_accounts.first.number
+    Cash.pointables.where("iban LIKE ?", "%#{number}%").take
+  end
+
+  def build_cash_from_ofx_bank_account
+    Cash.new.tap do |c|
+      c.currency = ofx_statement.currency
+      c.mode = :bban
+      c.bank_code = ofx_bank_account.routing_number
+      c.bank_agency_code = nil # TODO
+      c.bank_account_number = ofx_bank_account.number
+    end
+  end
+
   def build_bank_statement_with_items
     bank_statement = build_bank_statement(cash)
     ofx_statement.transactions.each do |transaction|
@@ -58,16 +77,12 @@ class OfxImport
   end
 
   def build_bank_statement(cash)
-    cash.bank_statements.build.tap do |s|
+    BankStatement.new.tap do |s|
+      s.cash = cash
       s.number = generate_bank_statement_number
       s.started_at = ofx_statement.start_date
       s.stopped_at = ofx_statement.end_date
     end
-  end
-
-  def find_cash_from_ofx_bank_account
-    number = parsed.bank_accounts.first.number
-    Cash.pointables.where("iban LIKE ?", "%#{number}%").take
   end
 
   def build_bank_statement_item(bank_statement, transaction)

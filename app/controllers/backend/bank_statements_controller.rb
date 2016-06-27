@@ -59,6 +59,7 @@ module Backend
         if @import.run
           redirect_to action: :show, id: @import.bank_statement.id
         elsif @import.recoverable?
+          @cash = @import.cash
           @bank_statement = @import.bank_statement
           render :new
         end
