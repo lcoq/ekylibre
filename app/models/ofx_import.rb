@@ -4,7 +4,7 @@ class OfxImport
 
   attr_reader :error, :internal_error, :bank_statement
 
-  def initialize(file, cash)
+  def initialize(file, cash = nil)
     @file = file
     @cash = cash
   end
@@ -12,6 +12,7 @@ class OfxImport
   def run
     read_and_parse_file or return false
     ensure_file_has_a_single_account or return false
+    @cash = find_cash_from_ofx_bank_account unless cash
     @bank_statement = build_bank_statement_with_items
     save_bank_statement
   end
@@ -41,7 +42,11 @@ class OfxImport
   end
 
   def ofx_statement
-    parsed.bank_accounts.first.statement
+    ofx_bank_account.statement
+  end
+
+  def ofx_bank_account
+    parsed.bank_accounts.first
   end
 
   def build_bank_statement_with_items
@@ -58,6 +63,11 @@ class OfxImport
       s.started_at = ofx_statement.start_date
       s.stopped_at = ofx_statement.end_date
     end
+  end
+
+  def find_cash_from_ofx_bank_account
+    number = parsed.bank_accounts.first.number
+    Cash.pointables.where("iban LIKE ?", "%#{number}%").take
   end
 
   def build_bank_statement_item(bank_statement, transaction)
