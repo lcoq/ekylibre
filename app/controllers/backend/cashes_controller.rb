@@ -45,6 +45,7 @@ module Backend
       t.action :edit
       t.action :destroy
       t.action :new, on: :none, url: { cash_id: 'params[:id]'.c }
+      t.action :import_ofx, on: :none, url: { cash_id: 'params[:id]'.c }
       t.column :number, url: true
       t.column :started_at
       t.column :stopped_at
