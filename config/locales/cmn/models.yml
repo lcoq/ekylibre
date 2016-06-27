@@ -76,6 +76,8 @@ cmn:
         # too_short: "%{attribute} is too short (minimum is %{count} characters)"
         # wrong_length: "%{attribute} is the wrong length (should be %{count} characters)"
       models:
+        bank_statement:
+          # no_cash_match_ofx: "No cash found for the bank account number given in the file"
         bank_statement_item:
           unvalid_amounts: "日记条目必须同时填写无论是借记卡还是信用卡，但并非如此。"
         cash:

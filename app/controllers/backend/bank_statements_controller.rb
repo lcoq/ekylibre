@@ -61,6 +61,7 @@ module Backend
         elsif @import.recoverable?
           @cash = @import.cash
           @bank_statement = @import.bank_statement
+          @bank_statement.errors.add(:cash, :no_cash_match_ofx) unless @cash.valid?
           render :new
         end
       end

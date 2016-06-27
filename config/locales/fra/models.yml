@@ -184,6 +184,8 @@ fra:
         too_short: "%{attribute} est trop court (%{count} caractères minimum)"
         wrong_length: "%{attribute} n’est pas d’une bon longueur (%{count} caractères)"
       models:
+        bank_statement:
+          # no_cash_match_ofx: "No cash found for the bank account number given in the file"
         bank_statement_item:
           unvalid_amounts: "L’écriture doit être renseignée soit au débit, soit au crédit mais pas les deux en même temps."
         cash:

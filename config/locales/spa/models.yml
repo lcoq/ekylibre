@@ -76,6 +76,8 @@ spa:
         # too_short: "%{attribute} is too short (minimum is %{count} characters)"
         # wrong_length: "%{attribute} is the wrong length (should be %{count} characters)"
       models:
+        bank_statement:
+          # no_cash_match_ofx: "No cash found for the bank account number given in the file"
         bank_statement_item:
           unvalid_amounts: "El asiento debe ser llenado ya sea de débito o de crédito, pero no al mismo tiempo."
         cash:
