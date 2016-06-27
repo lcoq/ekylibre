@@ -54,7 +54,7 @@ class OfxImport
   end
 
   def find_cash_from_ofx_bank_account
-    number = parsed.bank_accounts.first.number
+    number = ofx_bank_account.number
     Cash.pointables.where("iban LIKE ?", "%#{number}%").take
   end
 
