@@ -54,6 +54,7 @@ class OfxImportTest < ActiveSupport::TestCase
     assert_equal "PRLV SEPA MUTUELLE 123", item.name
     assert_equal "201600400001AB12", item.transaction_number
     assert_equal "2016-05-09", item.transfered_on.to_s
+    assert_equal "2016-05-10", item.initiated_on.to_s
     assert_equal 34.56, item.debit
   end
 end

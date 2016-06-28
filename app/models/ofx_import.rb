@@ -65,7 +65,7 @@ class OfxImport
       c.currency = ofx_statement.currency
       c.mode = :bban
       c.bank_code = ofx_bank_account.routing_number
-      c.bank_agency_code = nil # TODO
+      c.bank_agency_code = ofx_bank_account.branch_number
       c.bank_account_number = ofx_bank_account.number
     end
   end
@@ -92,6 +92,7 @@ class OfxImport
       i.name = transaction.payee
       i.transaction_number = transaction.fit_id
       i.transfered_on = transaction.date
+      i.initiated_on = transaction.date_initiated
       i.balance = transaction.amount.to_f
     end
   end
