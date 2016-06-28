@@ -87,6 +87,8 @@ ita:
       models:
         bank_statement:
           # no_cash_match_ofx: "No cash found for the bank account number given in the file"
+          # ofx_file_has_multiple_bank_accounts: "OFX file with multiple bank accounts is not supported"
+          # ofx_file_invalid: "OFX file is invalid"
         bank_statement_item:
           unvalid_amounts: "La voce di diario deve essere compilato o di debito o di credito, ma non allo stesso tempo."
         cash:

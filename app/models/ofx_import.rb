@@ -29,7 +29,8 @@ class OfxImport
       @parsed = OfxParser::OfxParser.parse(file.read)
       true
     rescue => error
-      @error = InvalidOfxFile.new("OFX file is invalid")
+      message = I18n.translate("activerecord.errors.models.bank_statement.ofx_file_invalid")
+      @error = InvalidOfxFile.new(message)
       @internal_error = error
       false
     end
@@ -37,7 +38,8 @@ class OfxImport
 
   def ensure_file_has_a_single_account
     return true if parsed.bank_accounts.length == 1
-    @error = OfxFileHasMultipleAccounts.new("OFX file with multiple bank accounts is not supported")
+    message = I18n.translate("activerecord.errors.models.bank_statement.ofx_file_has_multiple_bank_accounts")
+    @error = OfxFileHasMultipleAccounts.new(message)
     false
   end
 
