@@ -76,4 +76,16 @@ class BankStatementItem < Ekylibre::Record::Base
     return [] unless bank_statement && letter
     JournalEntryItem.pointed_by(bank_statement).where(bank_statement_letter: letter)
   end
+
+  def cash_currency
+    bank_statement && bank_statement.cash && bank_statement.cash.currency
+  end
+
+  def balance=(new_balance)
+    if new_balance > 0
+      self.credit = new_balance
+    else
+      self.debit = - new_balance
+    end
+  end
 end

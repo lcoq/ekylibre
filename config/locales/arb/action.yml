@@ -66,6 +66,7 @@ arb:
       # show: "%{nature}: %{name}"
     backend/bank_statements:
       edit: "تعديل الكشف المصرفي رقم%{number}"
+      # import_ofx: "Import OFX file"
       index: "بيان الحساب المصرفي"
       new: "الاشارة لكشف حساب جديد"
       show: "رقم كشف الحساب%{number}"
@@ -2459,6 +2460,7 @@ arb:
       generate_last_journal_entry: "تولد الماضي إدخال دفتر اليومية"
       generate_parcel: "تولد لا يتجزأ"
       import: "استيراد"
+      # import_ofx: "Import OFX file"
       incorporate: "دمج"
       increment: "زيادة" #?
       index: "فهرس"

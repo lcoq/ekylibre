@@ -60,6 +60,7 @@ deu:
       # show: "%{nature}: %{name}"
     backend/bank_statements:
       # edit: "Edit bank statement %{number}"
+      # import_ofx: "Import OFX file"
       index: "Kontoauszüge"
       new: "Neue Kontoauszug"
       # show: "Account statement N°%{number}"
@@ -1680,6 +1681,7 @@ deu:
       generate_last_journal_entry: "Generieren letzten Tagebucheintrag"
       generate_parcel: "generieren Paket"
       # import: "Import"
+      # import_ofx: "Import OFX file"
       incorporate: "integrieren"
       increment: "Zuwachs" #?
       # index: "Index"

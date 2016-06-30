@@ -44,7 +44,7 @@ class BankStatement < Ekylibre::Record::Base
   include Attachable
   include Customizable
   belongs_to :cash
-  has_many :items, class_name: "BankStatementItem", dependent: :destroy
+  has_many :items, class_name: "BankStatementItem", dependent: :destroy, inverse_of: :bank_statement
   # [VALIDATORS[ Do not edit these lines directly. Use `rake clean:validations`.
   validates_datetime :started_at, :stopped_at, allow_blank: true, on_or_after: -> { Time.new(1, 1, 1).in_time_zone }, on_or_before: -> { Time.zone.now + 50.years }
   validates_datetime :stopped_at, allow_blank: true, on_or_after: :started_at, if: ->(bank_statement) { bank_statement.stopped_at && bank_statement.started_at }
@@ -54,12 +54,14 @@ class BankStatement < Ekylibre::Record::Base
   validates_length_of :currency, allow_nil: true, maximum: 3
   validates_uniqueness_of :number, scope: :cash_id
 
+  accepts_nested_attributes_for :items, allow_destroy: true
+
   delegate :name, :currency, :account_id, :next_reconciliation_letters, to: :cash, prefix: true
 
   before_validation do
     self.currency = cash_currency if cash
-    self.debit  = items.sum(:debit)
-    self.credit = items.sum(:credit)
+    self.debit  = items.map(&:debit).sum
+    self.credit = items.map(&:credit).sum
     self.initial_balance_debit ||= 0
     self.initial_balance_credit ||= 0
   end
@@ -74,6 +76,16 @@ class BankStatement < Ekylibre::Record::Base
     if initial_balance_debit != 0 && initial_balance_credit != 0
       errors.add(:initial_balance_credit, :unvalid_amounts)
     end
+  end
+
+  before_save do
+    changed_reconciliated_items = items.select do |item|
+      reconciliated = item.letter.present?
+      debit_or_credit_changed = item.credit_changed? || item.debit_changed?
+      reconciliated && (debit_or_credit_changed || item.marked_for_destruction?)
+    end
+    reconciliated_letters_to_clear = changed_reconciliated_items.map(&:letter).uniq
+    clear_reconciliation_with_letters reconciliated_letters_to_clear
   end
 
   def balance_credit
@@ -138,5 +150,16 @@ class BankStatement < Ekylibre::Record::Base
       end
     end
     false
+  end
+
+  private
+
+  def clear_reconciliation_with_letters(letters)
+    return unless letters.any?
+    JournalEntryItem.where(bank_statement_letter: letters).update_all(
+      bank_statement_id: nil,
+      bank_statement_letter: nil
+    )
+    BankStatementItem.where(letter: letters).update_all(letter: nil)
   end
 end
