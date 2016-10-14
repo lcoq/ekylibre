@@ -66,4 +66,17 @@ class JournalTest < ActiveSupport::TestCase
     journal_with_cash.accountant = entities(:entities_017)
     refute journal_with_cash.valid?
   end
+  test 'cannot be closed with an accountant' do
+    journal = journals(:journals_001)
+    assert journal.closable?
+    journal.accountant = entities(:entities_017)
+    refute journal.closable?
+  end
+  test 'cannot be reopened with an accountant' do
+    journal = journals(:journals_001)
+    assert journal.close!(Time.zone.now.to_date)
+    assert journal.reopenable?
+    journal.accountant = entities(:entities_017)
+    refute journal.reopenable?
+  end
 end

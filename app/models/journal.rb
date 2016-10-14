@@ -151,6 +151,7 @@ class Journal < Ekylibre::Record::Base
 
   # Test if journal is closable
   def closable?(closed_on = nil)
+    return false if booked_for_accountant?
     closed_on ||= Time.zone.today
     self.class.where(id: id).update_all(closed_on: Date.civil(1900, 12, 31)) if self.closed_on.nil?
     reload
@@ -194,8 +195,7 @@ class Journal < Ekylibre::Record::Base
   end
 
   def reopenable?
-    return false unless reopenings.any?
-    true
+    !booked_for_accountant? && reopenings.any?
   end
 
   def reopenings
@@ -249,6 +249,10 @@ class Journal < Ekylibre::Record::Base
 
   def various_without_cash?
     various? && cashes.empty?
+  end
+
+  def booked_for_accountant?
+    accountant
   end
 
   # Computes the value of list of accounts in a String
