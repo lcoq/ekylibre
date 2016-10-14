@@ -329,6 +329,7 @@ deu:
     account_name: "Kontobezeichnung"
     account_number: "Accountnummer"
     accountable: "Verantwortlich"
+    # accountant: "Accountant"
     accounted_at: "entfielen auf"
     accuracy: "Genauigkeit"
     achieved_at: "erreicht bei"

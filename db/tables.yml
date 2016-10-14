@@ -2238,6 +2238,9 @@ events:
     type: integer
     references: user
 financial_years:
+  accountant_id:
+    type: integer
+    references: entity
   closed:
     type: boolean
     required: true
@@ -3723,6 +3726,9 @@ journal_entry_items:
     type: integer
     references: user
 journals:
+  accountant_id:
+    type: integer
+    references: entity
   closed_on:
     type: date
     required: true

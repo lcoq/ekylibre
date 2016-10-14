@@ -22,6 +22,7 @@
 #
 # == Table: financial_years
 #
+#  accountant_id         :integer
 #  closed                :boolean          default(FALSE), not null
 #  code                  :string           not null
 #  created_at            :datetime         not null
@@ -44,6 +45,7 @@ class FinancialYear < Ekylibre::Record::Base
   attr_readonly :currency
   refers_to :currency
   belongs_to :last_journal_entry, class_name: 'JournalEntry'
+  belongs_to :accountant, class_name: 'Entity'
   has_many :account_balances, class_name: 'AccountBalance', foreign_key: :financial_year_id, dependent: :delete_all
   has_many :fixed_asset_depreciations, class_name: 'FixedAssetDepreciation'
   # [VALIDATORS[ Do not edit these lines directly. Use `rake clean:validations`.

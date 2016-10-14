@@ -329,6 +329,7 @@ por:
     account_name: "Nome da conta"
     account_number: "Número da conta"
     accountable: "Responsável"
+    # accountant: "Accountant"
     accounted_at: "Contabilizados ao"
     accuracy: "Precisão"
     achieved_at: "Alcançados ao"

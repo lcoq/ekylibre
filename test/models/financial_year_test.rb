@@ -22,6 +22,7 @@
 #
 # == Table: financial_years
 #
+#  accountant_id         :integer
 #  closed                :boolean          default(FALSE), not null
 #  code                  :string           not null
 #  created_at            :datetime         not null
@@ -54,5 +55,10 @@ class FinancialYearTest < ActiveSupport::TestCase
     assert_equal first_year, first_year.next.previous
 
     assert_not_nil FinancialYear.at(Time.now + 49.years)
+  end
+  test 'accountant can be set' do
+    year = financial_years(:financial_years_001)
+    year.accountant = entities(:entities_017)
+    assert year.valid?
   end
 end

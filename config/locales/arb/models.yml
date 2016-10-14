@@ -980,6 +980,7 @@ arb:
     account_name: "حسابات المحاسب"
     account_number: "رقم الحساب"
     accountable: "مسؤول"
+    # accountant: "Accountant"
     accounted_at: "تمت محاسبته يوم"
     accounts: "الحسابات" #?
     accuracy: "دقة"
