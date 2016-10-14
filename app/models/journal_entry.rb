@@ -345,6 +345,14 @@ class JournalEntry < Ekylibre::Record::Base
     add!(name, account, amount, options.merge(credit: true))
   end
 
+  def updateable?
+    !journal_booked_for_accountant?
+  end
+
+  def journal_booked_for_accountant?
+    journal && journal.booked_for_accountant?
+  end
+
   private
 
   #

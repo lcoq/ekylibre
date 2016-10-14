@@ -62,4 +62,20 @@ class JournalEntryTest < ActiveSupport::TestCase
       record = journal.entries.create!(printed_on: journal.closed_on + 1)
     end
   end
+  test 'cannot be updated when its journal is booked for accountant' do
+    entry = journal_entries(:journal_entries_001)
+    assert entry.updateable?
+    entry.journal.accountant = entities(:entities_017)
+    refute entry.updateable?
+  end
+  test 'journal is not booked for accountant when the entry has no journal' do
+    entry = journal_entries(:journal_entries_001)
+    entry.journal = nil
+    refute entry.journal_booked_for_accountant?
+  end
+  test 'journal is booked for accountant when the journal is booked for accountant' do
+    entry = journal_entries(:journal_entries_001)
+    entry.journal.accountant = entities(:entities_017)
+    assert entry.journal_booked_for_accountant?
+  end
 end
