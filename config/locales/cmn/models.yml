@@ -329,6 +329,7 @@ cmn:
     account_name: "用户名"
     account_number: "帐号"
     accountable: "负责"
+    # accountant: "Accountant"
     accounted_at: "在占"
     accuracy: "准确性"
     achieved_at: "在实现"

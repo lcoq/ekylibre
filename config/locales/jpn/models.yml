@@ -329,6 +329,7 @@ jpn:
     account_name: "アカウント名"
     account_number: "口座番号"
     accountable: "責任があります"
+    # accountant: "Accountant"
     accounted_at: "で会計処理"
     accuracy: "精度"
     achieved_at: "で達成"

@@ -456,6 +456,7 @@ fra:
     account_name: "Compte comptable"
     account_number: "N°Compte"
     accountable: "Comptabilisable"
+    # accountant: "Accountant"
     accounted_at: "Date comptabilisation"
     accuracy: "Précision"
     achieved_at: "Achevé le"

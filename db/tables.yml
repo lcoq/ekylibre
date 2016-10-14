@@ -3723,6 +3723,9 @@ journal_entry_items:
     type: integer
     references: user
 journals:
+  accountant_id:
+    type: integer
+    references: entity
   closed_on:
     type: date
     required: true

@@ -360,6 +360,7 @@ ita:
     account_name: "Nome utente"
     account_number: "numero di conto"
     accountable: "Responsabile"
+    # accountant: "Accountant"
     accounted_at: "rappresentato a"
     accuracy: "Precisione"
     achieved_at: "raggiunto a"

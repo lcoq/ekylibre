@@ -330,6 +330,7 @@ spa:
     account_name: "Nombre de la cuenta"
     account_number: "Número de cuenta"
     accountable: "Explicable"
+    # accountant: "Accountant"
     accounted_at: "Representaron en"
     accuracy: "Exactitud"
     achieved_at: "Alcanzado en"

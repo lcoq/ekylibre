@@ -330,6 +330,7 @@ eng:
     account_name: "Account name" #?
     account_number: "Account number" #?
     accountable: "Accountable"
+    accountant: "Accountant"
     accounted_at: "Accounted at"
     accuracy: "Accuracy"
     achieved_at: "Achieved at"

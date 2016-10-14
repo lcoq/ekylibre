@@ -22,6 +22,7 @@
 #
 # == Table: journals
 #
+#  accountant_id    :integer
 #  closed_on        :date             not null
 #  code             :string           not null
 #  created_at       :datetime         not null
@@ -48,5 +49,21 @@ class JournalTest < ActiveSupport::TestCase
       assert Journal.respond_to?(scope_name), "Journal must have a scope #{scope_name}"
       # TODO: Check that scope works
     end
+  end
+  test 'accountant can be set on various journals' do
+    various_journal = journals(:journals_001)
+    various_journal.accountant = entities(:entities_017)
+    assert various_journal.valid?
+  end
+  test 'accountant cannot be set on non-various journals' do
+    bank_journal = journals(:journals_003)
+    bank_journal.accountant = entities(:entities_017)
+    refute bank_journal.valid?
+  end
+  test 'accountant cannot be on journals with cashes' do
+    journal_with_cash = journals(:journals_002)
+    journal_with_cash.nature = :various
+    journal_with_cash.accountant = entities(:entities_017)
+    refute journal_with_cash.valid?
   end
 end
