@@ -132,6 +132,7 @@ class Entity < Ekylibre::Record::Base
   has_many :transporter_sales, -> { order(created_at: :desc) }, foreign_key: :transporter_id, class_name: 'Sale'
   has_many :usable_incoming_payments, -> { where('used_amount < amount') }, class_name: 'IncomingPayment', foreign_key: :payer_id
   has_many :waiting_deliveries, -> { where(state: 'ready_to_send') }, class_name: 'Parcel', foreign_key: :transporter_id
+  has_many :booked_journals, class_name: 'Journal', foreign_key: :accountant_id
 
   with_options class_name: 'EntityAddress' do
     has_one :default_mail_address, -> { where(by_default: true, canal: 'mail') }

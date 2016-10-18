@@ -86,4 +86,8 @@ class EntityTest < ActiveSupport::TestCase
     entity = Entity.create(nature: :organization)
     assert !entity.errors.include?(:nature), 'Entity must accept organization nature'
   end
+  test 'has many booked journals' do
+    entity = entities(:entities_017)
+    refute entity.booked_journals.empty?
+  end
 end
