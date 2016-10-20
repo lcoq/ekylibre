@@ -58,6 +58,16 @@ class FinancialYearExchangeTest < ActiveSupport::TestCase
     exchange = financial_year_exchanges(:financial_year_exchanges_001)
     assert exchange.valid?
   end
+  test 'initialize with locked on set to yesterday' do
+    yesterday = Date.yesterday
+    exchange = FinancialYearExchange.new
+    assert_equal yesterday, exchange.locked_on
+  end
+  test 'does not initialize with locked on set to yesterday when locked on is filled' do
+    today = Date.today
+    exchange = FinancialYearExchange.new(locked_on: today)
+    assert_equal today, exchange.locked_on
+  end
   test 'needs a locked on' do
     exchange = financial_year_exchanges(:financial_year_exchanges_001)
     exchange.locked_on = nil

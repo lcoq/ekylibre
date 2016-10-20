@@ -42,4 +42,16 @@ class FinancialYearExchange < Ekylibre::Record::Base
 
   scope :opened, -> { where(closed_at: nil) }
   scope :closed, -> { where.not(closed_at: nil) }
+
+  after_initialize :set_initial_values, if: :initializeable?
+
+  private
+
+  def initializeable?
+    new_record?
+  end
+
+  def set_initial_values
+    self.locked_on = Date.yesterday unless locked_on
+  end
 end

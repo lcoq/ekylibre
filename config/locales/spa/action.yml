@@ -232,6 +232,8 @@ spa:
     backend/exports:
       index: "Exportaciones"
       # show: "Export: %{name}"
+    backend/financial_year_exchanges:
+      # new: "New exchange"
     backend/financial_years:
       close: "Cerrado de ejercicio"
       compute_balances: "Calcule el equilibrio ejercicio"
@@ -1060,6 +1062,7 @@ spa:
     # example: "Example: %{value}"
     exchange: "Intercambiar"
     # exchange_rate_from_x_to_y: "Exchange rate from %{x} to %{y}"
+    # exchanges: "Exchanges"
     # expected_quantity_is_x: "Expected quantity: %{x}"
     expedier: "Expédier"
     expenses: "Gastos"
@@ -1298,6 +1301,7 @@ spa:
       # other: "Make a deposit %{mode}: %{count} available payments"
       # zero: "Make a deposit %{mode}: no available payments"
     new_email: "Nuevo Email"
+    # new_financial_year_exchange: "New exchange"
     new_group: "Nuevo grupo"
     new_incoming_parcel: "Nueva parcela entrante"
     new_issue: "Nueva edición"

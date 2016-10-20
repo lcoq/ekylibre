@@ -50,6 +50,11 @@ module Backend
       t.column :amount, currency: true
     end
 
+    list(:exchanges, model: :financial_year_exchanges, conditions: { financial_year_id: 'params[:id]'.c }) do |t|
+      t.column :locked_on, url: true
+      t.column :closed_at
+    end
+
     # Displays details of one financial year selected with +params[:id]+
     def show
       return unless @financial_year = find_and_check

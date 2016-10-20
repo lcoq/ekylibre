@@ -458,8 +458,11 @@ Rails.application.routes.draw do
         post :compute_balances
         get :list_account_balances
         get :list_fixed_asset_depreciations
+        get :list_exchanges
       end
     end
+
+    resources :financial_year_exchanges, path: 'financial-year-exchanges', only: [:new, :create]
 
     resources :fungi, concerns: :products
 
