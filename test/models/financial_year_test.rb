@@ -79,6 +79,12 @@ class FinancialYearTest < ActiveSupport::TestCase
     year = financial_years(:financial_years_025)
     refute year.can_create_exchange?
   end
+  test 'cannot change accountant with opened exchange' do
+    year = financial_years(:financial_years_025)
+    other_accountant = entities(:entities_016)
+    year.accountant = other_accountant
+    refute year.valid?
+  end
   test 'destroy exchanges on destroy' do
     year = financial_years(:financial_years_025)
     exchange_ids = year.exchanges.map(&:id)

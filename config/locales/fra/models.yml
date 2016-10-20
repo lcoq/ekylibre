@@ -226,6 +226,8 @@ fra:
           nature_do_not_allow_a_first_name: "Le type «\_%{nature}\_» sélectionné ne permet de renseigner un prénom"
         financial_year:
           attributes:
+            accountant:
+              # frozen: "%{attribute} cannot be changed while an exchange is opened"
             started_on:
               consecutive: "L’exercice comptable doit être consécutif à un autre. Il doit commencer au lendemain de la fin du précédent."
             stopped_on:

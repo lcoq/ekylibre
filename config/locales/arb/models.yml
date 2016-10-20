@@ -676,6 +676,8 @@ arb:
           nature_do_not_allow_a_first_name: "«%{nature}» لا يسمح النوع المختار بمعرفة الاسم الاول"
         financial_year:
           attributes:
+            accountant:
+              # frozen: "%{attribute} cannot be changed while an exchange is opened"
             started_on:
               consecutive: "يجب ان تكون محاسبة السنة المالية بصف آخر، ويجب ان تبدأ بعد نهاية العام السابق"
             stopped_on:

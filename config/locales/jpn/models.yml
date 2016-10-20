@@ -105,6 +105,8 @@ jpn:
           # nature_do_not_allow_a_first_name: "The selectected type “%{nature}” does not allow a first name"
         financial_year:
           attributes:
+            accountant:
+              # frozen: "%{attribute} cannot be changed while an exchange is opened"
             started_on:
               consecutive: "会計年度はconsecutivesでなければなりません。これは、前回の終了後に開始する必要があります。"
             stopped_on:

@@ -114,6 +114,8 @@ ita:
           # nature_do_not_allow_a_first_name: "The selectected type “%{nature}” does not allow a first name"
         financial_year:
           attributes:
+            accountant:
+              # frozen: "%{attribute} cannot be changed while an exchange is opened"
             started_on:
               consecutive: "Gli esercizi devono essere consecutivi. Si deve iniziare dopo la fine del precedente."
             stopped_on:
