@@ -241,6 +241,8 @@ fra:
           greater_than_undelivered_quantity: "La quantité de produit %{product} à livrer dépasse la quantité non livrée (%{maximum}%{unit})"
         journal:
           attributes:
+            accountant:
+              # entity_frozen: "Booked journals of this %{attribute} cannot change while an exchange is opened for its financial years"
             closed_on:
               draft_entry_items: "Des écritures du brouillard sont encore présente avant le %{closed_on}" #?
               end_of_month: "%{attribute} doit correspondre à une date de fin de mois (%{closed_on})"

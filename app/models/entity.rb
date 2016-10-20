@@ -468,6 +468,11 @@ class Entity < Ekylibre::Record::Base
     end
   end
 
+  def has_financial_year_with_opened_exchange?
+    return false unless persisted?
+    FinancialYear.where(accountant_id: id).any?(&:has_opened_exchange?)
+  end
+
   def self.best_clients(limit = -1)
     clients.sort_by { |client| -client.sales.count }[0...limit]
   end

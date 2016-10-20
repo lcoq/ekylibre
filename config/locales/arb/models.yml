@@ -691,6 +691,8 @@ arb:
           # greater_than_undelivered_quantity: "The quantity of product %{product} to deliver is greater than undelivered quantity (%{maximum}%{unit})"
         journal:
           attributes:
+            accountant:
+              # entity_frozen: "Booked journals of this %{attribute} cannot change while an exchange is opened for its financial years"
             closed_at:  #?
               end_of_month: "%{attribute} يجب ان تطابق تاريخ نهاية الشهر (%{closed_at})" #?
             closed_on:

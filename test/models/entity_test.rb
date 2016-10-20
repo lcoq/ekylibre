@@ -90,4 +90,12 @@ class EntityTest < ActiveSupport::TestCase
     entity = entities(:entities_017)
     refute entity.booked_journals.empty?
   end
+  test 'does not have financial year with opened exchange without financial year' do
+    entity = entities(:entities_016)
+    refute entity.has_financial_year_with_opened_exchange?
+  end
+  test 'has financial year with opened exchange' do
+    entity = entities(:entities_017)
+    assert entity.has_financial_year_with_opened_exchange?
+  end
 end

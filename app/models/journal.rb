@@ -108,6 +108,7 @@ class Journal < Ekylibre::Record::Base
     unless code.blank?
       errors.add(:code, :taken) if others.find_by(code: code.to_s[0..3])
     end
+    errors.add(:accountant, :entity_frozen) if accountant_id_changed? && accountant_has_financial_year_with_opened_exchange?
   end
 
   protect(on: :destroy) do
@@ -253,6 +254,10 @@ class Journal < Ekylibre::Record::Base
 
   def booked_for_accountant?
     accountant
+  end
+
+  def accountant_has_financial_year_with_opened_exchange?
+    accountant && accountant.has_financial_year_with_opened_exchange?
   end
 
   # Computes the value of list of accounts in a String

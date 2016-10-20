@@ -66,6 +66,12 @@ class JournalTest < ActiveSupport::TestCase
     journal_with_cash.accountant = entities(:entities_016)
     refute journal_with_cash.valid?
   end
+  test 'cannot set an accountant which has opened exchanges in its financial year' do
+    financial_year = financial_years(:financial_years_025)
+    journal = journals(:journals_001)
+    journal.accountant = financial_year.accountant
+    refute journal.valid?
+  end
   test 'cannot be closed with an accountant' do
     journal = journals(:journals_001)
     assert journal.closable?

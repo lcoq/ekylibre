@@ -363,13 +363,13 @@ class FinancialYear < Ekylibre::Record::Base
     has_accountant_with_booked_journal? && !has_opened_exchange?
   end
 
+  def has_opened_exchange?
+    exchanges.opened.any?
+  end
+
   private
 
   def has_accountant_with_booked_journal?
     accountant && accountant.booked_journals.any?
-  end
-
-  def has_opened_exchange?
-    exchanges.opened.any?
   end
 end
