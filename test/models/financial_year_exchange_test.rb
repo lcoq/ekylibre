@@ -73,6 +73,11 @@ class FinancialYearExchangeTest < ActiveSupport::TestCase
     exchange.locked_on = nil
     refute exchange.valid?
   end
+  test 'locked on is before financial year stopped on' do
+    exchange = financial_year_exchanges(:financial_year_exchanges_001)
+    exchange.locked_on = exchange.financial_year.stopped_on + 1.day
+    refute exchange.valid?
+  end
   test 'needs a financial year' do
     exchange = financial_year_exchanges(:financial_year_exchanges_001)
     exchange.financial_year = nil

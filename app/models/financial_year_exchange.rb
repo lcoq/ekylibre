@@ -36,7 +36,7 @@ class FinancialYearExchange < Ekylibre::Record::Base
   belongs_to :financial_year
   # [VALIDATORS[ Do not edit these lines directly. Use `rake clean:validations`.
   validates :closed_at, timeliness: { on_or_after: -> { Time.new(1, 1, 1).in_time_zone }, on_or_before: -> { Time.zone.now + 50.years } }, allow_blank: true
-  validates :locked_on, presence: true, timeliness: { on_or_after: -> { Time.new(1, 1, 1).in_time_zone }, on_or_before: -> { Time.zone.today + 50.years }, type: :date }
+  validates :locked_on, presence: true, timeliness: { on_or_after: -> { Time.new(1, 1, 1).in_time_zone }, on_or_before: ->(exchange) { exchange.financial_year_stopped_on || (Time.zone.today + 50.years) }, type: :date }
   validates :financial_year, presence: true
   # ]VALIDATORS]
 
@@ -46,6 +46,7 @@ class FinancialYearExchange < Ekylibre::Record::Base
   after_initialize :set_initial_values, if: :initializeable?
 
   private
+  delegate :stopped_on, to: :financial_year, prefix: true, allow_nil: true
 
   def initializeable?
     new_record?
