@@ -67,7 +67,7 @@ class FinancialYearTest < ActiveSupport::TestCase
   end
   test 'cannot create exchange without journal booked by the accountant' do
     year = financial_years(:financial_years_025)
-    year.accountant.booked_journals.destroy_all
+    Journal.where(id: year.accountant.booked_journals.pluck(:id)).delete_all
     refute year.can_create_exchange?
   end
   test 'create exchange when it has no opened exchange but journal booked by the accountant' do
