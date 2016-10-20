@@ -83,4 +83,79 @@ class FinancialYearExchangeTest < ActiveSupport::TestCase
     exchange.financial_year = nil
     refute exchange.valid?
   end
+  test 'create closes journal entries from non-booked journal between financial year start and exchange lock when the financial year has no other exchange' do
+    financial_year = financial_years(:financial_years_024)
+    locked_on = financial_year.stopped_on - 2.days
+    entries_range = financial_year.started_on..locked_on
+
+    draft_entries = JournalEntry.joins(:journal).where(printed_on: entries_range, state: :draft, journals: { accountant_id: nil }).to_a
+    assert draft_entries.any?
+    confirmed_entries = JournalEntry.joins(:journal).where(printed_on: entries_range, state: :confirmed, journals: { accountant_id: nil }).to_a
+    assert confirmed_entries.any?
+
+    exchange = FinancialYearExchange.new(financial_year: financial_year, locked_on: locked_on)
+    assert exchange.save
+    assert draft_entries.all? { |e| e.reload.closed? }
+    assert confirmed_entries.all? { |e| e.reload.closed? }
+  end
+  test 'create does not close journal entries from booked journals' do
+    financial_year = financial_years(:financial_years_024)
+    locked_on = financial_year.stopped_on - 2.days
+    entries_range = financial_year.started_on..locked_on
+    draft_entries = JournalEntry.joins(:journal).where(printed_on: entries_range, state: :draft).where.not(journals: { accountant_id: nil }).to_a
+    assert draft_entries.any?
+
+    exchange = FinancialYearExchange.new(financial_year: financial_year, locked_on: locked_on)
+    assert exchange.save
+    assert draft_entries.all? { |e| e.reload.draft? }
+  end
+  test 'create does not close journal entries not between financial year start and exchange lock when the financial year has no other exchange' do
+    financial_year = financial_years(:financial_years_024)
+    locked_on = financial_year.stopped_on - 2.days
+    entries_range = financial_year.started_on..locked_on
+
+    draft_entries = JournalEntry.joins(:journal).where(state: :draft, journals: { accountant_id: nil }).where.not(printed_on: entries_range).to_a
+    assert draft_entries.any?
+    confirmed_entries = JournalEntry.joins(:journal).where(state: :confirmed, journals: { accountant_id: nil }).where.not(printed_on: entries_range).to_a
+    assert confirmed_entries.any?
+
+    exchange = FinancialYearExchange.new(financial_year: financial_year, locked_on: locked_on)
+    assert exchange.save
+    assert draft_entries.all? { |e| e.reload.draft? }
+    assert confirmed_entries.all? { |e| e.reload.confirmed? }
+  end
+  test 'create closes journal entries from non-booked journal between previous and actual exchanges lock' do
+    financial_year = financial_years(:financial_years_025)
+    previous_exchange = financial_year_exchanges(:financial_year_exchanges_001)
+    previous_exchange.update_column :closed_at, Time.zone.now
+    locked_on = financial_year.stopped_on - 2.days
+    entries_range = previous_exchange.locked_on..locked_on
+
+    draft_entries = JournalEntry.joins(:journal).where(printed_on: entries_range, state: :draft, journals: { accountant_id: nil }).to_a
+    assert draft_entries.any?
+    confirmed_entries = JournalEntry.joins(:journal).where(printed_on: entries_range, state: :confirmed, journals: { accountant_id: nil }).to_a
+    assert confirmed_entries.any?
+
+    exchange = FinancialYearExchange.new(financial_year: financial_year, locked_on: locked_on)
+    assert exchange.save
+    assert draft_entries.all? { |e| e.reload.closed? }
+    assert confirmed_entries.all? { |e| e.reload.closed? }
+  end
+  test 'create does not close journal entries not between previous and actual exchanges lock' do
+    financial_year = financial_years(:financial_years_025)
+    previous_exchange = financial_year_exchanges(:financial_year_exchanges_001)
+    previous_exchange.update_column :closed_at, Time.zone.now
+    locked_on = financial_year.stopped_on - 2.days
+    entries_range = previous_exchange.locked_on..locked_on
+
+    draft_entries = JournalEntry.joins(:journal).where(state: :draft, journals: { accountant_id: nil }).where.not(printed_on: entries_range).to_a
+    assert draft_entries.any?
+    confirmed_entries = JournalEntry.joins(:journal).where(state: :confirmed, journals: { accountant_id: nil }).where.not(printed_on: entries_range).to_a
+    assert confirmed_entries.any?
+
+    exchange = FinancialYearExchange.new(financial_year: financial_year, locked_on: locked_on)
+    assert exchange.save
+    assert draft_entries.all? { |e| e.reload.draft? }
+    assert confirmed_entries.all? { |e| e.reload.confirmed? }
+  end
 end

@@ -44,6 +44,7 @@ class FinancialYearExchange < Ekylibre::Record::Base
   scope :closed, -> { where.not(closed_at: nil) }
 
   after_initialize :set_initial_values, if: :initializeable?
+  before_create :close_journal_entries
 
   private
   delegate :stopped_on, to: :financial_year, prefix: true, allow_nil: true
@@ -54,5 +55,15 @@ class FinancialYearExchange < Ekylibre::Record::Base
 
   def set_initial_values
     self.locked_on = Date.yesterday unless locked_on
+  end
+
+  def close_journal_entries
+    journal_entries.where(state: :draft).find_each(&:confirm)
+    journal_entries.where(state: :confirmed).find_each(&:close)
+  end
+
+  def journal_entries
+    started_on = financial_year.exchanges.order('locked_on DESC').pluck(:locked_on).first || financial_year.started_on
+    JournalEntry.joins(:journal).where(printed_on: started_on..locked_on, journals: { accountant_id: nil })
   end
 end
