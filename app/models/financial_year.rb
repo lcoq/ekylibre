@@ -358,6 +358,12 @@ class FinancialYear < Ekylibre::Record::Base
     self
   end
 
+  def can_create_exchange?
+    has_accountant_with_booked_journal? && !has_opened_exchange?
+  end
+
+  private
+
   def has_accountant_with_booked_journal?
     accountant && accountant.booked_journals.any?
   end
