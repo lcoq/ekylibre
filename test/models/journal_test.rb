@@ -52,31 +52,31 @@ class JournalTest < ActiveSupport::TestCase
   end
   test 'accountant can be set on various journals' do
     various_journal = journals(:journals_001)
-    various_journal.accountant = entities(:entities_017)
+    various_journal.accountant = entities(:entities_016)
     assert various_journal.valid?
   end
   test 'accountant cannot be set on non-various journals' do
     bank_journal = journals(:journals_003)
-    bank_journal.accountant = entities(:entities_017)
+    bank_journal.accountant = entities(:entities_016)
     refute bank_journal.valid?
   end
   test 'accountant cannot be on journals with cashes' do
     journal_with_cash = journals(:journals_002)
     journal_with_cash.nature = :various
-    journal_with_cash.accountant = entities(:entities_017)
+    journal_with_cash.accountant = entities(:entities_016)
     refute journal_with_cash.valid?
   end
   test 'cannot be closed with an accountant' do
     journal = journals(:journals_001)
     assert journal.closable?
-    journal.accountant = entities(:entities_017)
+    journal.accountant = entities(:entities_016)
     refute journal.closable?
   end
   test 'cannot be reopened with an accountant' do
     journal = journals(:journals_001)
     assert journal.close!(Time.zone.now.to_date)
     assert journal.reopenable?
-    journal.accountant = entities(:entities_017)
+    journal.accountant = entities(:entities_016)
     refute journal.reopenable?
   end
 end
