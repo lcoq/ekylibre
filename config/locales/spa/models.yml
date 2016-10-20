@@ -849,6 +849,7 @@ spa:
     lock_version: "Versión"
     locked: "Bloqueado"
     locked_at: "Bloqueado en"
+    # locked_on: "Locked on"
     mail: "Correo"
     mail_addresses: "Direcciones de correo electrónico"
     mail_auto_update: "Actualización automática de correo"

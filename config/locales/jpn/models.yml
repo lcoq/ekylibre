@@ -845,6 +845,7 @@ jpn:
     lock_version: "修正の番号"
     locked: "ロック"
     locked_at: "でロック"
+    # locked_on: "Locked on"
     mail: "郵便物"
     mail_addresses: "メールアドレス"
     mail_auto_update: "メール自動更新"

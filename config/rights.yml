@@ -98,6 +98,7 @@
 #     - "backend/equipments#take"
 #     - "backend/financial_year_exchanges#create"
 #     - "backend/financial_year_exchanges#new"
+#     - "backend/financial_year_exchanges#show"
 #     - "backend/financial_years#list_exchanges"
 #     - "backend/fungi#list_trackings"
 #     - "backend/fungi#take"

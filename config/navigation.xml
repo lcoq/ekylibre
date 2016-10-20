@@ -1224,6 +1224,7 @@
         <page to="backend/financial_years#update"/>
         <page to="backend/financial_year_exchanges#new"/>
         <page to="backend/financial_year_exchanges#create"/>
+        <page to="backend/financial_year_exchanges#show"/>
       </item>
       <item name="taxes">
         <page to="backend/taxes#index"/>

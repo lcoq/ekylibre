@@ -1666,6 +1666,7 @@ arb:
     lock_version: "الاصدار"
     locked: "مقفل"
     locked_at: "مغلق في"
+    # locked_on: "Locked on"
     longitude: "خطوط الطول" #?
     lost: "الضائع" #?
     mail: "البريد الالكتروني"

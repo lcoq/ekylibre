@@ -845,6 +845,7 @@ deu:
     # lock_version: "Version"
     locked: "verschlossen"
     locked_at: "gesperrt an"
+    # locked_on: "Locked on"
     mail: "Post"
     mail_addresses: "Mail-Adressen"
     mail_auto_update: "Mail-Auto-Update"

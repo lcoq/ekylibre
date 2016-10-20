@@ -234,6 +234,7 @@ spa:
       # show: "Export: %{name}"
     backend/financial_year_exchanges:
       # new: "New exchange"
+      # show: "Exchange: %{locked_at}"
     backend/financial_years:
       close: "Cerrado de ejercicio"
       compute_balances: "Calcule el equilibrio ejercicio"

@@ -462,7 +462,7 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :financial_year_exchanges, path: 'financial-year-exchanges', only: [:new, :create]
+    resources :financial_year_exchanges, path: 'financial-year-exchanges', only: [:new, :create, :show]
 
     resources :fungi, concerns: :products
 

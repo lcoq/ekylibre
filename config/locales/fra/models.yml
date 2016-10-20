@@ -1055,6 +1055,7 @@ fra:
     lock_version: "Version"
     locked: "Verrouillé"
     locked_at: "Verrouillé à"
+    locked_on: "Verrouillé le"
     made_at: "Fait le" #?
     mail: "E-mail"
     mail_addresses: "Adresses postales"

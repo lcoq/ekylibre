@@ -876,6 +876,7 @@ ita:
     lock_version: "Versione"
     locked: "Bloccato"
     locked_at: "Bloccato a"
+    # locked_on: "Locked on"
     mail: "posta"
     mail_addresses: "indirizzi di posta elettronica"
     mail_auto_update: "aggiornamento automatico di posta"

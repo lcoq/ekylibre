@@ -845,6 +845,7 @@ cmn:
     lock_version: "版"
     locked: "锁定"
     locked_at: "在锁定"
+    # locked_on: "Locked on"
     mail: "邮件"
     mail_addresses: "邮件地址"
     mail_auto_update: "邮件自动更新"

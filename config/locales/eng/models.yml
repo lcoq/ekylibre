@@ -852,7 +852,7 @@ eng:
     lock_version: "Version"
     locked: "Locked"
     locked_at: "Locked at"
-    # locked_on: "Locked on"
+    locked_on: "Locked on"
     mail: "Mail"
     mail_addresses: "Mail addresses"
     mail_auto_update: "Mail auto update"

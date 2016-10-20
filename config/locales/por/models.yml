@@ -845,6 +845,7 @@ por:
     lock_version: "Versão"
     locked: "Trancado"
     locked_at: "Bloqueada no"
+    # locked_on: "Locked on"
     mail: "Enviar"
     mail_addresses: "Endereços de correio"
     mail_auto_update: "Atualização automática de correio"

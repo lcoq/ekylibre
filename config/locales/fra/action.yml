@@ -239,6 +239,7 @@ fra:
       show: "Export\_: %{name}"
     backend/financial_year_exchanges:
       new: "Nouvel échange"
+      show: "Échange: %{locked_on}"
     backend/financial_years:
       close: "Clôturer l’exercice %{code}"
       compute_balances: "Calculer la balance de l’exercice"
