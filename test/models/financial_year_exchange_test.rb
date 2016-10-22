@@ -83,6 +83,17 @@ class FinancialYearExchangeTest < ActiveSupport::TestCase
     exchange.financial_year = nil
     refute exchange.valid?
   end
+  test 'started on is the financial year started on when the financial year has no other exchange' do
+    financial_year = financial_years(:financial_years_024)
+    exchange = FinancialYearExchange.new(financial_year: financial_year)
+    assert_equal financial_year.started_on, exchange.started_on
+  end
+  test 'started on is the latest financial year exchange locked on when the financial year has other exchanges' do
+    financial_year = financial_years(:financial_years_025)
+    previous_exchange = financial_year_exchanges(:financial_year_exchanges_001)
+    exchange = FinancialYearExchange.new(financial_year: financial_year)
+    assert_equal previous_exchange.locked_on, exchange.started_on
+  end
   test 'create closes journal entries from non-booked journal between financial year start and exchange lock when the financial year has no other exchange' do
     financial_year = financial_years(:financial_years_024)
     locked_on = financial_year.stopped_on - 2.days

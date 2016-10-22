@@ -51,6 +51,7 @@ module Backend
     end
 
     list(:exchanges, model: :financial_year_exchanges, conditions: { financial_year_id: 'params[:id]'.c }) do |t|
+      t.column :started_on, url: true, datatype: :date
       t.column :locked_on, url: true
       t.column :closed_at
     end

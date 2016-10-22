@@ -46,6 +46,12 @@ class FinancialYearExchange < Ekylibre::Record::Base
   after_initialize :set_initial_values, if: :initializeable?
   before_create :close_journal_entries
 
+  def started_on
+    return unless financial_year
+    previous_exchange_locked_on = financial_year.exchanges.limit(1).where('locked_on < ?', locked_on).order('locked_on DESC').pluck(:locked_on).first
+    previous_exchange_locked_on || financial_year.started_on
+  end
+
   private
   delegate :stopped_on, to: :financial_year, prefix: true, allow_nil: true
 
@@ -63,7 +69,6 @@ class FinancialYearExchange < Ekylibre::Record::Base
   end
 
   def journal_entries
-    started_on = financial_year.exchanges.limit(1).order('locked_on DESC').pluck(:locked_on).first || financial_year.started_on
     JournalEntry.joins(:journal).where(printed_on: started_on..locked_on, journals: { accountant_id: nil })
   end
 end
