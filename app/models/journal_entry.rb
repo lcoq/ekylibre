@@ -249,7 +249,7 @@ class JournalEntry < Ekylibre::Record::Base
   end
 
   protect do
-    printed_on <= journal.closed_on || old_record.closed?
+    printed_on <= journal.closed_on || old_record.closed? || journal_booked_for_accountant?
   end
 
   def self.state_label(state)
@@ -343,10 +343,6 @@ class JournalEntry < Ekylibre::Record::Base
   #
   def add_credit(name, account, amount, options = {})
     add!(name, account, amount, options.merge(credit: true))
-  end
-
-  def updateable?
-    !journal_booked_for_accountant?
   end
 
   def journal_booked_for_accountant?
