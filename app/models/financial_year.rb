@@ -131,13 +131,13 @@ class FinancialYear < Ekylibre::Record::Base
     unless stopped_on.blank? || started_on.blank?
       errors.add(:stopped_on, :end_of_month) unless stopped_on == stopped_on.end_of_month
       errors.add(:stopped_on, :posterior, to: started_on.l) unless started_on < stopped_on
-      errors.add(:accountant, :frozen) if accountant_id_changed? && has_opened_exchange?
       # If some financial years are already present
       if others.any?
         errors.add(:started_on, :overlap) if others.where('? BETWEEN started_on AND stopped_on', started_on).any?
         errors.add(:stopped_on, :overlap) if others.where('? BETWEEN started_on AND stopped_on', stopped_on).any?
       end
     end
+    errors.add(:accountant, :frozen) if accountant_id_changed? && has_opened_exchange?
   end
 
   def journal_entries(conditions = nil)
