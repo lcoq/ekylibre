@@ -248,6 +248,10 @@ class JournalEntry < Ekylibre::Record::Base
     items.each(&:clear_bank_statement_reconciliation)
   end
 
+  protect(on: :create) do
+    journal_booked_for_accountant?
+  end
+
   protect do
     printed_on <= journal.closed_on || old_record.closed? || journal_booked_for_accountant?
   end
