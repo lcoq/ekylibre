@@ -122,6 +122,7 @@ eng:
           attributes:
             accountant:
               entity_frozen: "Booked journals of this %{attribute} cannot change while an exchange is opened for its financial years"
+              previous_entity_frozen: "Booked journals of the previous %{attribute} cannot change while an exchange is opened for its financial years"
             closed_on:
               end_of_month: "%{attribute} must be an end of month (%{closed_on})"
         journal_entry:

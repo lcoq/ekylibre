@@ -693,6 +693,7 @@ arb:
           attributes:
             accountant:
               # entity_frozen: "Booked journals of this %{attribute} cannot change while an exchange is opened for its financial years"
+              # previous_entity_frozen: "Booked journals of the previous %{attribute} cannot change while an exchange is opened for its financial years"
             closed_at:  #?
               end_of_month: "%{attribute} يجب ان تطابق تاريخ نهاية الشهر (%{closed_at})" #?
             closed_on:

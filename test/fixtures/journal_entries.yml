@@ -2131,7 +2131,7 @@ journal_entries_081:
   credit: 176.16
   currency: EUR
   debit: 176.16
-  financial_year_id: 26
+  financial_year_id: 25
   id: 88
   journal_id: 8
   lock_version: 7

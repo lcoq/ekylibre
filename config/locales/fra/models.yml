@@ -243,6 +243,7 @@ fra:
           attributes:
             accountant:
               # entity_frozen: "Booked journals of this %{attribute} cannot change while an exchange is opened for its financial years"
+              previous_entity_frozen: "Les journaux réservés au précédent %{attribute} ne peuvent être modifiés lorsqu'un échange est ouvert pour ses exercices"
             closed_on:
               draft_entry_items: "Des écritures du brouillard sont encore présente avant le %{closed_on}" #?
               end_of_month: "%{attribute} doit correspondre à une date de fin de mois (%{closed_on})"
