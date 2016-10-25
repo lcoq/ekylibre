@@ -249,6 +249,7 @@ fra:
               end_of_month: "%{attribute} doit correspondre à une date de fin de mois (%{closed_on})"
         journal_entry:
           closed_journal: "Le journal est clôturé au %{closed_on} donc vous ne pouvez plus créer, modifier ou supprimer de pièces jusqu’à cette date-là."
+          frozen_by_financial_year_exchange: "L'écriture ne peut être enregistrée lors d'un échange d'exercice comptable."
           out_of_existing_financial_year: "L’écriture doit être enregistrée dans un exercice comptable existant."
           unbalanced: "La pièce n’est pas équilibrée"
         journal_entry_item:

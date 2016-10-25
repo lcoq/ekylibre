@@ -127,6 +127,7 @@ deu:
               # end_of_month: "%{attribute} must be an end of month (%{closed_on})"
         journal_entry:
           # closed_journal: "The journal %{journal} is closed on %{closed_on}. No updates are possible until this date."
+          # frozen_by_financial_year_exchange: "The journal entry cannot be recorded in a period corresponding to a financial year exchange."
           out_of_existing_financial_year: "Der Journaleintrag muss in einem Zeitraum aufgezeichnet werden entsprechend einer bestehenden Geschäftsjahr."
           unbalanced: "Der Journaleintrag ist unausgewogen"
         journal_entry_item:

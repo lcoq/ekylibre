@@ -68,6 +68,21 @@ class JournalEntryTest < ActiveSupport::TestCase
     entry.journal.accountant = entities(:entities_017)
     refute entry.updateable?
   end
+  test 'cannot be created when in financial year exchange date range' do
+    exchange = financial_year_exchanges(:financial_year_exchanges_001)
+    journal = journals(:journals_008)
+    entry = JournalEntry.new(journal: journal, printed_on: exchange.locked_on + 1.day)
+    assert entry.valid?
+    entry.printed_on = exchange.started_on + 1.day
+    refute entry.valid?
+  end
+  test 'cannot be updated to a date in financial year exchange date range' do
+    exchange = financial_year_exchanges(:financial_year_exchanges_001)
+    entry = journal_entries(:journal_entries_081)
+    assert entry.valid?
+    entry.printed_on = exchange.started_on + 1.day
+    refute entry.valid?
+  end
   test 'journal is not booked for accountant when the entry has no journal' do
     entry = journal_entries(:journal_entries_001)
     entry.journal = nil
