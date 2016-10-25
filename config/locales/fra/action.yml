@@ -237,6 +237,9 @@ fra:
     backend/exports:
       index: "Exports"
       show: "Export\_: %{name}"
+    backend/financial_year_exchanges:
+      new: "Nouvel échange"
+      show: "Échange: %{stopped_on}"
     backend/financial_years:
       close: "Clôturer l’exercice %{code}"
       compute_balances: "Calculer la balance de l’exercice"
@@ -1175,6 +1178,7 @@ fra:
     example: "Exemple\_: %{value}"
     exchange: "Échange"
     exchange_rate_from_x_to_y: "Taux de change de %{x} à %{y}"
+    exchanges: "Échanges"
     executed: "Réalisé" #?
     existing_part: "Utiliser un encaissement non affecté" #?
     expected_quantity_is_x: "Quantité attendue\_: %{x}"
@@ -1473,6 +1477,7 @@ fra:
     new_document: "Nouveau document" #?
     new_email: "Nouveau courriel"
     new_family: "Nouvelle famille" #?
+    new_financial_year_exchange: "Nouvel échange"
     new_group: "Nouveau troupeau"
     new_in_line: "Ajouter un produit intrant" #?
     new_incoming_parcel: "Nouveau colis entrant"

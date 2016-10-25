@@ -272,6 +272,9 @@ eng:
     backend/exports:
       index: "Exports"
       show: "Export: %{name}"
+    backend/financial_year_exchanges:
+      new: "New exchange"
+      show: "Exchange: %{locked_at}"
     backend/financial_years:
       close: "Close financial year: %{code}"
       compute_balances: "Compute financial year balance"
@@ -1131,6 +1134,7 @@ eng:
     example: "Example: %{value}" #?
     exchange: "Exchange"
     exchange_rate_from_x_to_y: "Exchange rate from %{x} to %{y}"
+    exchanges: "Exchanges"
     expected_quantity_is_x: "Expected quantity: %{x}"
     expedier: "Expedier"
     expenses: "Expenses"
@@ -1323,6 +1327,7 @@ eng:
       other: "Make a deposit %{mode}: %{count} available payments"
       zero: "Make a deposit %{mode}: no available payments"
     new_email: "New email"
+    new_financial_year_exchange: "New exchange"
     new_group: "New group"
     new_incoming_parcel: "New incoming parcel"
     new_issue: "New issue"
