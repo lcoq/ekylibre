@@ -206,6 +206,9 @@ jpn:
     backend/exports:
       index: "輸出"
       # show: "Export: %{name}"
+    backend/financial_year_exchanges:
+      # new: "New exchange"
+      # show: "Exchange: %{locked_at}"
     backend/financial_years:
       # close: "Close financial year: %{code}"
       compute_balances: "会計年度の残高を計算"
@@ -1005,6 +1008,7 @@ jpn:
     # example: "Example: %{value}"
     exchange: "交換"
     # exchange_rate_from_x_to_y: "Exchange rate from %{x} to %{y}"
+    # exchanges: "Exchanges"
     # expected_quantity_is_x: "Expected quantity: %{x}"
     # expedier: "Expedier"
     expenses: "経費"
@@ -1202,6 +1206,7 @@ jpn:
       # other: "Make a deposit %{mode}: %{count} available payments"
       # zero: "Make a deposit %{mode}: no available payments"
     new_email: "新しい電子メール"
+    # new_financial_year_exchange: "New exchange"
     new_group: "新しいグループ"
     new_incoming_parcel: "新しい着信小包"
     new_issue: "新発債"

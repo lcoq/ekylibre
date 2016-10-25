@@ -48,6 +48,7 @@ class FinancialYear < Ekylibre::Record::Base
   belongs_to :accountant, class_name: 'Entity'
   has_many :account_balances, class_name: 'AccountBalance', foreign_key: :financial_year_id, dependent: :delete_all
   has_many :fixed_asset_depreciations, class_name: 'FixedAssetDepreciation'
+  has_many :exchanges, class_name: 'FinancialYearExchange', dependent: :destroy
   # [VALIDATORS[ Do not edit these lines directly. Use `rake clean:validations`.
   validates :closed, inclusion: { in: [true, false] }
   validates :code, presence: true, length: { maximum: 500 }
@@ -136,6 +137,7 @@ class FinancialYear < Ekylibre::Record::Base
         errors.add(:stopped_on, :overlap) if others.where('? BETWEEN started_on AND stopped_on', stopped_on).any?
       end
     end
+    errors.add(:accountant, :frozen) if accountant_id_changed? && has_opened_exchange?
   end
 
   def journal_entries(conditions = nil)
@@ -355,5 +357,19 @@ class FinancialYear < Ekylibre::Record::Base
       end
     end
     self
+  end
+
+  def can_create_exchange?
+    has_accountant_with_booked_journal? && !has_opened_exchange?
+  end
+
+  def has_opened_exchange?
+    exchanges.opened.any?
+  end
+
+  private
+
+  def has_accountant_with_booked_journal?
+    accountant && accountant.booked_journals.any?
   end
 end

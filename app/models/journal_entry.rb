@@ -238,6 +238,9 @@ class JournalEntry < Ekylibre::Record::Base
     unless financial_year
       errors.add(:printed_on, :out_of_existing_financial_year)
     end
+    if in_financial_year_exchange?
+      errors.add(:printed_on, :frozen_by_financial_year_exchange)
+    end
   end
 
   after_save do
@@ -248,8 +251,12 @@ class JournalEntry < Ekylibre::Record::Base
     items.each(&:clear_bank_statement_reconciliation)
   end
 
+  protect(on: :create) do
+    journal_booked_for_accountant?
+  end
+
   protect do
-    printed_on <= journal.closed_on || old_record.closed?
+    printed_on <= journal.closed_on || old_record.closed? || journal_booked_for_accountant?
   end
 
   def self.state_label(state)
@@ -345,10 +352,6 @@ class JournalEntry < Ekylibre::Record::Base
     add!(name, account, amount, options.merge(credit: true))
   end
 
-  def updateable?
-    !journal_booked_for_accountant?
-  end
-
   def journal_booked_for_accountant?
     journal && journal.booked_for_accountant?
   end
@@ -378,5 +381,10 @@ class JournalEntry < Ekylibre::Record::Base
     end
     e = items.create!(attributes)
     e
+  end
+
+  def in_financial_year_exchange?
+    return unless financial_year
+    financial_year.exchanges.any? { |e| (e.started_on..e.locked_on).include?(printed_on) }
   end
 end

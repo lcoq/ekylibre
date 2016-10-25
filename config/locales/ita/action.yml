@@ -206,6 +206,9 @@ ita:
     backend/exports:
       index: "esportazioni"
       # show: "Export: %{name}"
+    backend/financial_year_exchanges:
+      # new: "New exchange"
+      # show: "Exchange: %{locked_at}"
     backend/financial_years:
       # close: "Close financial year: %{code}"
       compute_balances: "Si calcoli equilibrio esercizio"
@@ -1002,6 +1005,7 @@ ita:
     # example: "Example: %{value}"
     exchange: "Scambio"
     # exchange_rate_from_x_to_y: "Exchange rate from %{x} to %{y}"
+    # exchanges: "Exchanges"
     # expected_quantity_is_x: "Expected quantity: %{x}"
     # expedier: "Expedier"
     expenses: "Spese"
@@ -1195,6 +1199,7 @@ ita:
       # other: "Make a deposit %{mode}: %{count} available payments"
       # zero: "Make a deposit %{mode}: no available payments"
     new_email: "Nuova email"
+    # new_financial_year_exchange: "New exchange"
     new_group: "Nuovo gruppo"
     new_incoming_parcel: "Nuovo pacco in arrivo"
     new_issue: "Nuovo problema"

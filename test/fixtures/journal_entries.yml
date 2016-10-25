@@ -1806,7 +1806,7 @@ journal_entries_068:
   real_debit: 771.16
   resource_id: 44
   resource_type: LoanRepayment
-  state: draft
+  state: confirmed
   updated_at: 2016-07-01 20:34:32.694431000 Z
   updater_id: 1
 journal_entries_069:
@@ -2066,7 +2066,7 @@ journal_entries_078:
   real_debit: 771.16
   resource_id: 54
   resource_type: LoanRepayment
-  state: draft
+  state: confirmed
   updated_at: 2016-07-01 20:34:42.996943000 Z
   updater_id: 1
 journal_entries_079:
@@ -2111,6 +2111,32 @@ journal_entries_080:
   lock_version: 7
   number: BNK000011
   printed_on: 2016-09-30
+  real_balance: 0.0
+  real_credit: 176.16
+  real_currency: EUR
+  real_currency_rate: 1.0
+  real_debit: 176.16
+  resource_id: 7
+  resource_type: OutgoingPayment
+  state: draft
+  updated_at: 2016-10-04 07:17:54.436178000 Z
+  updater_id: 1
+journal_entries_081:
+  absolute_credit: 176.16
+  absolute_currency: EUR
+  absolute_debit: 176.16
+  balance: 0.0
+  created_at: 2016-10-01 14:43:02.598941000 Z
+  creator_id: 1
+  credit: 176.16
+  currency: EUR
+  debit: 176.16
+  financial_year_id: 25
+  id: 88
+  journal_id: 8
+  lock_version: 7
+  number: BNK000012
+  printed_on: 2015-08-28
   real_balance: 0.0
   real_credit: 176.16
   real_currency: EUR

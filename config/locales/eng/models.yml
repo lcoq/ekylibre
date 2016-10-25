@@ -105,6 +105,8 @@ eng:
           nature_do_not_allow_a_first_name: "The selectected type “%{nature}” does not allow a first name"
         financial_year:
           attributes:
+            accountant:
+              frozen: "%{attribute} cannot be changed while an exchange is opened"
             started_on:
               consecutive: "The financial years must be consecutives. It must start after the end of the previous."
             stopped_on:
@@ -118,10 +120,14 @@ eng:
           greater_than_undelivered_quantity: "The quantity of product %{product} to deliver is greater than undelivered quantity (%{maximum}%{unit})"
         journal:
           attributes:
+            accountant:
+              entity_frozen: "Booked journals of this %{attribute} cannot change while an exchange is opened for its financial years"
+              previous_entity_frozen: "Booked journals of the previous %{attribute} cannot change while an exchange is opened for its financial years"
             closed_on:
               end_of_month: "%{attribute} must be an end of month (%{closed_on})"
         journal_entry:
           closed_journal: "The journal %{journal} is closed on %{closed_on}. No updates are possible until this date."
+          frozen_by_financial_year_exchange: "The journal entry cannot be recorded in a period corresponding to a financial year exchange."
           out_of_existing_financial_year: "The journal entry must be recorded in a period corresponding to an existing financial year."
           unbalanced: "The journal entry is unbalanced"
         journal_entry_item:
@@ -204,6 +210,7 @@ eng:
       event: "Event"
       event_participation: "Event participation"
       financial_year: "Financial year"
+      # financial_year_exchange: "Financial year exchange"
       fixed_asset: "Fixed asset"
       fixed_asset_depreciation: "Fixed asset depreciation"
       fungus: "Fungus"
@@ -405,6 +412,7 @@ eng:
     base_amount: "Base amount"
     battery_level: "Battery level"
     body: "Body"
+    # booked_journals: "Booked journals"
     boolean_value: "Boolean value"
     born_at: "Born at"
     budgets: "Budgets"
@@ -616,6 +624,7 @@ eng:
     event_participation: "Event participation"
     events: "Events"
     evolvable: "Evolvable"
+    # exchanges: "Exchanges"
     execution_number: "Execution number"
     executor: "Executor"
     expected_population: "Expected population"
@@ -849,6 +858,7 @@ eng:
     lock_version: "Version"
     locked: "Locked"
     locked_at: "Locked at"
+    locked_on: "Locked on"
     mail: "Mail"
     mail_addresses: "Mail addresses"
     mail_auto_update: "Mail auto update"

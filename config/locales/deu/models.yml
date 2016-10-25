@@ -105,6 +105,8 @@ deu:
           # nature_do_not_allow_a_first_name: "The selectected type “%{nature}” does not allow a first name"
         financial_year:
           attributes:
+            accountant:
+              # frozen: "%{attribute} cannot be changed while an exchange is opened"
             started_on:
               consecutive: "Die Geschäftsjahre muss consecutives sein. Es muß nach dem Ende des vorhergehenden starten."
             stopped_on:
@@ -118,10 +120,14 @@ deu:
           # greater_than_undelivered_quantity: "The quantity of product %{product} to deliver is greater than undelivered quantity (%{maximum}%{unit})"
         journal:
           attributes:
+            accountant:
+              # entity_frozen: "Booked journals of this %{attribute} cannot change while an exchange is opened for its financial years"
+              # previous_entity_frozen: "Booked journals of the previous %{attribute} cannot change while an exchange is opened for its financial years"
             closed_on:
               # end_of_month: "%{attribute} must be an end of month (%{closed_on})"
         journal_entry:
           # closed_journal: "The journal %{journal} is closed on %{closed_on}. No updates are possible until this date."
+          # frozen_by_financial_year_exchange: "The journal entry cannot be recorded in a period corresponding to a financial year exchange."
           out_of_existing_financial_year: "Der Journaleintrag muss in einem Zeitraum aufgezeichnet werden entsprechend einer bestehenden Geschäftsjahr."
           unbalanced: "Der Journaleintrag ist unausgewogen"
         journal_entry_item:
@@ -845,6 +851,7 @@ deu:
     # lock_version: "Version"
     locked: "verschlossen"
     locked_at: "gesperrt an"
+    # locked_on: "Locked on"
     mail: "Post"
     mail_addresses: "Mail-Adressen"
     mail_auto_update: "Mail-Auto-Update"

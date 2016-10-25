@@ -1216,11 +1216,15 @@
         <page to="backend/financial_years#generate_last_journal_entry"/>
         <page to="backend/financial_years#list"/>
         <page to="backend/financial_years#list_account_balances"/>
+        <page to="backend/financial_years#list_exchanges"/>
         <page to="backend/financial_years#list_fixed_asset_depreciations"/>
         <page to="backend/financial_years#new"/>
         <page to="backend/financial_years#show"/>
         <page to="backend/financial_years#unroll"/>
         <page to="backend/financial_years#update"/>
+        <page to="backend/financial_year_exchanges#new"/>
+        <page to="backend/financial_year_exchanges#create"/>
+        <page to="backend/financial_year_exchanges#show"/>
       </item>
       <item name="taxes">
         <page to="backend/taxes#index"/>

@@ -265,6 +265,9 @@ arb:
       # show: "Export: %{name}"
     backend/finances:  #?
       unvalidated_deposits: "التأكد من اقتطاعات البنك" #?
+    backend/financial_year_exchanges:
+      # new: "New exchange"
+      # show: "Exchange: %{locked_at}"
     backend/financial_years:
       close: "نهاية الممارسة"
       compute_balances: "حساب التوازن العام المالي"
@@ -1305,6 +1308,7 @@ arb:
     example: "مثال&nbsp;: %{value}"
     exchange: "تبادل"
     # exchange_rate_from_x_to_y: "Exchange rate from %{x} to %{y}"
+    # exchanges: "Exchanges"
     executed: "انجز" #?
     existing_part: "استخدام الدفعات الغير متضررة" #?
     # expected_quantity_is_x: "Expected quantity: %{x}"
@@ -1605,6 +1609,7 @@ arb:
       # zero: "Make a deposit %{mode}: no available payments"
     new_email: "بريد إلكتروني جديد"
     new_family: "اسرة جديدة" #?
+    # new_financial_year_exchange: "New exchange"
     new_group: "مجموعة جديدة"
     new_incoming_parcel: "لا يتجزأ الجديد الوافد"
     new_issue: "مشكلة جديدة"

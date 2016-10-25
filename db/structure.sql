@@ -2191,6 +2191,42 @@ ALTER SEQUENCE events_id_seq OWNED BY events.id;
 
 
 --
+-- Name: financial_year_exchanges; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE financial_year_exchanges (
+    id integer NOT NULL,
+    financial_year_id integer NOT NULL,
+    locked_on date NOT NULL,
+    closed_at timestamp without time zone,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    creator_id integer,
+    updater_id integer,
+    lock_version integer DEFAULT 0 NOT NULL
+);
+
+
+--
+-- Name: financial_year_exchanges_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE financial_year_exchanges_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: financial_year_exchanges_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE financial_year_exchanges_id_seq OWNED BY financial_year_exchanges.id;
+
+
+--
 -- Name: financial_years; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -6426,6 +6462,13 @@ ALTER TABLE ONLY events ALTER COLUMN id SET DEFAULT nextval('events_id_seq'::reg
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE ONLY financial_year_exchanges ALTER COLUMN id SET DEFAULT nextval('financial_year_exchanges_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE ONLY financial_years ALTER COLUMN id SET DEFAULT nextval('financial_years_id_seq'::regclass);
 
 
@@ -7426,6 +7469,14 @@ ALTER TABLE ONLY event_participations
 
 ALTER TABLE ONLY events
     ADD CONSTRAINT events_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: financial_year_exchanges_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY financial_year_exchanges
+    ADD CONSTRAINT financial_year_exchanges_pkey PRIMARY KEY (id);
 
 
 --
@@ -10246,6 +10297,41 @@ CREATE INDEX index_events_on_updated_at ON events USING btree (updated_at);
 --
 
 CREATE INDEX index_events_on_updater_id ON events USING btree (updater_id);
+
+
+--
+-- Name: index_financial_year_exchanges_on_created_at; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_financial_year_exchanges_on_created_at ON financial_year_exchanges USING btree (created_at);
+
+
+--
+-- Name: index_financial_year_exchanges_on_creator_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_financial_year_exchanges_on_creator_id ON financial_year_exchanges USING btree (creator_id);
+
+
+--
+-- Name: index_financial_year_exchanges_on_financial_year_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_financial_year_exchanges_on_financial_year_id ON financial_year_exchanges USING btree (financial_year_id);
+
+
+--
+-- Name: index_financial_year_exchanges_on_updated_at; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_financial_year_exchanges_on_updated_at ON financial_year_exchanges USING btree (updated_at);
+
+
+--
+-- Name: index_financial_year_exchanges_on_updater_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_financial_year_exchanges_on_updater_id ON financial_year_exchanges USING btree (updater_id);
 
 
 --
@@ -15696,4 +15782,6 @@ INSERT INTO schema_migrations (version) VALUES ('20161012145700');
 INSERT INTO schema_migrations (version) VALUES ('20161014131532');
 
 INSERT INTO schema_migrations (version) VALUES ('20161014151553');
+
+INSERT INTO schema_migrations (version) VALUES ('20161014160356');
 

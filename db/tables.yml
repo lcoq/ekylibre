@@ -2237,6 +2237,34 @@ events:
   updater_id:
     type: integer
     references: user
+financial_year_exchanges:
+  closed_at:
+    type: datetime
+  created_at:
+    type: datetime
+    required: true
+  creator_id:
+    type: integer
+    references: user
+  financial_year_id:
+    type: integer
+    references: financial_year
+    required: true
+  id:
+    type: integer
+    required: true
+  lock_version:
+    type: integer
+    required: true
+  locked_on:
+    type: date
+    required: true
+  updated_at:
+    type: datetime
+    required: true
+  updater_id:
+    type: integer
+    references: user
 financial_years:
   accountant_id:
     type: integer
