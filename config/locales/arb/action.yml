@@ -272,7 +272,7 @@ arb:
       unvalidated_deposits: "التأكد من اقتطاعات البنك" #?
     backend/financial_year_exchanges:
       # new: "New exchange"
-      # show: "Exchange: %{locked_at}"
+      # show: "Exchange: %{stopped_on}"
     backend/financial_years:
       close: "نهاية الممارسة"
       compute_balances: "حساب التوازن العام المالي"

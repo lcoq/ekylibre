@@ -218,7 +218,7 @@ por:
       show: "Exportação: %{name}"
     backend/financial_year_exchanges:
       # new: "New exchange"
-      # show: "Exchange: %{locked_at}"
+      # show: "Exchange: %{stopped_on}"
     backend/financial_years:
       close: "Fechar ano fiscal: %{code}"
       compute_balances: "Computar balanço do ano fiscal"

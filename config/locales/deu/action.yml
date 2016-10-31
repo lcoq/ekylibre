@@ -213,7 +213,7 @@ deu:
       # show: "Export: %{name}"
     backend/financial_year_exchanges:
       # new: "New exchange"
-      # show: "Exchange: %{locked_at}"
+      # show: "Exchange: %{stopped_on}"
     backend/financial_years:
       # close: "Close financial year: %{code}"
       compute_balances: "Berechnen Geschäftsjahr Bilanz"
