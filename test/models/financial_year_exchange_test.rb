@@ -60,12 +60,12 @@ class FinancialYearExchangeTest < ActiveSupport::TestCase
     assert exchange.valid?
   end
   test 'initialize with stopped on set to yesterday' do
-    yesterday = Date.yesterday
+    yesterday = Time.zone.yesterday
     exchange = FinancialYearExchange.new
     assert_equal yesterday, exchange.stopped_on
   end
   test 'does not initialize with stopped on set to yesterday when stopped on is filled' do
-    today = Date.today
+    today = Time.zone.today
     exchange = FinancialYearExchange.new(stopped_on: today)
     assert_equal today, exchange.stopped_on
   end

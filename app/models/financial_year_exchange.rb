@@ -53,6 +53,7 @@ class FinancialYearExchange < Ekylibre::Record::Base
   after_create :set_journal_entries_financial_year_exchange
 
   private
+
   delegate :stopped_on, to: :financial_year, prefix: true, allow_nil: true
 
   def initializeable?

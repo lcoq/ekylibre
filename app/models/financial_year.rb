@@ -137,7 +137,7 @@ class FinancialYear < Ekylibre::Record::Base
         errors.add(:stopped_on, :overlap) if others.where('? BETWEEN started_on AND stopped_on', stopped_on).any?
       end
     end
-    errors.add(:accountant, :frozen) if accountant_id_changed? && has_opened_exchange?
+    errors.add(:accountant, :frozen) if accountant_id_changed? && opened_exchange?
   end
 
   def journal_entries(conditions = nil)
@@ -360,16 +360,16 @@ class FinancialYear < Ekylibre::Record::Base
   end
 
   def can_create_exchange?
-    has_accountant_with_booked_journal? && !has_opened_exchange?
+    accountant_with_booked_journal? && !opened_exchange?
   end
 
-  def has_opened_exchange?
+  def opened_exchange?
     exchanges.opened.any?
   end
 
   private
 
-  def has_accountant_with_booked_journal?
+  def accountant_with_booked_journal?
     accountant && accountant.booked_journals.any?
   end
 end

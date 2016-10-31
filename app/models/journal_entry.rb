@@ -290,7 +290,7 @@ class JournalEntry < Ekylibre::Record::Base
       entry.save!
       for item in useful_items
         entry.send(:add!, tc(:entry_cancel, number: self.number, name: item.name), item.account, (item.debit - item.credit).abs, credit: (item.debit > 0))
-        reconcilable_accounts << item.account if item.account.reconcilable? && !reconcilable_accounts.include?(item.account)
+        reconcilable_accounts << item.account if item.account.reconcilable? && !reconcilable_accounts.cover?(item.account)
       end
     end
     # Mark accounts

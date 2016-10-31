@@ -87,11 +87,11 @@ class FinancialYearTest < ActiveSupport::TestCase
   end
   test 'has opened exchange with opened exchanges' do
     year = financial_years(:financial_years_025)
-    assert year.has_opened_exchange?
+    assert year.opened_exchange?
   end
   test 'does not have opened exchange without exchange' do
     year = financial_years(:financial_years_024)
-    refute year.has_opened_exchange?
+    refute year.opened_exchange?
   end
   test 'destroy exchanges on destroy' do
     year = financial_years(:financial_years_025)

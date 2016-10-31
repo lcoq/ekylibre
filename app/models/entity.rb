@@ -241,7 +241,7 @@ class Entity < Ekylibre::Record::Base
   end
 
   protect(on: :destroy) do
-    of_company? || sales_invoices.any? || participations.any? || sales.any? || parcels.any? || purchases.any? || incoming_parcels.any? || outgoing_parcels.any? || has_financial_year_with_opened_exchange?
+    of_company? || sales_invoices.any? || participations.any? || sales.any? || parcels.any? || purchases.any? || incoming_parcels.any? || outgoing_parcels.any? || financial_year_with_opened_exchange?
   end
 
   class << self
@@ -474,9 +474,9 @@ class Entity < Ekylibre::Record::Base
     end
   end
 
-  def has_financial_year_with_opened_exchange?
+  def financial_year_with_opened_exchange?
     return false unless persisted?
-    financial_years.any?(&:has_opened_exchange?)
+    financial_years.any?(&:opened_exchange?)
   end
 
   def self.best_clients(limit = -1)

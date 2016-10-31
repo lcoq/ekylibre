@@ -60,7 +60,7 @@ class JournalTest < ActiveSupport::TestCase
     various_journal.accountant = entities(:entities_016)
     assert various_journal.entries.any? { |e| e.draft? || e.confirmed? }
     assert various_journal.save
-    assert various_journal.entries.reload.all? { |e| e.closed? }
+    assert various_journal.entries.reload.all?(&:closed?)
   end
   test 'accountant cannot be set on non-various journals' do
     bank_journal = journals(:journals_003)
