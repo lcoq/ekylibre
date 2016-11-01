@@ -69,15 +69,15 @@ class FinancialYearExchange < Ekylibre::Record::Base
   end
 
   def close_journal_entries
-    journal_entries.where(state: :draft).find_each(&:confirm)
-    journal_entries.where(state: :confirmed).find_each(&:close)
+    related_journal_entries.where(state: :draft).find_each(&:confirm)
+    related_journal_entries.where(state: :confirmed).find_each(&:close)
   end
 
   def set_journal_entries_financial_year_exchange
-    journal_entries.update_all financial_year_exchange_id: id
+    related_journal_entries.update_all financial_year_exchange_id: id
   end
 
-  def journal_entries
+  def related_journal_entries
     JournalEntry.joins(:journal).where(printed_on: started_on..stopped_on, journals: { accountant_id: nil })
   end
 
