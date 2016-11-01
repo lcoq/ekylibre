@@ -1818,6 +1818,8 @@ por:
       increment: "Incremento" #?
       index: "Índice"
       invoice: "Fatura"
+      # journal_entries_csv_export: "Download CSV"
+      # journal_entries_fec_export: "Download FEC"
       list: "Lista"
       load: "Carga"
       lock: "Trancar"

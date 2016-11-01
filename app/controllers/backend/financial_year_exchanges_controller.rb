@@ -31,5 +31,14 @@ module Backend
       t.column :absolute_debit,  currency: :absolute_currency, hidden: true
       t.column :absolute_credit, currency: :absolute_currency, hidden: true
     end
+
+    def journal_entries_export
+      return unless @exchange = find_and_check
+      export = FinancialYearExchangeExport.new(@exchange)
+      export.export(params[:format]) do |file, name|
+        send_data File.read(file), filename: name
+      end
+    end
+
   end
 end

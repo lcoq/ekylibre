@@ -1,4 +1,6 @@
-- main_toolbar
+- main_toolbar do |t|
+  = t.journal_entries_export resource, format: :csv, label: :journal_entries_csv_export.ta
+  = t.journal_entries_export resource, format: :fec, label: :journal_entries_fec_export.ta
 
 = main_informations do
   = attributes_list do |l|

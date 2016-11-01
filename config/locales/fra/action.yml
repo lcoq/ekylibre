@@ -2456,6 +2456,8 @@ fra:
       increment: "Incrémenter" #?
       index: "Index"
       invoice: "Facturer"
+      journal_entries_csv_export: "Télécharger le CSV"
+      journal_entries_fec_export: "Télécharger le FEC"
       list: "Lister"
       load: "Charger"
       lock: "Verrouiller"

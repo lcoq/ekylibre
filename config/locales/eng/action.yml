@@ -273,6 +273,7 @@ eng:
       index: "Exports"
       show: "Export: %{name}"
     backend/financial_year_exchanges:
+      # journal_entries_export: "Journal entries export financial year exchange: %{name}"
       new: "New exchange"
       show: "Exchange: %{stopped_on}"
     backend/financial_years:
@@ -2010,6 +2011,9 @@ eng:
       incorporate: "Incorporate"
       index: "Index"
       invoice: "Invoice"
+      journal_entries_csv_export: "Download CSV" #?
+      # journal_entries_export: "Journal entries export"
+      journal_entries_fec_export: "Download FEC" #?
       # last_locations: "Last locations"
       list: "List"
       load: "Load"

@@ -481,6 +481,7 @@ Rails.application.routes.draw do
     resources :financial_year_exchanges, concerns: [:list], path: 'financial-year-exchanges', only: [:new, :create, :show] do
       member do
         get :list_journal_entries
+        get :journal_entries_export
       end
     end
 
