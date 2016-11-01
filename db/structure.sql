@@ -2288,7 +2288,9 @@ CREATE TABLE financial_year_exchanges (
     updated_at timestamp without time zone NOT NULL,
     creator_id integer,
     updater_id integer,
-    lock_version integer DEFAULT 0 NOT NULL
+    lock_version integer DEFAULT 0 NOT NULL,
+    public_token character varying NOT NULL,
+    public_token_expires_on timestamp without time zone NOT NULL
 );
 
 
@@ -10593,6 +10595,13 @@ CREATE INDEX index_financial_year_exchanges_on_financial_year_id ON financial_ye
 
 
 --
+-- Name: index_financial_year_exchanges_on_public_token; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_financial_year_exchanges_on_public_token ON financial_year_exchanges USING btree (public_token);
+
+
+--
 -- Name: index_financial_year_exchanges_on_updated_at; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -16178,4 +16187,6 @@ INSERT INTO schema_migrations (version) VALUES ('20161026094401');
 INSERT INTO schema_migrations (version) VALUES ('20161026102134');
 
 INSERT INTO schema_migrations (version) VALUES ('20161026153125');
+
+INSERT INTO schema_migrations (version) VALUES ('20161101165521');
 

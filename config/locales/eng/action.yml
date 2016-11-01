@@ -753,6 +753,9 @@ eng:
     devise/unlocks:
       # new: "New unlock"
       # show: "Unlock: %{name}"
+    public/financial_year_exchange_exports:
+      # csv: "Csv financial year exchange export: %{name}"
+      # show: "Financial year exchange export: %{name}"
     public:
       index: "Home"
   errors:
@@ -1988,6 +1991,7 @@ eng:
       convert: "Convert"
       correct: "Correct"
       create: "Create"
+      # csv: "Csv"
       # current: "Current"
       destroy: "Destroy"
       detach: "Detach"

@@ -173,6 +173,8 @@
 #     - "devise/unlocks#show"
 #     - "iot/analyses#create"
 #     - "public#index"
+#     - "public/financial_year_exchange_exports#csv"
+#     - "public/financial_year_exchange_exports#show"
 
 accounts:
   read:

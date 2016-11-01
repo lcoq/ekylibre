@@ -22,22 +22,26 @@
 #
 # == Table: financial_year_exchanges
 #
-#  closed_at         :datetime
-#  created_at        :datetime         not null
-#  creator_id        :integer
-#  financial_year_id :integer          not null
-#  id                :integer          not null, primary key
-#  lock_version      :integer          default(0), not null
-#  started_on        :date             not null
-#  stopped_on        :date             not null
-#  updated_at        :datetime         not null
-#  updater_id        :integer
+#  closed_at               :datetime
+#  created_at              :datetime         not null
+#  creator_id              :integer
+#  financial_year_id       :integer          not null
+#  id                      :integer          not null, primary key
+#  lock_version            :integer          default(0), not null
+#  public_token            :string           not null
+#  public_token_expires_on :datetime         not null
+#  started_on              :date             not null
+#  stopped_on              :date             not null
+#  updated_at              :datetime         not null
+#  updater_id              :integer
 #
 class FinancialYearExchange < Ekylibre::Record::Base
   belongs_to :financial_year
   has_many :journal_entries, dependent: :nullify
   # [VALIDATORS[ Do not edit these lines directly. Use `rake clean:validations`.
   validates :closed_at, timeliness: { on_or_after: -> { Time.new(1, 1, 1).in_time_zone }, on_or_before: -> { Time.zone.now + 50.years } }, allow_blank: true
+  validates :public_token, presence: true, uniqueness: true, length: { maximum: 500 }
+  validates :public_token_expires_on, presence: true, timeliness: { on_or_after: -> { Time.new(1, 1, 1).in_time_zone }, on_or_before: -> { Time.zone.now + 50.years } }
   validates :started_on, presence: true, timeliness: { on_or_after: -> { Time.new(1, 1, 1).in_time_zone }, on_or_before: -> { Time.zone.today + 50.years }, type: :date }
   validates :stopped_on, presence: true, timeliness: { on_or_after: ->(financial_year_exchange) { financial_year_exchange.started_on || Time.new(1, 1, 1).in_time_zone }, on_or_before: -> { Time.zone.today + 50.years }, type: :date }
   validates :financial_year, presence: true
@@ -47,8 +51,15 @@ class FinancialYearExchange < Ekylibre::Record::Base
   scope :opened, -> { where(closed_at: nil) }
   scope :closed, -> { where.not(closed_at: nil) }
 
+  class << self
+    def for_public_token(public_token)
+      find_by!('public_token = ? AND public_token_expires_on >= ?', public_token, Time.zone.today)
+    end
+  end
+
   after_initialize :set_initial_values, if: :initializeable?
   before_validation :set_started_on, on: :create
+  before_validation :set_public_token_and_expiration, on: :create
   before_create :close_journal_entries
   after_create :set_journal_entries_financial_year_exchange
 
@@ -66,6 +77,11 @@ class FinancialYearExchange < Ekylibre::Record::Base
 
   def set_started_on
     self.started_on = compute_started_on unless started_on
+  end
+
+  def set_public_token_and_expiration
+    self.public_token = SecureRandom.urlsafe_base64(32)
+    self.public_token_expires_on = Time.zone.today + 1.month
   end
 
   def close_journal_entries

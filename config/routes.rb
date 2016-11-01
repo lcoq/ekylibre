@@ -935,5 +935,11 @@ Rails.application.routes.draw do
     resources :registrations, only: [:index, :edit, :update, :destroy], concerns: [:list]
   end
 
+  namespace :public do
+    resources :financial_year_exchange_exports, path: 'financial-year-exchange-exports', only: [:show] do
+      get :csv, on: :member
+    end
+  end
+
   root to: 'public#index'
 end

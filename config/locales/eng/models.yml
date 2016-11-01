@@ -1107,6 +1107,8 @@ eng:
     # provider: "Provider"
     provisional: "Provisional" #?
     provisional_intervention: "Provisional intervention" #?
+    # public_token: "Public token"
+    # public_token_expires_on: "Public token expires on"
     purchasable: "Purchasable"
     purchase: "Purchase"
     purchase_amount: "Purchase amount"

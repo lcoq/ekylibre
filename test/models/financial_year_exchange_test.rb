@@ -22,16 +22,18 @@
 #
 # == Table: financial_year_exchanges
 #
-#  closed_at         :datetime
-#  created_at        :datetime         not null
-#  creator_id        :integer
-#  financial_year_id :integer          not null
-#  id                :integer          not null, primary key
-#  lock_version      :integer          default(0), not null
-#  started_on        :date             not null
-#  stopped_on        :date             not null
-#  updated_at        :datetime         not null
-#  updater_id        :integer
+#  closed_at               :datetime
+#  created_at              :datetime         not null
+#  creator_id              :integer
+#  financial_year_id       :integer          not null
+#  id                      :integer          not null, primary key
+#  lock_version            :integer          default(0), not null
+#  public_token            :string           not null
+#  public_token_expires_on :datetime         not null
+#  started_on              :date             not null
+#  stopped_on              :date             not null
+#  updated_at              :datetime         not null
+#  updater_id              :integer
 #
 require 'test_helper'
 
@@ -54,6 +56,18 @@ class FinancialYearExchangeTest < ActiveSupport::TestCase
   test 'closed scope does not include opened exchanges' do
     exchange = financial_year_exchanges(:financial_year_exchanges_001)
     refute FinancialYearExchange.closed.pluck(:id).include?(exchange.id)
+  end
+  test 'for_public_token returns the exchange when the token is not expired' do
+    exchange = financial_year_exchanges(:financial_year_exchanges_001)
+    assert exchange.update_column(:public_token_expires_on, Time.zone.today + 1.day)
+    assert_equal exchange, FinancialYearExchange.for_public_token(exchange.public_token)
+  end
+  test 'for_public_token raises when the token is expired' do
+    exchange = financial_year_exchanges(:financial_year_exchanges_001)
+    assert exchange.update_column(:public_token_expires_on, Time.zone.today - 1.day)
+    assert_raises(ActiveRecord::RecordNotFound) do
+      FinancialYearExchange.for_public_token(exchange.public_token)
+    end
   end
   test 'is valid' do
     exchange = financial_year_exchanges(:financial_year_exchanges_001)
@@ -90,6 +104,21 @@ class FinancialYearExchangeTest < ActiveSupport::TestCase
     refute exchange.started_on.present?
     exchange.valid?
     assert exchange.started_on.present?
+  end
+  test 'public token is set before create validations' do
+    financial_year = financial_years(:financial_years_024)
+    exchange = FinancialYearExchange.new(financial_year: financial_year)
+    refute exchange.public_token.present?
+    exchange.valid?
+    assert exchange.public_token.present?
+  end
+  test 'public token expires on is set to 1 month later' do
+    financial_year = financial_years(:financial_years_024)
+    exchange = FinancialYearExchange.new(financial_year: financial_year)
+    refute exchange.public_token_expires_on.present?
+    exchange.valid?
+    assert exchange.public_token_expires_on.present?
+    assert_equal Time.zone.today + 1.month, exchange.public_token_expires_on
   end
   test 'started on is not updated on update' do
     exchange = financial_year_exchanges(:financial_year_exchanges_001)

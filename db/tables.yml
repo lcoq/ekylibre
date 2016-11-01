@@ -2350,6 +2350,12 @@ financial_year_exchanges:
   lock_version:
     type: integer
     required: true
+  public_token:
+    type: string
+    required: true
+  public_token_expires_on:
+    type: datetime
+    required: true
   started_on:
     type: date
     required: true
