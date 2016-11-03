@@ -103,6 +103,7 @@
 #     - "backend/financial_year_exchanges#journal_entries_export"
 #     - "backend/financial_year_exchanges#list_journal_entries"
 #     - "backend/financial_year_exchanges#new"
+#     - "backend/financial_year_exchanges#notify_accountant"
 #     - "backend/financial_year_exchanges#show"
 #     - "backend/financial_years#list_exchanges"
 #     - "backend/fungi#list_trackings"

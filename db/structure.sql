@@ -2289,8 +2289,8 @@ CREATE TABLE financial_year_exchanges (
     creator_id integer,
     updater_id integer,
     lock_version integer DEFAULT 0 NOT NULL,
-    public_token character varying NOT NULL,
-    public_token_expires_on timestamp without time zone NOT NULL
+    public_token character varying,
+    public_token_expires_on timestamp without time zone
 );
 
 

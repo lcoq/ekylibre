@@ -28,8 +28,8 @@
 #  financial_year_id       :integer          not null
 #  id                      :integer          not null, primary key
 #  lock_version            :integer          default(0), not null
-#  public_token            :string           not null
-#  public_token_expires_on :datetime         not null
+#  public_token            :string
+#  public_token_expires_on :datetime
 #  started_on              :date             not null
 #  stopped_on              :date             not null
 #  updated_at              :datetime         not null
@@ -39,9 +39,8 @@ class FinancialYearExchange < Ekylibre::Record::Base
   belongs_to :financial_year
   has_many :journal_entries, dependent: :nullify
   # [VALIDATORS[ Do not edit these lines directly. Use `rake clean:validations`.
-  validates :closed_at, timeliness: { on_or_after: -> { Time.new(1, 1, 1).in_time_zone }, on_or_before: -> { Time.zone.now + 50.years } }, allow_blank: true
-  validates :public_token, presence: true, uniqueness: true, length: { maximum: 500 }
-  validates :public_token_expires_on, presence: true, timeliness: { on_or_after: -> { Time.new(1, 1, 1).in_time_zone }, on_or_before: -> { Time.zone.now + 50.years } }
+  validates :closed_at, :public_token_expires_on, timeliness: { on_or_after: -> { Time.new(1, 1, 1).in_time_zone }, on_or_before: -> { Time.zone.now + 50.years } }, allow_blank: true
+  validates :public_token, uniqueness: true, length: { maximum: 500 }, allow_blank: true
   validates :started_on, presence: true, timeliness: { on_or_after: -> { Time.new(1, 1, 1).in_time_zone }, on_or_before: -> { Time.zone.today + 50.years }, type: :date }
   validates :stopped_on, presence: true, timeliness: { on_or_after: ->(financial_year_exchange) { financial_year_exchange.started_on || Time.new(1, 1, 1).in_time_zone }, on_or_before: -> { Time.zone.today + 50.years }, type: :date }
   validates :financial_year, presence: true
@@ -59,9 +58,23 @@ class FinancialYearExchange < Ekylibre::Record::Base
 
   after_initialize :set_initial_values, if: :initializeable?
   before_validation :set_started_on, on: :create
-  before_validation :set_public_token_and_expiration, on: :create
   before_create :close_journal_entries
   after_create :set_journal_entries_financial_year_exchange
+
+  def accountant_email
+    return unless financial_year && financial_year.accountant
+    address = financial_year.accountant.default_email_address
+    address && address.coordinate
+  end
+
+  def accountant_email?
+    accountant_email.present?
+  end
+
+  def generate_public_token!
+    set_public_token_and_expiration
+    save!
+  end
 
   private
 

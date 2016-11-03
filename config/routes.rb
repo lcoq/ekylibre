@@ -482,6 +482,7 @@ Rails.application.routes.draw do
       member do
         get :list_journal_entries
         get :journal_entries_export
+        get :notify_accountant
       end
     end
 

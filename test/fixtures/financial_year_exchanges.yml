@@ -28,8 +28,8 @@
 #  financial_year_id       :integer          not null
 #  id                      :integer          not null, primary key
 #  lock_version            :integer          default(0), not null
-#  public_token            :string           not null
-#  public_token_expires_on :datetime         not null
+#  public_token            :string
+#  public_token_expires_on :datetime
 #  started_on              :date             not null
 #  stopped_on              :date             not null
 #  updated_at              :datetime         not null
@@ -42,8 +42,6 @@ financial_year_exchanges_001:
   financial_year_id: 25
   id: 1
   lock_version: 0
-  public_token: eXch1
-  public_token_expires_on: 2016-11-14
   started_on: 2015-09-01
   stopped_on: 2016-05-31
   updated_at: 2016-10-14 09:21:22.062122000 Z
