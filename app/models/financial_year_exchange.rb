@@ -61,6 +61,15 @@ class FinancialYearExchange < Ekylibre::Record::Base
   before_create :close_journal_entries
   after_create :set_journal_entries_financial_year_exchange
 
+  def opened?
+    !closed_at
+  end
+
+  def close!
+    self.closed_at = Time.zone.now
+    save!
+  end
+
   def accountant_email
     return unless financial_year && financial_year.accountant
     address = financial_year.accountant.default_email_address

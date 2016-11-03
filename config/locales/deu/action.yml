@@ -1679,6 +1679,7 @@ deu:
       cannot_merge_entities: "Es ist unmöglich, diese Menschen zu verschmelzen."
       changes_have_been_reflected: "Die Änderungen wurden in der Bestände Zustand reflektiert"
       changes_have_not_been_reflected: "Die Änderungen wurden nicht in die Bestände Zustand niedergeschlagen"
+      # closed_financial_year_exchange: "The financial year exchange has been closed successfully"
       closed_financial_years: "Das Geschäftsjahr wurde erfolgreich abgeschlossen"
       columns_are_already_uses: "oft werden eine oder mehrere Spalten ausgewählt"
       dashboard_is_being_developed: "Dashboard ist stark in der Entwicklung"

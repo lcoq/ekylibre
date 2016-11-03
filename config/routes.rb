@@ -483,6 +483,7 @@ Rails.application.routes.draw do
         get :list_journal_entries
         get :journal_entries_export
         get :notify_accountant
+        get :close
       end
     end
 

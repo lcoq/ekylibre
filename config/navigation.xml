@@ -1216,6 +1216,7 @@
         <page to="backend/financial_year_exchanges#show"/>
         <page to="backend/financial_year_exchanges#journal_entries_export"/>
         <page to="backend/financial_year_exchanges#notify_accountant"/>
+        <page to="backend/financial_year_exchanges#close"/>
       </item>
       <item name="taxes">
         <page to="backend/taxes#index"/>

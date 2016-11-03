@@ -273,6 +273,7 @@ eng:
       index: "Exports"
       show: "Export: %{name}"
     backend/financial_year_exchanges:
+      # close: "Close financial year exchange: %{name}"
       # journal_entries_export: "Journal entries export financial year exchange: %{name}"
       new: "New exchange"
       # notify_accountant: "Notify accountant financial year exchange: %{name}"
@@ -1868,6 +1869,7 @@ eng:
       cannot_merge_entities: "It's impossible to merge these people."
       changes_have_been_reflected: "The changes have been reflected in the stocks state"
       changes_have_not_been_reflected: "The changes have not been reflected in the stocks state"
+      closed_financial_year_exchange: "The financial year exchange has been closed successfully"
       closed_financial_years: "The financial year has been closed successfully"
       columns_are_already_uses: "One or many columns are selected many times"
       dashboard_is_being_developed: "Dashboard is under heavy development"

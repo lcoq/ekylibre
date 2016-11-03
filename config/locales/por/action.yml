@@ -1684,6 +1684,7 @@ por:
       cannot_merge_entities: "É impossível para mesclar essas pessoas."
       changes_have_been_reflected: "As mudanças têm se refletido no estado stocks"
       changes_have_not_been_reflected: "As mudanças não tenham sido reflectidos no estado stocks"
+      # closed_financial_year_exchange: "The financial year exchange has been closed successfully"
       closed_financial_years: "O exercício foi encerrado com sucesso"
       columns_are_already_uses: "Uma ou várias colunas são selecionadas muitas vezes"
       dashboard_is_being_developed: "Painel está sob forte desenvolvimento"

@@ -99,6 +99,7 @@
 #     - "backend/entities#list_outgoing_parcels"
 #     - "backend/equipments#list_trackings"
 #     - "backend/equipments#take"
+#     - "backend/financial_year_exchanges#close"
 #     - "backend/financial_year_exchanges#create"
 #     - "backend/financial_year_exchanges#journal_entries_export"
 #     - "backend/financial_year_exchanges#list_journal_entries"

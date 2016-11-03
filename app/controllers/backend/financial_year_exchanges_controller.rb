@@ -47,5 +47,12 @@ module Backend
       notify_success :accountant_notified
       redirect_to_back
     end
+
+    def close
+      return unless @exchange = find_and_check
+      @exchange.close!
+      notify_success :closed_financial_year_exchange
+      redirect_to_back
+    end
   end
 end

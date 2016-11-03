@@ -237,6 +237,21 @@ class FinancialYearExchangeTest < ActiveSupport::TestCase
     exchange.financial_year.update_column :accountant_id, accountant_with_email.id
     assert exchange.accountant_email?
   end
+  test 'is opened without closed at' do
+    exchange = financial_year_exchanges(:financial_year_exchanges_001)
+    assert exchange.closed_at.blank?
+    assert exchange.opened?
+  end
+  test 'is not opened with closed at' do
+    exchange = financial_year_exchanges(:financial_year_exchanges_001)
+    assert exchange.update_column(:closed_at, Time.zone.now)
+    refute exchange.opened?
+  end
+  test 'it closes' do
+    exchange = financial_year_exchanges(:financial_year_exchanges_001)
+    assert exchange.close!
+    assert_equal exchange.reload.closed_at.to_date, Time.zone.today
+  end
 
   def get_computed_started_on(exchange)
     exchange.valid?
