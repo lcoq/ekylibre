@@ -1815,7 +1815,6 @@ deu:
       # index: "Index"
       invoice: "Rechnung"
       # journal_entries_csv_export: "Download CSV"
-      # journal_entries_fec_export: "Download FEC"
       list: "Liste"
       load: "Belastung"
       lock: "Sperren"

@@ -1,4 +1,6 @@
 class FinancialYearExchangeExport
+  class InvalidFormatError < StandardError; end
+
   def initialize(exchange)
     @exchange = exchange
   end
@@ -19,7 +21,7 @@ class FinancialYearExchangeExport
     if format == 'csv'
       CsvExport.new(exchange).export(&block)
     else
-      # TODO
+      raise InvalidFormatError, "Format '#{format}' is not supported"
     end
   end
 

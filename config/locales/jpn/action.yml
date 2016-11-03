@@ -1893,7 +1893,6 @@ jpn:
       index: "インデックス"
       invoice: "請求書"
       # journal_entries_csv_export: "Download CSV"
-      # journal_entries_fec_export: "Download FEC"
       list: "リスト"
       load: "負荷"
       lock: "ロック"

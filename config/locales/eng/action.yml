@@ -2021,7 +2021,6 @@ eng:
       invoice: "Invoice"
       journal_entries_csv_export: "Download CSV" #?
       # journal_entries_export: "Journal entries export"
-      journal_entries_fec_export: "Download FEC" #?
       # last_locations: "Last locations"
       list: "List"
       load: "Load"
