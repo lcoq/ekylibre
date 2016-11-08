@@ -156,11 +156,11 @@ class FinancialYearExchangeTest < ActiveSupport::TestCase
     assert draft_entries.all? { |e| e.financial_year_exchange_id == exchange.id }
     assert confirmed_entries.all? { |e| e.financial_year_exchange_id == exchange.id }
   end
-  test 'create does not close journal entries from booked journals' do
+  test 'create does not close journal entries from journals booked by the financial year accountant' do
     financial_year = financial_years(:financial_years_024)
     stopped_on = financial_year.stopped_on - 2.days
     entries_range = financial_year.started_on..stopped_on
-    draft_entries = JournalEntry.joins(:journal).where(printed_on: entries_range, state: :draft).where.not(journals: { accountant_id: nil }).to_a
+    draft_entries = JournalEntry.joins(:journal).where(printed_on: entries_range, state: :draft, journals: { accountant_id: financial_year.accountant_id }).to_a
     assert draft_entries.any?
 
     exchange = FinancialYearExchange.new(financial_year: financial_year, stopped_on: stopped_on)

@@ -116,7 +116,7 @@ class FinancialYearExchange < Ekylibre::Record::Base
   end
 
   def related_journal_entries
-    JournalEntry.joins(:journal).where(printed_on: started_on..stopped_on, journals: { accountant_id: nil })
+    JournalEntry.joins(:journal).where(printed_on: started_on..stopped_on).where('journals.accountant_id IS NULL OR journals.accountant_id != ?', financial_year.accountant_id)
   end
 
   def compute_started_on
