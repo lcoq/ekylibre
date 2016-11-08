@@ -1665,6 +1665,7 @@ deu:
       a_production_must_be_opened: "Eine Produktion muss geöffnet werden"
       # access_denied: "Access denied. %{reason} (%{url})"
       # accountant_notified: "The accountant has been notified"
+      # accountant_without_email: "Please set the accountant email"
       all_data_import_finished: "All das wurde Ihrer Daten importiert"
       all_parcels_must_be_invoiceable_and_of_same_nature_and_third: "Alle Pakete müssen abrechenbaren und von gleicher Art und dritte sein"
       all_purchases_must_be_ordered_or_invoiced: "Alle Käufe müssen bestellt oder in Rechnung gestellt."

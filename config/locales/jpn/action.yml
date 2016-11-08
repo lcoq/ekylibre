@@ -1742,6 +1742,7 @@ jpn:
       a_production_must_be_opened: "生産は開いておく必要があります"
       # access_denied: "Access denied. %{reason} (%{url})"
       # accountant_notified: "The accountant has been notified"
+      # accountant_without_email: "Please set the accountant email"
       all_data_import_finished: "すべてのデータはインポートされました"
       all_parcels_must_be_invoiceable_and_of_same_nature_and_third: "すべての小包はinvoiceableと同じ性質と第三のものでなければなりません"
       all_purchases_must_be_ordered_or_invoiced: "すべての購入は、発注や請求しなければなりません。"

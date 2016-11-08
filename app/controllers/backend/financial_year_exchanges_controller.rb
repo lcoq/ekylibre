@@ -42,10 +42,15 @@ module Backend
 
     def notify_accountant
       return unless @exchange = find_and_check
-      @exchange.generate_public_token!
-      FinancialYearExchangeExportMailer.notify_accountant(@exchange, current_user).deliver_now
-      notify_success :accountant_notified
-      redirect_to_back
+      if @exchange.accountant_email?
+        @exchange.generate_public_token!
+        FinancialYearExchangeExportMailer.notify_accountant(@exchange, current_user).deliver_now
+        notify_success :accountant_notified
+        redirect_to_back
+      else
+        notify_error :accountant_without_email
+        redirect_to_back
+      end
     end
 
     def close

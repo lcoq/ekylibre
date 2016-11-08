@@ -1666,6 +1666,7 @@ cmn:
       a_production_must_be_opened: "一个生产必须打开"
       # access_denied: "Access denied. %{reason} (%{url})"
       # accountant_notified: "The accountant has been notified"
+      # accountant_without_email: "Please set the accountant email"
       all_data_import_finished: "您的所有数据被导入"
       all_parcels_must_be_invoiceable_and_of_same_nature_and_third: "所有包裹必须开发票和同一性质和第三位"
       all_purchases_must_be_ordered_or_invoiced: "所有购买必须订购或开具发票。"

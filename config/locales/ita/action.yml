@@ -1731,6 +1731,7 @@ ita:
       a_production_must_be_opened: "Una produzione deve essere aperto"
       # access_denied: "Access denied. %{reason} (%{url})"
       # accountant_notified: "The accountant has been notified"
+      # accountant_without_email: "Please set the accountant email"
       all_data_import_finished: "Tutti i tuoi dati sono stati importati"
       all_parcels_must_be_invoiceable_and_of_same_nature_and_third: "Tutti i pacchi devono essere fatturabile e della stessa natura e terzo"
       all_purchases_must_be_ordered_or_invoiced: "Tutti gli acquisti devono essere ordinati e fatturati."
