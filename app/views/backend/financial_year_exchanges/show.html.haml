@@ -1,7 +1,8 @@
 - main_toolbar do |t|
   = t.journal_entries_export resource, format: :csv, label: :journal_entries_csv_export.ta
-  = t.notify_accountant(resource)
-  = t.close(resource) if resource.opened?
+  - if resource.opened?
+    = t.notify_accountant(resource)
+    = t.close(resource)
 
 = main_informations do
   = attributes_list do |l|
