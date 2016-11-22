@@ -2290,7 +2290,11 @@ CREATE TABLE financial_year_exchanges (
     updater_id integer,
     lock_version integer DEFAULT 0 NOT NULL,
     public_token character varying,
-    public_token_expires_on timestamp without time zone
+    public_token_expires_on timestamp without time zone,
+    import_file_file_name character varying,
+    import_file_content_type character varying,
+    import_file_file_size integer,
+    import_file_updated_at timestamp without time zone
 );
 
 
@@ -16189,4 +16193,6 @@ INSERT INTO schema_migrations (version) VALUES ('20161026102134');
 INSERT INTO schema_migrations (version) VALUES ('20161026153125');
 
 INSERT INTO schema_migrations (version) VALUES ('20161101165521');
+
+INSERT INTO schema_migrations (version) VALUES ('20161110142308');
 

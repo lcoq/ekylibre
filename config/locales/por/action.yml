@@ -217,6 +217,7 @@ por:
       index: "Exportação"
       show: "Exportação: %{name}"
     backend/financial_year_exchanges:
+      # journal_entries_import: "Financial year exchange import"
       # new: "New exchange"
       # show: "Exchange: %{stopped_on}"
     backend/financial_years:
@@ -1822,6 +1823,7 @@ por:
       index: "Índice"
       invoice: "Fatura"
       # journal_entries_csv_export: "Download CSV"
+      # journal_entries_import: "Import CSV"
       list: "Lista"
       load: "Carga"
       lock: "Trancar"

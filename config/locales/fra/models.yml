@@ -237,6 +237,12 @@ fra:
             stopped_on:
               end_of_month: "%{attribute} doit être une date de fin de mois"
           overlap: "%{attribute} se trouve sur un exercice existant"
+        financial_year_exchange:
+          csv_file_entry_dates_invalid: "Certaines entrées du CSV ne sont pas comprises dans l'intervalle de l'exercice comptable"
+          csv_file_entry_invalid: "Certaines entrées du CSV sont invalides ('%{entry_number}')"
+          csv_file_headers_invalid: "Les en-têtes du fichier CSV sont invalides"
+          csv_file_invalid: "Fichier CSV invalide"
+          csv_file_journals_invalid: "Certains journaux sont présents dans le CSV mais n'existent pas dans Ekylibre : %{codes}"
         fixed_asset_depreciation:
           attributes:
             started_on:

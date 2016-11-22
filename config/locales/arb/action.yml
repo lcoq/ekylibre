@@ -271,6 +271,7 @@ arb:
     backend/finances:  #?
       unvalidated_deposits: "التأكد من اقتطاعات البنك" #?
     backend/financial_year_exchanges:
+      # journal_entries_import: "Financial year exchange import"
       # new: "New exchange"
       # show: "Exchange: %{stopped_on}"
     backend/financial_years:
@@ -2595,6 +2596,7 @@ arb:
       index: "فهرس"
       invoice: "فاتورة"
       # journal_entries_csv_export: "Download CSV"
+      # journal_entries_import: "Import CSV"
       list: "قائمة"
       load: "حمل"
       lock: "قفل"

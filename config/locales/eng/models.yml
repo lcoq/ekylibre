@@ -117,6 +117,12 @@ eng:
             stopped_on:
               end_of_month: "%{attribute} must be an end of month"
           overlap: "%{attribute} overlaps an existing financial year"
+        financial_year_exchange:
+          csv_file_entry_dates_invalid: "Some entries in the CSV are out of the financial year exchange date range"
+          csv_file_entry_invalid: "Some entries in the CSV are invalid ('%{entry_number}')"
+          csv_file_headers_invalid: "CSV headers are invalid"
+          csv_file_invalid: "CSV file is invalid"
+          csv_file_journals_invalid: "Some journals are present in the CSV but not in Ekylibre : %{codes}"
         fixed_asset_depreciation:
           attributes:
             started_on:

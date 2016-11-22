@@ -275,6 +275,7 @@ eng:
     backend/financial_year_exchanges:
       # close: "Close financial year exchange: %{name}"
       # journal_entries_export: "Journal entries export financial year exchange: %{name}"
+      journal_entries_import: "Financial year exchange import"
       new: "New exchange"
       # notify_accountant: "Notify accountant financial year exchange: %{name}"
       show: "Exchange: %{stopped_on}"
@@ -2022,6 +2023,7 @@ eng:
       invoice: "Invoice"
       journal_entries_csv_export: "Download CSV" #?
       # journal_entries_export: "Journal entries export"
+      journal_entries_import: "Import CSV"
       # last_locations: "Last locations"
       list: "List"
       load: "Load"

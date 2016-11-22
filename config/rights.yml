@@ -102,6 +102,7 @@
 #     - "backend/financial_year_exchanges#close"
 #     - "backend/financial_year_exchanges#create"
 #     - "backend/financial_year_exchanges#journal_entries_export"
+#     - "backend/financial_year_exchanges#journal_entries_import"
 #     - "backend/financial_year_exchanges#list_journal_entries"
 #     - "backend/financial_year_exchanges#new"
 #     - "backend/financial_year_exchanges#notify_accountant"

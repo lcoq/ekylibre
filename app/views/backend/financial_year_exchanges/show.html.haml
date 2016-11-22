@@ -1,6 +1,7 @@
 - main_toolbar do |t|
   = t.journal_entries_export resource, format: :csv, label: :journal_entries_csv_export.ta
   - if resource.opened?
+    = t.journal_entries_import resource, label: :journal_entries_import.ta
     = t.notify_accountant(resource)
     = t.close(resource)
 

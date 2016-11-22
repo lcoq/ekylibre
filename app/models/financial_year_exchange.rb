@@ -38,6 +38,7 @@
 class FinancialYearExchange < Ekylibre::Record::Base
   belongs_to :financial_year
   has_many :journal_entries, dependent: :nullify
+  has_attached_file :import_file, path: ':tenant/:class/:id/:style.:extension'
   # [VALIDATORS[ Do not edit these lines directly. Use `rake clean:validations`.
   validates :closed_at, :public_token_expires_on, timeliness: { on_or_after: -> { Time.new(1, 1, 1).in_time_zone }, on_or_before: -> { Time.zone.now + 50.years } }, allow_blank: true
   validates :public_token, uniqueness: true, length: { maximum: 500 }, allow_blank: true
@@ -46,6 +47,7 @@ class FinancialYearExchange < Ekylibre::Record::Base
   validates :financial_year, presence: true
   # ]VALIDATORS]
   validates :stopped_on, presence: true, timeliness: { on_or_before: ->(exchange) { exchange.financial_year_stopped_on || (Time.zone.today + 50.years) }, type: :date }
+  do_not_validate_attachment_file_type :import_file
 
   scope :opened, -> { where(closed_at: nil) }
   scope :closed, -> { where.not(closed_at: nil) }

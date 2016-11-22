@@ -212,6 +212,7 @@ ita:
       index: "esportazioni"
       # show: "Export: %{name}"
     backend/financial_year_exchanges:
+      # journal_entries_import: "Financial year exchange import"
       # new: "New exchange"
       # show: "Exchange: %{stopped_on}"
     backend/financial_years:
@@ -1883,6 +1884,7 @@ ita:
       index: "Indice"
       invoice: "Fattura"
       # journal_entries_csv_export: "Download CSV"
+      # journal_entries_import: "Import CSV"
       list: "Lista"
       load: "Caricare"
       lock: "Serratura"

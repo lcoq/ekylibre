@@ -40,6 +40,18 @@ module Backend
       end
     end
 
+    def journal_entries_import
+      return unless @exchange = find_and_check
+      if request.post?
+        file = params[:upload]
+        @import = FinancialYearExchangeImport.new(file, @exchange)
+        if @import.run
+          redirect_to_back
+          return
+        end
+      end
+    end
+
     def notify_accountant
       return unless @exchange = find_and_check
       if @exchange.accountant_email?

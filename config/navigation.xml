@@ -1215,6 +1215,7 @@
         <page to="backend/financial_year_exchanges#list_journal_entries"/>
         <page to="backend/financial_year_exchanges#show"/>
         <page to="backend/financial_year_exchanges#journal_entries_export"/>
+        <page to="backend/financial_year_exchanges#journal_entries_import"/>
         <page to="backend/financial_year_exchanges#notify_accountant"/>
         <page to="backend/financial_year_exchanges#close"/>
       </item>

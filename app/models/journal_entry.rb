@@ -58,6 +58,7 @@
 class JournalEntry < Ekylibre::Record::Base
   include Attachable
   attr_readonly :journal_id
+  attr_accessor :importing_from_exchange
   refers_to :currency
   refers_to :real_currency, class_name: 'Currency'
   refers_to :absolute_currency, class_name: 'Currency'
@@ -240,7 +241,7 @@ class JournalEntry < Ekylibre::Record::Base
     unless financial_year
       errors.add(:printed_on, :out_of_existing_financial_year)
     end
-    if in_financial_year_exchange?
+    if in_financial_year_exchange? && !importing_from_exchange
       errors.add(:printed_on, :frozen_by_financial_year_exchange)
     end
   end
@@ -254,7 +255,7 @@ class JournalEntry < Ekylibre::Record::Base
   end
 
   protect do
-    printed_on <= journal.closed_on || old_record.closed?
+    !importing_from_exchange && (printed_on <= journal.closed_on || old_record.closed?)
   end
 
   def self.state_label(state)
