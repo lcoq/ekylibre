@@ -108,7 +108,7 @@ class Journal < Ekylibre::Record::Base
     unless code.blank?
       errors.add(:code, :taken) if others.find_by(code: code.to_s[0..3])
     end
-    if accountant_id_changed?
+    if persisted? && accountant_id_changed?
       if accountant_has_financial_year_with_opened_exchange?(accountant)
         errors.add(:accountant, :entity_frozen)
       elsif accountant_has_financial_year_with_opened_exchange?(accountant_id_was)
