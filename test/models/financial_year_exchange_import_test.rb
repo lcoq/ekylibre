@@ -33,6 +33,14 @@ class FinancialYearExchangeImportTest < ActiveSupport::TestCase
     assert import.error.present?
     assert import.error.is_a?(FinancialYearExchangeImport::InvalidFile)
   end
+  test 'run fails when the file contains entries with printed on unparsable' do
+    invalid_file = File.open(fixture_file('financial_year_exchange_import_entry_date_unparsable.csv'))
+    exchange = financial_year_exchanges(:financial_year_exchanges_001)
+    import = FinancialYearExchangeImport.new(invalid_file, exchange)
+    refute import.run
+    assert import.error.present?
+    assert import.error.is_a?(FinancialYearExchangeImport::InvalidFile)
+  end
 
   test 'does not destroy any journal entries when run fails due to invalid balance on a specific entry' do
     file = File.open(fixture_file('financial_year_exchange_import_balance_invalid.csv'))

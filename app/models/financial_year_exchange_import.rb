@@ -55,7 +55,10 @@ class FinancialYearExchangeImport
 
   def ensure_entries_included_in_financial_year_date_range
     range = (exchange.financial_year.started_on..exchange.financial_year.stopped_on)
-    return true if parsed.all? { |row| range.cover?(Date.parse(row[:jour])) }
+    return true if parsed.all? do |row|
+      row_date = Date.parse(row[:jour]) rescue nil
+      row_date && range.cover?(row_date)
+    end
     message = I18n.translate('activerecord.errors.models.financial_year_exchange.csv_file_entry_dates_invalid')
     @error = InvalidFile.new(message)
     false
