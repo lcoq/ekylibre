@@ -138,6 +138,7 @@ class FinancialYear < Ekylibre::Record::Base
       end
     end
     errors.add(:accountant, :frozen) if accountant_id_changed? && opened_exchange?
+    errors.add(:started_on, :frozen) if started_on_changed? && exchanges.any?
   end
 
   def journal_entries(conditions = nil)

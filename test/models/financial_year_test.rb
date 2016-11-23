@@ -85,6 +85,11 @@ class FinancialYearTest < ActiveSupport::TestCase
     year.accountant = other_accountant
     refute year.valid?
   end
+  test 'cannot change started_on with exchange' do
+    year = financial_years(:financial_years_025)
+    year.started_on = year.started_on + 1.day
+    refute year.valid?
+  end
   test 'has opened exchange with opened exchanges' do
     year = financial_years(:financial_years_025)
     assert year.opened_exchange?
