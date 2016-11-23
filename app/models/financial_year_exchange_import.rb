@@ -66,7 +66,7 @@ class FinancialYearExchangeImport
     accountant = financial_year.accountant
     accountant.booked_journals.each do |journal|
       journal.entries.where(printed_on: financial_year.started_on..financial_year.stopped_on).each do |entry|
-        entry.importing_from_exchange = true
+        entry.mark_for_exchange_import!
         entry.destroy
       end
     end
@@ -96,7 +96,7 @@ class FinancialYearExchangeImport
         }
       end
       entry = journal.entries.build(number: entry_number, printed_on: printed_on)
-      entry.importing_from_exchange = true
+      entry.mark_for_exchange_import!
       save_entry_with_items! entry, items
     end
   end

@@ -58,7 +58,6 @@
 class JournalEntry < Ekylibre::Record::Base
   include Attachable
   attr_readonly :journal_id
-  attr_accessor :importing_from_exchange
   refers_to :currency
   refers_to :real_currency, class_name: 'Currency'
   refers_to :absolute_currency, class_name: 'Currency'
@@ -351,7 +350,14 @@ class JournalEntry < Ekylibre::Record::Base
     add!(name, account, amount, options.merge(credit: true))
   end
 
+  # Flag the entry updatable and destroyable, used during financial year exchange import
+  def mark_for_exchange_import!
+    self.importing_from_exchange = true
+  end
+
   private
+
+  attr_accessor :importing_from_exchange
 
   #
   def add!(name, account, amount, options = {})
