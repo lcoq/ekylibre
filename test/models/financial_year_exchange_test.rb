@@ -22,18 +22,22 @@
 #
 # == Table: financial_year_exchanges
 #
-#  closed_at               :datetime
-#  created_at              :datetime         not null
-#  creator_id              :integer
-#  financial_year_id       :integer          not null
-#  id                      :integer          not null, primary key
-#  lock_version            :integer          default(0), not null
-#  public_token            :string
-#  public_token_expires_on :datetime
-#  started_on              :date             not null
-#  stopped_on              :date             not null
-#  updated_at              :datetime         not null
-#  updater_id              :integer
+#  closed_at                :datetime
+#  created_at               :datetime         not null
+#  creator_id               :integer
+#  financial_year_id        :integer          not null
+#  id                       :integer          not null, primary key
+#  import_file_content_type :string
+#  import_file_file_name    :string
+#  import_file_file_size    :integer
+#  import_file_updated_at   :datetime
+#  lock_version             :integer          default(0), not null
+#  public_token             :string
+#  public_token_expires_on  :datetime
+#  started_on               :date             not null
+#  stopped_on               :date             not null
+#  updated_at               :datetime         not null
+#  updater_id               :integer
 #
 require 'test_helper'
 

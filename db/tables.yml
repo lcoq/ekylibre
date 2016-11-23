@@ -2347,6 +2347,14 @@ financial_year_exchanges:
   id:
     type: integer
     required: true
+  import_file_content_type:
+    type: string
+  import_file_file_name:
+    type: string
+  import_file_file_size:
+    type: integer
+  import_file_updated_at:
+    type: datetime
   lock_version:
     type: integer
     required: true
