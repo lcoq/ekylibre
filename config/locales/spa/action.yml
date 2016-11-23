@@ -237,6 +237,10 @@ spa:
     backend/exports:
       index: "Exportaciones"
       # show: "Export: %{name}"
+    backend/financial_year_exchanges:
+      # journal_entries_import: "Financial year exchange import"
+      # new: "New exchange"
+      # show: "Exchange: %{stopped_on}"
     backend/financial_years:
       close: "Cerrado de ejercicio"
       compute_balances: "Calcule el equilibrio ejercicio"
@@ -1065,6 +1069,7 @@ spa:
     # example: "Example: %{value}"
     exchange: "Intercambiar"
     # exchange_rate_from_x_to_y: "Exchange rate from %{x} to %{y}"
+    # exchanges: "Exchanges"
     # expected_quantity_is_x: "Expected quantity: %{x}"
     expedier: "Expédier"
     expenses: "Gastos"
@@ -1303,6 +1308,7 @@ spa:
       # other: "Make a deposit %{mode}: %{count} available payments"
       # zero: "Make a deposit %{mode}: no available payments"
     new_email: "Nuevo Email"
+    # new_financial_year_exchange: "New exchange"
     new_group: "Nuevo grupo"
     new_incoming_parcel: "Nueva parcela entrante"
     new_issue: "Nueva edición"
@@ -1906,6 +1912,8 @@ spa:
       a_campaign_must_be_opened: "Una campaña se debe abrir"
       a_production_must_be_opened: "Una producción se debe abrir"
       access_denied: "No tiene drecho de acceso para esta pagina. %{reason} (%{url})"
+      # accountant_notified: "The accountant has been notified"
+      # accountant_without_email: "Please set the accountant email"
       all_data_import_finished: "Todos los datos fueron importados"
       all_parcels_must_be_invoiceable_and_of_same_nature_and_third: "Todos los paquetes deben ser facturable y de la misma naturaleza y el tercer"
       all_purchases_must_be_ordered_or_invoiced: "Todas las compras se deben ordenar o facturar."
@@ -1922,6 +1930,7 @@ spa:
       cannot_merge_entities: "Un error sobrevino. No es posible fusionar estas papeletas."
       changes_have_been_reflected: "Los cambios han sido repercutidos correctamente sobre el estatuto de depósitos actua"
       changes_have_not_been_reflected: "Los cambios no han sido repercutidos correctamente sobre el estatuto de depósitos actua"
+      # closed_financial_year_exchange: "The financial year exchange has been closed successfully"
       closed_financial_years: "El ejercicio ha sido correctamente cerrado"
       columns_are_already_uses: "Una o varias columnas que hay que importar son seleccionados muchas veces"
       dashboard_is_being_developed: "Dashboard es en fuerte desarrollo"
@@ -2109,6 +2118,8 @@ spa:
       increment: "Incremento" #?
       index: "Índice"
       invoice: "Factura"
+      # journal_entries_csv_export: "Download CSV"
+      # journal_entries_import: "Import CSV"
       list: "Lista"
       load: "Carga"
       lock: "Bloquear"
@@ -2119,6 +2130,7 @@ spa:
       move: "Movimiento" #?
       negociate: "Negociate"
       new: "Nuevo"
+      # notify_accountant: "Notify accountant"
       open: "Abierto"
       order: "Orden"
       pay: "Paga"

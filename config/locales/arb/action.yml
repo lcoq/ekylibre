@@ -270,6 +270,10 @@ arb:
       # show: "Export: %{name}"
     backend/finances:  #?
       unvalidated_deposits: "التأكد من اقتطاعات البنك" #?
+    backend/financial_year_exchanges:
+      # journal_entries_import: "Financial year exchange import"
+      # new: "New exchange"
+      # show: "Exchange: %{stopped_on}"
     backend/financial_years:
       close: "نهاية الممارسة"
       compute_balances: "حساب التوازن العام المالي"
@@ -1310,6 +1314,7 @@ arb:
     example: "مثال&nbsp;: %{value}"
     exchange: "تبادل"
     # exchange_rate_from_x_to_y: "Exchange rate from %{x} to %{y}"
+    # exchanges: "Exchanges"
     executed: "انجز" #?
     existing_part: "استخدام الدفعات الغير متضررة" #?
     # expected_quantity_is_x: "Expected quantity: %{x}"
@@ -1610,6 +1615,7 @@ arb:
       # zero: "Make a deposit %{mode}: no available payments"
     new_email: "بريد إلكتروني جديد"
     new_family: "اسرة جديدة" #?
+    # new_financial_year_exchange: "New exchange"
     new_group: "مجموعة جديدة"
     new_incoming_parcel: "لا يتجزأ الجديد الوافد"
     new_issue: "مشكلة جديدة"
@@ -2344,6 +2350,8 @@ arb:
       a_campaign_must_be_opened: "يجب فتح حملة"
       a_production_must_be_opened: "يجب فتح الإنتاج"
       access_denied: " ليس لديك الصلاحية لبلوغ هذه الصفحة %{reason} (%{url})"
+      # accountant_notified: "The accountant has been notified"
+      # accountant_without_email: "Please set the accountant email"
       all_data_import_finished: "تم استيراد جميع البيانات الخاصة بك"
       all_parcels_must_be_invoiceable_and_of_same_nature_and_third: "يجب أن تكون جميع الطرود invoiceable ومن نفس الطبيعة والثالث"
       all_purchases_must_be_ordered_or_invoiced: "جميع المشتريات يجب أن يؤمر أو فواتير."
@@ -2360,6 +2368,7 @@ arb:
       cannot_merge_entities: "Une erreur est survenue. غير ممكن دمج هذه الملفات"
       changes_have_been_reflected: "كانت تنعكس التغييرات بشكل صحيح على الوضع الحالي للاسهم"
       changes_have_not_been_reflected: "لم تكن تنعكس هذه التغييرات بشكل صحيح على الوضع الحالي للأسهم"
+      # closed_financial_year_exchange: "The financial year exchange has been closed successfully"
       closed_financial_years: "تم اغلاق السنة المالية بشكل صحيح"
       columns_are_already_uses: "تم اخيار عامود او اكثر للتحميل لمرات عدة"
       dashboard_is_being_developed: "لوحة أجهزة القياس هي قيد التطوير الثقيلة"
@@ -2586,6 +2595,8 @@ arb:
       increment: "زيادة" #?
       index: "فهرس"
       invoice: "فاتورة"
+      # journal_entries_csv_export: "Download CSV"
+      # journal_entries_import: "Import CSV"
       list: "قائمة"
       load: "حمل"
       lock: "قفل"
@@ -2596,6 +2607,7 @@ arb:
       move: "خطوة" #?
       # negociate: "Negociate"
       new: "جديد"
+      # notify_accountant: "Notify accountant"
       open: "فتح"
       order: "طلب"
       pay: "دفع"

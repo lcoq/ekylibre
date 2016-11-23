@@ -211,6 +211,10 @@ deu:
     backend/exports:
       index: "Ausfuhr"
       # show: "Export: %{name}"
+    backend/financial_year_exchanges:
+      # journal_entries_import: "Financial year exchange import"
+      # new: "New exchange"
+      # show: "Exchange: %{stopped_on}"
     backend/financial_years:
       # close: "Close financial year: %{code}"
       compute_balances: "Berechnen Geschäftsjahr Bilanz"
@@ -941,6 +945,7 @@ deu:
     # example: "Example: %{value}"
     exchange: "Austausch"
     # exchange_rate_from_x_to_y: "Exchange rate from %{x} to %{y}"
+    # exchanges: "Exchanges"
     # expected_quantity_is_x: "Expected quantity: %{x}"
     # expedier: "Expedier"
     expenses: "Kosten"
@@ -1134,6 +1139,7 @@ deu:
       # other: "Make a deposit %{mode}: %{count} available payments"
       # zero: "Make a deposit %{mode}: no available payments"
     new_email: "Neue e-mail"
+    # new_financial_year_exchange: "New exchange"
     new_group: "Neue Gruppe"
     new_incoming_parcel: "Neu eingehende Paket"
     new_issue: "Neues Problem"
@@ -1659,6 +1665,8 @@ deu:
       a_campaign_must_be_opened: "Eine Kampagne muss geöffnet werden,"
       a_production_must_be_opened: "Eine Produktion muss geöffnet werden"
       # access_denied: "Access denied. %{reason} (%{url})"
+      # accountant_notified: "The accountant has been notified"
+      # accountant_without_email: "Please set the accountant email"
       all_data_import_finished: "All das wurde Ihrer Daten importiert"
       all_parcels_must_be_invoiceable_and_of_same_nature_and_third: "Alle Pakete müssen abrechenbaren und von gleicher Art und dritte sein"
       all_purchases_must_be_ordered_or_invoiced: "Alle Käufe müssen bestellt oder in Rechnung gestellt."
@@ -1673,6 +1681,7 @@ deu:
       cannot_merge_entities: "Es ist unmöglich, diese Menschen zu verschmelzen."
       changes_have_been_reflected: "Die Änderungen wurden in der Bestände Zustand reflektiert"
       changes_have_not_been_reflected: "Die Änderungen wurden nicht in die Bestände Zustand niedergeschlagen"
+      # closed_financial_year_exchange: "The financial year exchange has been closed successfully"
       closed_financial_years: "Das Geschäftsjahr wurde erfolgreich abgeschlossen"
       columns_are_already_uses: "oft werden eine oder mehrere Spalten ausgewählt"
       dashboard_is_being_developed: "Dashboard ist stark in der Entwicklung"
@@ -1807,6 +1816,8 @@ deu:
       increment: "Zuwachs" #?
       # index: "Index"
       invoice: "Rechnung"
+      # journal_entries_csv_export: "Download CSV"
+      # journal_entries_import: "Import CSV"
       list: "Liste"
       load: "Belastung"
       lock: "Sperren"
@@ -1817,6 +1828,7 @@ deu:
       move: "Bewegung" #?
       negociate: "verhandeln"
       new: "Neu"
+      # notify_accountant: "Notify accountant"
       open: "Öffnen"
       order: "Auftrag"
       pay: "Bezahlen"
