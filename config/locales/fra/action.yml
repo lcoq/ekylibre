@@ -2310,6 +2310,7 @@ fra:
       invalid_file_nature: "Type de fichier invalide" #?
       invalid_reference_name: "Référence invalide"
       journal_closed_on: "Le %{journal} a été clôturé au %{closed_on} correctement."
+      journal_entries_imported: "Les écritures ont été importées correctement."
       journal_entry_already_validated: "La pièce a déjà été validée et ne peut plus être modifiée"
       journal_entry_has_been_saved: "La pièce N°%{number} a été enregistrée correctement"
       journal_entry_items_marked_with_letter: "Les lignes d’écritures ont été lettrées avec la lettre %{letter}"

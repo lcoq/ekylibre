@@ -1897,6 +1897,7 @@ eng:
       integrate_tools_you_are_using_every_day: "Integrate tools you are using every day"
       invalid_reference_name: "Invalid reference name"
       journal_closed_on: "The journal “%{journal}” was closed on %{closed_on}."
+      journal_entries_imported: "The journal entries have been imported."
       journal_entry_already_validated: "The record has already been validated and can not be changed"
       journal_entry_has_been_saved: "The record %{number} has been successfully saved"
       journal_entry_items_marked_with_letter: "Journal entry items have been marked with letter %{letter}"

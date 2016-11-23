@@ -46,6 +46,7 @@ module Backend
         file = params[:upload]
         @import = FinancialYearExchangeImport.new(file, @exchange)
         if @import.run
+          notify_success :journal_entries_imported
           redirect_to_back
           return
         end
