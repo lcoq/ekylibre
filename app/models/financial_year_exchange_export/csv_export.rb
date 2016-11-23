@@ -1,4 +1,3 @@
-# coding: utf-8
 class FinancialYearExchangeExport
   class CsvExport
     def initialize(exchange)
