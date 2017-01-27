@@ -3480,7 +3480,8 @@ CREATE TABLE journal_entry_items (
     tax_declaration_item_id integer,
     resource_id integer,
     resource_type character varying,
-    resource_prism character varying
+    resource_prism character varying,
+    tax_declaration_mode character varying
 );
 
 
@@ -12397,6 +12398,13 @@ CREATE INDEX index_journal_entry_items_on_tax_declaration_item_id ON journal_ent
 
 
 --
+-- Name: index_journal_entry_items_on_tax_declaration_mode; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_journal_entry_items_on_tax_declaration_mode ON journal_entry_items USING btree (tax_declaration_mode);
+
+
+--
 -- Name: index_journal_entry_items_on_tax_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -16806,4 +16814,6 @@ INSERT INTO schema_migrations (version) VALUES ('20170110083324');
 INSERT INTO schema_migrations (version) VALUES ('20170124133351');
 
 INSERT INTO schema_migrations (version) VALUES ('20170125162958');
+
+INSERT INTO schema_migrations (version) VALUES ('20170127082518');
 
