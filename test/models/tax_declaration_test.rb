@@ -45,5 +45,67 @@
 require 'test_helper'
 
 class TaxDeclarationTest < ActiveSupport::TestCase
-  # Add tests here...
+  test 'bookkeep set the non-purchase journal entry items tax declaration mode from the financial year' do
+    financial_year = financial_year_in_debit_mode
+    printed_on = financial_year.started_on + 1.day
+    entry_item = create_journal_entry_item_sale(printed_on, a_tax)
+    subject = create(:tax_declaration, financial_year: financial_year)
+    subject.bookkeep
+    entry_item.reload
+    assert_equal 'debit', entry_item.tax_declaration_mode
+  end
+  test 'bookkeep set the tax declaration mode "debit" to journal entry items targeting purchases at invoicing' do
+    financial_year = a_financial_year
+    printed_on = financial_year.started_on + 1.day
+    entry_item = create_journal_entry_item_purchase(printed_on, a_tax, 'at_invoicing')
+    subject = create(:tax_declaration, financial_year: financial_year)
+    subject.bookkeep
+    entry_item.reload
+    assert_equal 'debit', entry_item.tax_declaration_mode
+  end
+  test 'bookkeep set the tax declaration mode "payment" to journal entry items targeting purchases at paying' do
+    financial_year = a_financial_year
+    printed_on = financial_year.started_on + 1.day
+    entry_item = create_journal_entry_item_purchase(printed_on, a_tax, 'at_paying')
+    subject = create(:tax_declaration, financial_year: financial_year)
+    subject.bookkeep
+    entry_item.reload
+    assert_equal 'payment', entry_item.tax_declaration_mode
+  end
+
+  def a_financial_year
+    financial_year_in_debit_mode
+  end
+
+  def financial_year_in_debit_mode
+    financial_years(:financial_years_008)
+  end
+
+  def a_tax
+    taxes(:taxes_001)
+  end
+
+  def create_journal_entry_item_purchase(printed_on, tax, tax_payability)
+    entry = create(:journal_entry, :with_items, printed_on: printed_on)
+    purchase = create(:purchase, nature: purchase_natures(:purchase_natures_001), tax_payability: tax_payability)
+    purchase_item = create(:purchase_item, purchase: purchase, tax: tax)
+    create :journal_entry_item,
+      entry: entry,
+      printed_on: printed_on,
+      tax: tax,
+      resource_prism: 'item_tax',
+      resource: purchase_item
+  end
+
+  def create_journal_entry_item_sale(printed_on, tax)
+    entry = create(:journal_entry, :with_items, printed_on: printed_on)
+    sale = create(:sale, nature: sale_natures(:sale_natures_001))
+    sale_item = create(:sale_item, sale: sale, tax: tax)
+    create :journal_entry_item,
+      entry: entry,
+      printed_on: printed_on,
+      tax: tax,
+      resource_prism: 'item_tax',
+      resource: sale_item
+  end
 end
