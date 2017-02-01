@@ -3958,6 +3958,8 @@ journal_entry_items:
   tax_declaration_item_id:
     type: integer
     references: tax_declaration_item
+  tax_declaration_mode:
+    type: string
   tax_id:
     type: integer
     references: tax
