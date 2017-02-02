@@ -45,30 +45,30 @@
 require 'test_helper'
 
 class TaxDeclarationTest < ActiveSupport::TestCase
-  test 'bookkeep set the non-purchase journal entry items tax declaration mode from the financial year' do
+  test 'save set the non-purchase journal entry items tax declaration mode from the financial year' do
     financial_year = financial_year_in_debit_mode
     printed_on = financial_year.started_on + 1.day
     entry_item = create_journal_entry_item_sale(printed_on, a_tax)
-    subject = create(:tax_declaration, financial_year: financial_year)
-    subject.bookkeep
+    subject = build(:tax_declaration, financial_year: financial_year)
+    assert subject.save
     entry_item.reload
     assert_equal 'debit', entry_item.tax_declaration_mode
   end
-  test 'bookkeep set the tax declaration mode "debit" to journal entry items targeting purchases at invoicing' do
+  test 'save set the tax declaration mode "debit" to journal entry items targeting purchases at invoicing' do
     financial_year = a_financial_year
     printed_on = financial_year.started_on + 1.day
     entry_item = create_journal_entry_item_purchase(printed_on, a_tax, 'at_invoicing')
-    subject = create(:tax_declaration, financial_year: financial_year)
-    subject.bookkeep
+    subject = build(:tax_declaration, financial_year: financial_year)
+    assert subject.save
     entry_item.reload
     assert_equal 'debit', entry_item.tax_declaration_mode
   end
-  test 'bookkeep set the tax declaration mode "payment" to journal entry items targeting purchases at paying' do
+  test 'save set the tax declaration mode "payment" to journal entry items targeting purchases at paying' do
     financial_year = a_financial_year
     printed_on = financial_year.started_on + 1.day
     entry_item = create_journal_entry_item_purchase(printed_on, a_tax, 'at_paying')
-    subject = create(:tax_declaration, financial_year: financial_year)
-    subject.bookkeep
+    subject = build(:tax_declaration, financial_year: financial_year)
+    assert subject.save
     entry_item.reload
     assert_equal 'payment', entry_item.tax_declaration_mode
   end
