@@ -49,6 +49,7 @@ class TaxDeclarationItem < Ekylibre::Record::Base
   belongs_to :tax
   belongs_to :tax_declaration, class_name: 'TaxDeclaration'
   has_many :journal_entry_items, foreign_key: :tax_declaration_item_id, class_name: 'JournalEntryItem', inverse_of: :tax_declaration_item, dependent: :nullify
+  has_many :parts, foreign_key: :tax_declaration_item_id, class_name: 'TaxDeclarationItemPart', dependent: :destroy, inverse_of: :tax_declaration_item
   has_one :financial_year, through: :tax_declaration
   # [VALIDATORS[ Do not edit these lines directly. Use `rake clean:validations`.
   validates :balance_pretax_amount, :balance_tax_amount, :collected_pretax_amount, :collected_tax_amount, :deductible_pretax_amount, :deductible_tax_amount, :fixed_asset_deductible_pretax_amount, :fixed_asset_deductible_tax_amount, :intracommunity_payable_pretax_amount, :intracommunity_payable_tax_amount, presence: true, numericality: { greater_than: -1_000_000_000_000_000, less_than: 1_000_000_000_000_000 }
@@ -68,48 +69,84 @@ class TaxDeclarationItem < Ekylibre::Record::Base
 
   def compute!
     raise 'Cannot compute item without its tax' unless tax
-    if tax_declaration_mode_payment?
-      compute_in_payment_mode!
-    elsif tax_declaration_mode_debit?
-      compute_in_debit_mode!
-    else
-      raise 'No declaration mode given'
+    ActiveRecord::Base.transaction do
+      generate_parts
+      compute_amounts
+      save!
     end
   end
 
-  def compute_in_payment_mode!
-    journal_entry_items = targeted_journal_entry_items(lettered: true)
-    compute_with_journal_entry_items! journal_entry_items
+  private
+
+  def generate_parts
+    self.parts.clear
+    generate_debit_parts
+    generate_payment_parts
   end
 
-  def compute_in_debit_mode!
-    journal_entry_items = targeted_journal_entry_items
-    compute_with_journal_entry_items! journal_entry_items
-  end
+  def generate_debit_parts
+    entry_items = JournalEntryItem
+      .where(printed_on: started_on..stopped_on)
+      .where(tax_declaration_mode: 'debit')
+      .where(tax: tax)
+      .where.not(id: TaxDeclarationItemPart.select(:journal_entry_item_id))
 
-  def compute_with_journal_entry_items!(journal_entry_items)
-    self.deductible_tax_amount = journal_entry_items.where(account: tax.deduction_account).sum('debit - credit')
-    self.deductible_pretax_amount = journal_entry_items.where(account: tax.deduction_account).sum(:pretax_amount)
-    self.fixed_asset_deductible_tax_amount = journal_entry_items.where(account: tax.fixed_asset_deduction_account).sum('debit - credit')
-    self.fixed_asset_deductible_pretax_amount = journal_entry_items.where(account: tax.fixed_asset_deduction_account).sum(:pretax_amount)
-    self.intracommunity_payable_tax_amount = journal_entry_items.where(account: tax.intracommunity_payable_account).sum('debit - credit')
-    self.intracommunity_payable_pretax_amount = journal_entry_items.where(account: tax.intracommunity_payable_account).sum(:pretax_amount)
-    self.collected_tax_amount = journal_entry_items.where(account: tax.collect_account).sum('credit - debit')
-    self.collected_pretax_amount = journal_entry_items.where(account: tax.collect_account).sum(:pretax_amount)
-    save!
-    self.journal_entry_items.where(tax_declaration_item_id: id).update_all(tax_declaration_item_id: nil)
-    journal_entry_items.update_all(tax_declaration_item_id: id)
-  end
+    tax_account_ids_by_direction.each do |direction, account_id|
+      balance =
+        if direction == :collected
+          'journal_entry_items.credit - journal_entry_items.debit'
+        else
+          'journal_entry_items.debit - journal_entry_items.credit'
+        end
 
-  protected
+      select_sql = <<-SQL
+        journal_entry_items.id AS journal_entry_item_id,
+        journal_entry_items.account_id AS account_id,
+        (#{balance}) AS tax_amount,
+        (#{balance}) AS total_tax_amount,
+        journal_entry_items.pretax_amount AS pretax_amount,
+        journal_entry_items.pretax_amount AS total_pretax_amount
+      SQL
 
-  def targeted_journal_entry_items(options = {})
-    relation = JournalEntryItem.where(tax: tax)
-                               .where(printed_on: started_on..stopped_on)
-                               .where('tax_declaration_item_id IS NULL OR tax_declaration_item_id = ?', id || 0)
-    if options[:lettered].is_a?(TrueClass)
-      relation = relation.where(entry_id: JournalEntryItem.select(:entry_id).where('LENGTH(TRIM(letter)) > 0'))
+      part_rows = entry_items.where(account_id: account_id).select(select_sql)
+      part_rows.each do |row|
+        parts.build(
+          journal_entry_item_id: row.journal_entry_item_id,
+          account_id: row.account_id,
+          tax_amount: row.tax_amount,
+          total_tax_amount: row.total_tax_amount,
+          pretax_amount: row.pretax_amount,
+          total_pretax_amount: row.total_pretax_amount,
+          direction: direction
+        )
+      end
     end
-    relation
+  end
+
+  def generate_payment_parts
+    # TODO
+  end
+
+  def compute_amounts
+    directions.each do |direction|
+      direction_parts = self.parts.select { |part| part.direction == direction }
+      tax_amount = direction_parts.sum { |part| part.tax_amount } || 0.0
+      pretax_amount = direction_parts.sum { |part| part.pretax_amount } || 0.0
+      self.send "#{direction}_tax_amount=", tax_amount
+      self.send "#{direction}_pretax_amount=", pretax_amount
+    end
+  end
+
+  def tax_account_ids_by_direction
+    return unless tax
+    { deductible: tax.deduction_account_id,
+      collected: tax.collect_account_id,
+      fixed_asset_deductible: tax.fixed_asset_deduction_account_id,
+      intracommunity_payable: tax.intracommunity_payable_account_id }
+  end
+
+  def directions
+    return unless tax
+    tax_account_ids_by_direction.keys
   end
 end
