@@ -124,7 +124,69 @@ class TaxDeclarationItem < Ekylibre::Record::Base
   end
 
   def generate_payment_parts
-    # TODO
+    tax_account_ids_by_direction.each do |direction, account_id|
+      generate_payments_parts_for_direction_and_account_id(direction, account_id)
+    end
+  end
+
+  def generate_payments_parts_for_direction_and_account_id(direction, account_id)
+    conditions_sql = <<-SQL
+      jei.printed_on BETWEEN ? AND ?
+      AND jei.tax_declaration_mode = ?
+      AND jei.tax_id = ?
+      AND jei.account_id = ?
+    SQL
+
+    conditions_sql_values = [
+      started_on, stopped_on,
+      'payment',
+      tax.id,
+      account_id
+    ]
+    conditions = [ conditions_sql ] + conditions_sql_values
+
+    sql = <<-SQL
+      SELECT jei.id AS journal_entry_item_id,
+             jei.account_id AS account_id,
+             (jei.debit - jei.credit) * SUM(paid.balance) / total.balance AS tax_amount,
+             (jei.debit - jei.credit) AS total_tax_amount,
+             jei.pretax_amount * SUM(paid.balance) / total.balance AS pretax_amount,
+             jei.pretax_amount AS total_pretax_amount
+      FROM   journal_entry_items jei
+      INNER JOIN (
+        SELECT   entry_id,
+                 account_id,
+                 letter,
+                 SUM(credit - debit) AS balance
+        FROM     journal_entry_items
+        WHERE    LENGTH(TRIM(letter)) > 0
+        GROUP BY entry_id,
+                 account_id,
+                 letter
+       ) AS total ON total.entry_id = jei.entry_id
+       INNER JOIN (
+         SELECT entry_id,
+                account_id,
+                letter,
+                debit - credit AS balance
+         FROM   journal_entry_items
+         WHERE  LENGTH(TRIM(letter)) > 0
+       ) AS paid ON total.letter = paid.letter AND total.account_id = paid.account_id AND total.entry_id != paid.entry_id
+       LEFT JOIN (
+         SELECT   journal_entry_item_id,
+                  direction,
+                  SUM(tax_amount) AS amount
+         FROM     tax_declaration_item_parts
+         GROUP BY journal_entry_item_id, direction
+       ) AS declared ON declared.journal_entry_item_id = jei.id AND declared.direction = '#{direction}'
+       WHERE #{TaxDeclarationItem.send(:sanitize_sql_for_conditions, conditions)}
+       GROUP BY jei.id, total.balance, declared.amount
+    SQL
+
+    part_rows = ActiveRecord::Base.connection.execute(sql)
+    part_rows.to_a.each do |part_attributes|
+      parts.build part_attributes.merge direction: direction
+    end
   end
 
   def compute_amounts

@@ -45,7 +45,173 @@
 require 'test_helper'
 
 class TaxDeclarationItemTest < ActiveSupport::TestCase
-  test 'compute generate tax declaration item parts from journal entry items on debit and update amounts' do
+  test 'compute does not generate tax declaration item parts from journal entry items on payment without payment' do
+    tax = taxes(:taxes_003) # amount 0.2
+    financial_year = financial_years(:financial_years_008)
+    tax_declaration = create(:tax_declaration, financial_year: financial_year)
+    printed_on = tax_declaration.started_on + 1.day
+
+    purchases_account = create(:account, name: "Purchases")
+    suppliers_account = create(:account, name: "Suppliers")
+    bank_account = create(:account, name: "Brank")
+    vat_deductible_account = tax.deduction_account
+
+    purchase1 = build(:journal_entry,
+      printed_on: printed_on,
+      real_credit: 870,
+      real_debit: 870.0
+    )
+    purchase1.items = [
+      build(:journal_entry_item,
+       entry: purchase1,
+       account: suppliers_account,
+       real_credit: 870.0,
+       letter: 'A'
+     ),
+      build(:journal_entry_item,
+       entry: purchase1,
+       account: vat_deductible_account,
+       real_debit: 145.0,
+       real_pretax_amount: 725.0,
+       tax: tax,
+       tax_declaration_mode: 'payment',
+      ),
+      build(:journal_entry_item,
+        entry: purchase1,
+        account: purchases_account,
+        real_debit: 725.0
+      )
+    ]
+
+    purchase1.save!
+
+    subject = TaxDeclarationItem.new(tax_declaration: tax_declaration, tax: tax)
+    assert subject.compute!
+
+    assert_equal 0, subject.parts.length
+
+    assert_equal 0.0, subject.deductible_tax_amount
+    assert_equal 0.0, subject.deductible_pretax_amount
+    assert_equal 0.0, subject.collected_tax_amount
+    assert_equal 0.0, subject.collected_pretax_amount
+    assert_equal 0.0, subject.fixed_asset_deductible_tax_amount
+    assert_equal 0.0, subject.fixed_asset_deductible_pretax_amount
+    assert_equal 0.0, subject.intracommunity_payable_tax_amount
+    assert_equal 0.0, subject.intracommunity_payable_pretax_amount
+
+    assert_equal 0.0, subject.balance_tax_amount
+    assert_equal 0.0, subject.balance_pretax_amount
+  end
+  test 'compute generate tax declaration item parts from journal entry items on payment with some payment' do
+    tax = taxes(:taxes_003) # amount 0.2
+    financial_year = financial_years(:financial_years_008)
+    tax_declaration = create(:tax_declaration, financial_year: financial_year)
+    printed_on = tax_declaration.started_on + 1.day
+
+    purchases_account = create(:account, name: "Purchases")
+    suppliers_account = create(:account, name: "Suppliers")
+    bank_account = create(:account, name: "Brank")
+    vat_deductible_account = tax.deduction_account
+
+    purchase1 = build(:journal_entry,
+      printed_on: printed_on,
+      real_credit: 870,
+      real_debit: 870.0
+    )
+    purchase1.items = [
+      build(:journal_entry_item,
+       entry: purchase1,
+       account: suppliers_account,
+       real_credit: 870.0,
+       letter: 'A'
+     ),
+      build(:journal_entry_item,
+       entry: purchase1,
+       account: vat_deductible_account,
+       real_debit: 145.0,
+       real_pretax_amount: 725.0,
+       tax: tax,
+       tax_declaration_mode: 'payment',
+      ),
+      build(:journal_entry_item,
+        entry: purchase1,
+        account: purchases_account,
+        real_debit: 725.0
+      )
+    ]
+
+    purchase1.save!
+
+    payment1 = build(:journal_entry,
+      printed_on: printed_on,
+      real_credit: 340.0,
+      real_debit: 340.0
+    )
+    payment1.items = [
+      build(:journal_entry_item,
+        entry: payment1,
+        account: suppliers_account,
+        real_debit: 340.0,
+        letter: 'A'
+      ),
+      build(:journal_entry_item,
+        entry: payment1,
+        account: bank_account,
+        real_credit: 340.0
+      )
+    ]
+
+    payment1.save!
+
+    payment2 = build(:journal_entry,
+      printed_on: printed_on,
+      real_credit: 60.0,
+      real_debit: 60.0
+    )
+    payment2.items = [
+      build(:journal_entry_item,
+        entry: payment2,
+        account: suppliers_account,
+        real_debit: 60.0,
+        letter: 'A'
+      ),
+      build(:journal_entry_item,
+        entry: payment2,
+        account: bank_account,
+        real_credit: 60.0
+      )
+    ]
+
+    payment2.save!
+
+    subject = TaxDeclarationItem.new(tax_declaration: tax_declaration, tax: tax)
+    assert subject.compute!
+
+    assert_equal 1, subject.parts.length
+
+    subject.parts.detect { |part| part.journal_entry_item.entry == purchase1 }.tap do |p|
+      assert p
+      assert_equal vat_deductible_account, p.account
+      assert_equal 66.67, p.tax_amount.round(2) #  145 * (340+60) / 870
+      assert_equal 333.33, p.pretax_amount.round(2) # 725 * (340+60) / 870
+      assert_equal 145.0, p.total_tax_amount # 725 * 0.2
+      assert_equal 725.0, p.total_pretax_amount
+      assert_equal 'deductible', p.direction
+    end
+
+    assert_equal 66.67, subject.deductible_tax_amount.round(2)
+    assert_equal 333.33, subject.deductible_pretax_amount.round(2)
+    assert_equal 0.0, subject.collected_tax_amount
+    assert_equal 0.0, subject.collected_pretax_amount
+    assert_equal 0.0, subject.fixed_asset_deductible_tax_amount
+    assert_equal 0.0, subject.fixed_asset_deductible_pretax_amount
+    assert_equal 0.0, subject.intracommunity_payable_tax_amount
+    assert_equal 0.0, subject.intracommunity_payable_pretax_amount
+
+    assert_equal -66.67, subject.balance_tax_amount.round(2)
+    assert_equal -333.33, subject.balance_pretax_amount.round(2)
+  end
+  test 'compute generate tax declaration item parts from journal entry items on debit' do
     tax = taxes(:taxes_003) # amount 0.2
     financial_year = financial_years(:financial_years_008)
     tax_declaration = create(:tax_declaration, financial_year: financial_year)
@@ -81,7 +247,7 @@ class TaxDeclarationItemTest < ActiveSupport::TestCase
         entry: purchase1,
         account: purchases_account,
         real_debit: 1500.0
-      ),
+      )
     ]
 
     purchase2 = build(:journal_entry,
@@ -107,7 +273,7 @@ class TaxDeclarationItemTest < ActiveSupport::TestCase
         entry: purchase2,
         account: purchases_account,
         real_debit: 400.0
-      ),
+      )
     ]
 
     sale1 = build(:journal_entry,
@@ -133,7 +299,7 @@ class TaxDeclarationItemTest < ActiveSupport::TestCase
         entry: sale1,
         account: revenues_account,
         real_credit: 120.0
-      ),
+      )
     ]
 
     purchase1.save!
@@ -177,10 +343,8 @@ class TaxDeclarationItemTest < ActiveSupport::TestCase
 
     assert_equal 380.0, subject.deductible_tax_amount
     assert_equal 1900.0, subject.deductible_pretax_amount # 1500 + 400
-
     assert_equal 24.0, subject.collected_tax_amount
     assert_equal 120.0, subject.collected_pretax_amount
-
     assert_equal 0.0, subject.fixed_asset_deductible_tax_amount
     assert_equal 0.0, subject.fixed_asset_deductible_pretax_amount
     assert_equal 0.0, subject.intracommunity_payable_tax_amount
