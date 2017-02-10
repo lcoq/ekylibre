@@ -131,26 +131,37 @@ class TaxDeclarationItem < Ekylibre::Record::Base
 
   def generate_payments_parts_for_direction_and_account_id(direction, account_id)
     conditions_sql = <<-SQL
-      jei.printed_on BETWEEN ? AND ?
-      AND jei.tax_declaration_mode = ?
+      jei.tax_declaration_mode = ?
       AND jei.tax_id = ?
       AND jei.account_id = ?
+      AND EXISTS(
+        SELECT 1
+        FROM journal_entry_items
+        WHERE printed_on BETWEEN ? AND ?
+        AND letter IN (
+          SELECT letter
+          FROM journal_entry_items
+          WHERE LENGTH(TRIM(letter)) > 0
+          AND entry_id = jei.entry_id
+        )
+      )
     SQL
 
     conditions_sql_values = [
-      started_on, stopped_on,
       'payment',
       tax.id,
-      account_id
+      account_id,
+      started_on, stopped_on
     ]
+
     conditions = [ conditions_sql ] + conditions_sql_values
 
     sql = <<-SQL
       SELECT jei.id AS journal_entry_item_id,
              jei.account_id AS account_id,
-             (jei.debit - jei.credit) * SUM(paid.balance) / total.balance AS tax_amount,
+             ((jei.debit - jei.credit) * SUM(paid.balance) / total.balance) - COALESCE(declared.amount, 0) AS tax_amount,
              (jei.debit - jei.credit) AS total_tax_amount,
-             jei.pretax_amount * SUM(paid.balance) / total.balance AS pretax_amount,
+             (jei.pretax_amount * SUM(paid.balance) / total.balance) - COALESCE(declared.amount, 0) AS pretax_amount,
              jei.pretax_amount AS total_pretax_amount
       FROM   journal_entry_items jei
       INNER JOIN (
@@ -171,6 +182,7 @@ class TaxDeclarationItem < Ekylibre::Record::Base
                 debit - credit AS balance
          FROM   journal_entry_items
          WHERE  LENGTH(TRIM(letter)) > 0
+                AND printed_on <= '#{stopped_on.to_s}'
        ) AS paid ON total.letter = paid.letter AND total.account_id = paid.account_id AND total.entry_id != paid.entry_id
        LEFT JOIN (
          SELECT   journal_entry_item_id,

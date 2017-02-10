@@ -274,12 +274,6 @@ FactoryGirl.define do
     currency 'EUR'
     mode 'debit'
 
-    after(:build) do |tax_declaration|
-      financial_year = tax_declaration.financial_year
-      tax_declaration.started_on = financial_year.started_on
-      tax_declaration.stopped_on = financial_year.started_on + (financial_year.tax_declaration_frequency_duration || 1.month)
-    end
-
     trait :debit do
     end
     trait :payment do
