@@ -111,7 +111,7 @@ class AffairTest < ActiveSupport::TestCase
     deal_entry_items_in_third_account = deal.journal_entry.items.select { |item| item.account == account }
     assert deal_entry_items_in_third_account.any?
     deal_entry_items_out_third_account = deal.journal_entry.items.select { |item| item.account != account }
-    assert deal_entry_items_in_third_account.any?
+    assert deal_entry_items_out_third_account.any?
 
     subject.reload
     assert subject.save
