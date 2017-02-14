@@ -156,19 +156,29 @@ class TaxDeclarationItem < Ekylibre::Record::Base
 
     conditions = [ conditions_sql ] + conditions_sql_values
 
+    if direction == :collected
+      balance = 'jei.credit - jei.debit'
+      total_balance = 'debit - credit'
+      paid_balance = 'credit - debit'
+    else
+      balance = 'jei.debit - jei.credit'
+      total_balance = 'credit - debit'
+      paid_balance = 'debit - credit'
+    end
+
     sql = <<-SQL
       SELECT jei.id AS journal_entry_item_id,
              jei.account_id AS account_id,
-             ((jei.debit - jei.credit) * SUM(paid.balance) / total.balance) - COALESCE(declared.amount, 0) AS tax_amount,
-             (jei.debit - jei.credit) AS total_tax_amount,
-             (jei.pretax_amount * SUM(paid.balance) / total.balance) - COALESCE(declared.amount, 0) AS pretax_amount,
+             ((#{balance}) * SUM(paid.balance) / total.balance) - COALESCE(declared.amount, 0) AS tax_amount,
+             (#{balance}) AS total_tax_amount,
+             (jei.pretax_amount * SUM(paid.balance) / total.balance) - COALESCE(declared.pretax_amount, 0) AS pretax_amount,
              jei.pretax_amount AS total_pretax_amount
       FROM   journal_entry_items jei
       INNER JOIN (
         SELECT   entry_id,
                  account_id,
                  letter,
-                 SUM(credit - debit) AS balance
+                 SUM(#{total_balance}) AS balance
         FROM     journal_entry_items
         WHERE    LENGTH(TRIM(letter)) > 0
         GROUP BY entry_id,
@@ -179,7 +189,7 @@ class TaxDeclarationItem < Ekylibre::Record::Base
          SELECT entry_id,
                 account_id,
                 letter,
-                debit - credit AS balance
+                #{paid_balance} AS balance
          FROM   journal_entry_items
          WHERE  LENGTH(TRIM(letter)) > 0
                 AND printed_on <= '#{stopped_on.to_s}'
@@ -187,12 +197,13 @@ class TaxDeclarationItem < Ekylibre::Record::Base
        LEFT JOIN (
          SELECT   journal_entry_item_id,
                   direction,
-                  SUM(tax_amount) AS amount
+                  SUM(tax_amount) AS amount,
+                  SUM(pretax_amount) AS pretax_amount
          FROM     tax_declaration_item_parts
          GROUP BY journal_entry_item_id, direction
        ) AS declared ON declared.journal_entry_item_id = jei.id AND declared.direction = '#{direction}'
        WHERE #{TaxDeclarationItem.send(:sanitize_sql_for_conditions, conditions)}
-       GROUP BY jei.id, total.balance, declared.amount
+       GROUP BY jei.id, total.balance, declared.amount, declared.pretax_amount
     SQL
 
     part_rows = ActiveRecord::Base.connection.execute(sql)

@@ -478,29 +478,43 @@ class TaxDeclarationTest < ActiveSupport::TestCase
     #   Payment1 340 (previously declared)
     #   Payment2  60
     #
+    # Sale1 (on payment, collected)
+    #    HT 320
+    #   VAT 64
+    #   TTC 384
+    #
+    #   Payment3 300 (previously declared)
+    #   Payment4  84
+    #
     # ======>
     #
     # PREVIOUS DECLARATION :
     #
     # Deductible
     #   tax     56.67 (= 145 * 340 / 870)
-    #   pretax 238.33 (= 725 * 340 / 870)
+    #   pretax 283.33 (= 725 * 340 / 870)
+    # Collected
+    #   tax     50.00 (= 64 * 300 / 384)
+    #   pretax 250.00 (= 320 * 300 / 384)
     #
     # Global balance
-    #   -56.67
+    #   -6.67 (= 50 - 56.67)
     #
     # NEW DECLARATION :
     #
     # Deductible
     #   tax     10.00 (= 145 * (340 + 60) / 870 - 56.67)
-    #   pretax 276.66 (= 725 * (340 + 60) / 870 - 56.67)
+    #   pretax  50.00 (= 725 * (340 + 60) / 870 - 283.33)
+    # Collected
+    #   tax     14.00 (= 64 * (300 + 84) / 384 - 50.00)
+    #   pretax  70.00(= 320 * (300 + 84) / 384 - 250.00)
     #
     # Global balance
-    #   -10.00
+    #   4.00 (= 14 - 10)
 
     tax = taxes(:taxes_003)
 
-    financial_year = financial_year_in_debit_mode
+    financial_year = financial_year_in_payment_mode
 
     previous_declaration_started_on = financial_year.started_on.beginning_of_month
     previous_declaration_stopped_on = previous_declaration_started_on.end_of_month
@@ -512,8 +526,11 @@ class TaxDeclarationTest < ActiveSupport::TestCase
 
     purchases_account = create(:account, name: "Purchases")
     suppliers_account = create(:account, name: "Suppliers")
+    clients_account = create(:account, name: "Clients")
     bank_account = create(:account, name: "Brank")
+    revenues_account = create(:account, name: "Revenues")
     vat_deductible_account = tax.deduction_account
+    vat_collected_account = tax.collect_account
 
     purchase1 = create(:purchase,
       nature: purchase_natures(:purchase_natures_001),
@@ -595,12 +612,84 @@ class TaxDeclarationTest < ActiveSupport::TestCase
     ]
     assert payment2.save
 
+    sale1 = create(:sale, nature: sale_natures(:sale_natures_001))
+    sale1_item = create(:sale_item, sale: sale1, tax: tax)
+    sale1_entry = build(:journal_entry,
+     printed_on: previous_declaration_printed_on,
+     real_credit: 384.0,
+     real_debit: 384.0
+    )
+    sale1_entry.items = [
+      build(:journal_entry_item,
+       entry: sale1_entry,
+       account: clients_account,
+       real_debit: 384.0,
+       letter: 'B'
+     ),
+      build(:journal_entry_item,
+       entry: sale1_entry,
+       account: vat_collected_account,
+       real_credit: 64.0,
+       real_pretax_amount: 320.0,
+       tax: tax,
+       resource: sale1_item
+      ),
+      build(:journal_entry_item,
+        entry: sale1_entry,
+        account: revenues_account,
+        real_credit: 320.0
+      )
+    ]
+    assert sale1_entry.save
+
+    payment3 = build(:journal_entry,
+      printed_on: previous_declaration_printed_on,
+      real_credit: 300.0,
+      real_debit: 300.0
+    )
+    payment3.items = [
+      build(:journal_entry_item,
+        entry: payment3,
+        account: clients_account,
+        real_credit: 300.0,
+        letter: 'B'
+      ),
+      build(:journal_entry_item,
+        entry: payment3,
+        account: revenues_account,
+        real_debit: 300.0
+      )
+    ]
+    assert payment3.save
+
+    payment4 = build(:journal_entry,
+      printed_on: printed_on,
+      real_credit: 84.0,
+      real_debit: 84.0
+    )
+    payment4.items = [
+      build(:journal_entry_item,
+        printed_on: printed_on,
+        entry: payment4,
+        account: clients_account,
+        real_credit: 84.0,
+        letter: 'B'
+      ),
+      build(:journal_entry_item,
+        printed_on: printed_on,
+        entry: payment4,
+        account: revenues_account,
+        real_debit: 84.0
+      )
+    ]
+    assert payment4.save
+
     previous = create(:tax_declaration,
       financial_year: financial_year,
       started_on: previous_declaration_started_on,
       stopped_on: previous_declaration_stopped_on
     )
-    assert_equal -56.67, previous.global_balance
+    assert_equal -6.67, previous.global_balance
 
     subject = build(:tax_declaration,
       financial_year: financial_year,
@@ -610,33 +699,48 @@ class TaxDeclarationTest < ActiveSupport::TestCase
     assert subject.save
 
     subject.items.detect { |item| item.tax == tax }.tap do |tax_item|
-      assert_equal 1, tax_item.parts.length
+      assert_equal 2, tax_item.parts.length
       tax_item.parts.detect { |part| part.journal_entry_item.entry == purchase1_entry }.tap do |p|
         assert p
         assert_equal vat_deductible_account, p.account
         assert_equal 10.0, p.tax_amount.round(2)
-        assert_equal 276.67, p.pretax_amount.round(2)
+        assert_equal 50.0, p.pretax_amount.round(2)
         assert_equal 145.0, p.total_tax_amount
         assert_equal 725.0, p.total_pretax_amount
         assert_equal 'deductible', p.direction
       end
+      tax_item.parts.detect { |part| part.journal_entry_item.entry == sale1_entry }.tap do |p|
+        assert p
+        assert_equal vat_collected_account, p.account
+        assert_equal 14.0, p.tax_amount.round(2)
+        assert_equal 70.0, p.pretax_amount.round(2)
+        assert_equal 64.0, p.total_tax_amount
+        assert_equal 320.0, p.total_pretax_amount
+        assert_equal 'collected', p.direction
+      end
 
       assert_equal 10.0, tax_item.deductible_tax_amount.round(2)
-      assert_equal 276.67, tax_item.deductible_pretax_amount.round(2)
-      assert_equal 0.0, tax_item.collected_tax_amount
-      assert_equal 0.0, tax_item.collected_pretax_amount
+      assert_equal 50.0, tax_item.deductible_pretax_amount.round(2)
+      assert_equal 14.0, tax_item.collected_tax_amount
+      assert_equal 70.0, tax_item.collected_pretax_amount
       assert_equal 0.0, tax_item.fixed_asset_deductible_tax_amount
       assert_equal 0.0, tax_item.fixed_asset_deductible_pretax_amount
       assert_equal 0.0, tax_item.intracommunity_payable_tax_amount
       assert_equal 0.0, tax_item.intracommunity_payable_pretax_amount
-      assert_equal -10.0, tax_item.balance_tax_amount.round(2)
-      assert_equal -276.67, tax_item.balance_pretax_amount.round(2)
+      assert_equal 4.0, tax_item.balance_tax_amount.round(2)
+      assert_equal 20.0, tax_item.balance_pretax_amount.round(2)
     end
 
-    assert_equal -10.0, subject.global_balance
+    assert_equal 4.0, subject.global_balance
   end
 
   def financial_year_in_debit_mode
     financial_years(:financial_years_008)
+  end
+
+  def financial_year_in_payment_mode
+    financial_years(:financial_years_008).tap do |y|
+      y.update_attribute :tax_declaration_mode, :payment
+    end
   end
 end
