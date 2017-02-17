@@ -184,26 +184,26 @@ class TaxDeclarationItem < Ekylibre::Record::Base
         GROUP BY entry_id,
                  account_id,
                  letter
-       ) AS total ON total.entry_id = jei.entry_id
-       INNER JOIN (
-         SELECT entry_id,
-                account_id,
-                letter,
-                #{paid_balance} AS balance
-         FROM   journal_entry_items
-         WHERE  LENGTH(TRIM(letter)) > 0
-                AND printed_on <= '#{stopped_on.to_s}'
-       ) AS paid ON total.letter = paid.letter AND total.account_id = paid.account_id AND total.entry_id != paid.entry_id
-       LEFT JOIN (
-         SELECT   journal_entry_item_id,
-                  direction,
-                  SUM(tax_amount) AS amount,
-                  SUM(pretax_amount) AS pretax_amount
-         FROM     tax_declaration_item_parts
-         GROUP BY journal_entry_item_id, direction
-       ) AS declared ON declared.journal_entry_item_id = jei.id AND declared.direction = '#{direction}'
-       WHERE #{TaxDeclarationItem.send(:sanitize_sql_for_conditions, conditions)}
-       GROUP BY jei.id, total.balance, declared.amount, declared.pretax_amount
+      ) AS total ON total.entry_id = jei.entry_id
+      INNER JOIN (
+        SELECT entry_id,
+               account_id,
+               letter,
+               #{paid_balance} AS balance
+        FROM   journal_entry_items
+        WHERE  LENGTH(TRIM(letter)) > 0
+               AND printed_on <= '#{stopped_on.to_s}'
+      ) AS paid ON total.letter = paid.letter AND total.account_id = paid.account_id AND total.entry_id != paid.entry_id
+      LEFT JOIN (
+        SELECT   journal_entry_item_id,
+                 direction,
+                 SUM(tax_amount) AS amount,
+                 SUM(pretax_amount) AS pretax_amount
+        FROM     tax_declaration_item_parts
+        GROUP BY journal_entry_item_id, direction
+      ) AS declared ON declared.journal_entry_item_id = jei.id AND declared.direction = '#{direction}'
+      WHERE #{TaxDeclarationItem.send(:sanitize_sql_for_conditions, conditions)}
+      GROUP BY jei.id, total.balance, declared.amount, declared.pretax_amount
     SQL
 
     part_rows = ActiveRecord::Base.connection.execute(sql)
