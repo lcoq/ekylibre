@@ -157,9 +157,9 @@ class TaxDeclarationItem < Ekylibre::Record::Base
     sql = <<-SQL
       SELECT     jei.id AS journal_entry_item_id,
                  jei.account_id AS account_id,
-                 ((#{balance}) * SUM(#{paid_balance}) / total.balance) - COALESCE(declared.tax_amount, 0) AS tax_amount,
+                 ROUND(((#{balance}) * SUM(#{paid_balance}) / total.balance), 2) - COALESCE(declared.tax_amount, 0) AS tax_amount,
                  (#{balance}) AS total_tax_amount,
-                 (jei.pretax_amount * SUM(#{paid_balance}) / total.balance) - COALESCE(declared.pretax_amount, 0) AS pretax_amount,
+                 ROUND((jei.pretax_amount * SUM(#{paid_balance}) / total.balance), 2) - COALESCE(declared.pretax_amount, 0) AS pretax_amount,
                  jei.pretax_amount AS total_pretax_amount
       FROM       journal_entry_items jei
 

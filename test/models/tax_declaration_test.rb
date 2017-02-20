@@ -441,23 +441,23 @@ class TaxDeclarationTest < ActiveSupport::TestCase
     assert_equal 'payment', purchase1_entry.items.detect { |i| i.tax == tax }.reload.tax_declaration_mode
 
     subject.items.detect { |item| item.tax == tax }.tap do |tax_item|
-      assert_equal 66.67, tax_item.deductible_tax_amount.round(2)
-      assert_equal 333.33, tax_item.deductible_pretax_amount.round(2)
+      assert_equal 66.67, tax_item.deductible_tax_amount
+      assert_equal 333.33, tax_item.deductible_pretax_amount
       assert_equal 0.0, tax_item.collected_tax_amount
       assert_equal 0.0, tax_item.collected_pretax_amount
       assert_equal 0.0, tax_item.fixed_asset_deductible_tax_amount
       assert_equal 0.0, tax_item.fixed_asset_deductible_pretax_amount
       assert_equal 0.0, tax_item.intracommunity_payable_tax_amount
       assert_equal 0.0, tax_item.intracommunity_payable_pretax_amount
-      assert_equal -66.67, tax_item.balance_tax_amount.round(2)
-      assert_equal -333.33, tax_item.balance_pretax_amount.round(2)
+      assert_equal -66.67, tax_item.balance_tax_amount
+      assert_equal -333.33, tax_item.balance_pretax_amount
 
       assert_equal 1, tax_item.parts.length
       tax_item.parts.detect { |part| part.journal_entry_item.entry == purchase1_entry }.tap do |p|
         assert p
         assert_equal vat_deductible_account, p.account
-        assert_equal 66.67, p.tax_amount.round(2)
-        assert_equal 333.33, p.pretax_amount.round(2)
+        assert_equal 66.67, p.tax_amount
+        assert_equal 333.33, p.pretax_amount
         assert_equal 145.0, p.total_tax_amount
         assert_equal 725.0, p.total_pretax_amount
         assert_equal 'deductible', p.direction
@@ -703,8 +703,8 @@ class TaxDeclarationTest < ActiveSupport::TestCase
       tax_item.parts.detect { |part| part.journal_entry_item.entry == purchase1_entry }.tap do |p|
         assert p
         assert_equal vat_deductible_account, p.account
-        assert_equal 10.0, p.tax_amount.round(2)
-        assert_equal 50.0, p.pretax_amount.round(2)
+        assert_equal 10.0, p.tax_amount
+        assert_equal 50.0, p.pretax_amount
         assert_equal 145.0, p.total_tax_amount
         assert_equal 725.0, p.total_pretax_amount
         assert_equal 'deductible', p.direction
@@ -712,23 +712,23 @@ class TaxDeclarationTest < ActiveSupport::TestCase
       tax_item.parts.detect { |part| part.journal_entry_item.entry == sale1_entry }.tap do |p|
         assert p
         assert_equal vat_collected_account, p.account
-        assert_equal 14.0, p.tax_amount.round(2)
-        assert_equal 70.0, p.pretax_amount.round(2)
+        assert_equal 14.0, p.tax_amount
+        assert_equal 70.0, p.pretax_amount
         assert_equal 64.0, p.total_tax_amount
         assert_equal 320.0, p.total_pretax_amount
         assert_equal 'collected', p.direction
       end
 
-      assert_equal 10.0, tax_item.deductible_tax_amount.round(2)
-      assert_equal 50.0, tax_item.deductible_pretax_amount.round(2)
+      assert_equal 10.0, tax_item.deductible_tax_amount
+      assert_equal 50.0, tax_item.deductible_pretax_amount
       assert_equal 14.0, tax_item.collected_tax_amount
       assert_equal 70.0, tax_item.collected_pretax_amount
       assert_equal 0.0, tax_item.fixed_asset_deductible_tax_amount
       assert_equal 0.0, tax_item.fixed_asset_deductible_pretax_amount
       assert_equal 0.0, tax_item.intracommunity_payable_tax_amount
       assert_equal 0.0, tax_item.intracommunity_payable_pretax_amount
-      assert_equal 4.0, tax_item.balance_tax_amount.round(2)
-      assert_equal 20.0, tax_item.balance_pretax_amount.round(2)
+      assert_equal 4.0, tax_item.balance_tax_amount
+      assert_equal 20.0, tax_item.balance_pretax_amount
     end
 
     assert_equal 4.0, subject.global_balance
@@ -874,23 +874,23 @@ class TaxDeclarationTest < ActiveSupport::TestCase
     assert_equal 'payment', purchase2_entry.items.detect { |i| i.tax == tax }.reload.tax_declaration_mode
 
     subject.items.detect { |item| item.tax == tax }.tap do |tax_item|
-      assert_equal 50.0, tax_item.deductible_tax_amount.round(2)
-      assert_equal 250.0, tax_item.deductible_pretax_amount.round(2)
+      assert_equal 50.0, tax_item.deductible_tax_amount
+      assert_equal 250.0, tax_item.deductible_pretax_amount
       assert_equal 0.0, tax_item.collected_tax_amount
       assert_equal 0.0, tax_item.collected_pretax_amount
       assert_equal 0.0, tax_item.fixed_asset_deductible_tax_amount
       assert_equal 0.0, tax_item.fixed_asset_deductible_pretax_amount
       assert_equal 0.0, tax_item.intracommunity_payable_tax_amount
       assert_equal 0.0, tax_item.intracommunity_payable_pretax_amount
-      assert_equal -50.0, tax_item.balance_tax_amount.round(2)
-      assert_equal -250.0, tax_item.balance_pretax_amount.round(2)
+      assert_equal -50.0, tax_item.balance_tax_amount
+      assert_equal -250.0, tax_item.balance_pretax_amount
 
       assert_equal 2, tax_item.parts.length
       tax_item.parts.detect { |part| part.journal_entry_item.entry == purchase1_entry }.tap do |p|
         assert p
         assert_equal vat_deductible_account, p.account
-        assert_equal 46.18, p.tax_amount.round(2)
-        assert_equal 230.89, p.pretax_amount.round(2)
+        assert_equal 46.18, p.tax_amount
+        assert_equal 230.89, p.pretax_amount
         assert_equal 145.0, p.total_tax_amount
         assert_equal 725.0, p.total_pretax_amount
         assert_equal 'deductible', p.direction
@@ -898,14 +898,23 @@ class TaxDeclarationTest < ActiveSupport::TestCase
       tax_item.parts.detect { |part| part.journal_entry_item.entry == purchase2_entry }.tap do |p|
         assert p
         assert_equal vat_deductible_account, p.account
-        assert_equal 3.82, p.tax_amount.round(2)
-        assert_equal 19.11, p.pretax_amount.round(2)
+        assert_equal 3.82, p.tax_amount
+        assert_equal 19.11, p.pretax_amount
         assert_equal 12.0, p.total_tax_amount
         assert_equal 60.0, p.total_pretax_amount
         assert_equal 'deductible', p.direction
       end
     end
     assert_equal -50.0, subject.global_balance
+  end
+  test 're-compute previous declaration with journal entry items on payment with payment declared on the next declaration' do
+    # 1. Create JEI on payment without payment
+    # 2. Create first declaration
+    # 3. Create payment in the first declaration interval
+    # 4. Create second declaration
+    # 5. Destroy first declaration
+    # 6. Re-create first declaration
+    # => The first declaration should remain empty
   end
 
   def financial_year_in_debit_mode
