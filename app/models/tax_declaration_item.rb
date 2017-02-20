@@ -134,76 +134,76 @@ class TaxDeclarationItem < Ekylibre::Record::Base
       jei.tax_declaration_mode = ?
       AND jei.tax_id = ?
       AND jei.account_id = ?
-      AND EXISTS(
-        SELECT 1
-        FROM journal_entry_items
-        WHERE printed_on BETWEEN ? AND ?
-        AND letter IN (
-          SELECT letter
-          FROM journal_entry_items
-          WHERE LENGTH(TRIM(letter)) > 0
-          AND entry_id = jei.entry_id
-        )
-      )
     SQL
 
     conditions_sql_values = [
       'payment',
       tax.id,
-      account_id,
-      started_on, stopped_on
+      account_id
     ]
 
     conditions = [ conditions_sql ] + conditions_sql_values
 
     if direction == :collected
       balance = 'jei.credit - jei.debit'
-      total_balance = 'debit - credit'
-      paid_balance = 'credit - debit'
+      total_balance = 'tjei.debit - tjei.credit'
+      paid_balance = 'pjei.credit - pjei.debit'
     else
       balance = 'jei.debit - jei.credit'
-      total_balance = 'credit - debit'
-      paid_balance = 'debit - credit'
+      total_balance = 'tjei.credit - tjei.debit'
+      paid_balance = 'pjei.debit - pjei.credit'
     end
 
     sql = <<-SQL
-      SELECT jei.id AS journal_entry_item_id,
-             jei.account_id AS account_id,
-             ((#{balance}) * SUM(paid.balance) / total.balance) - COALESCE(declared.amount, 0) AS tax_amount,
-             (#{balance}) AS total_tax_amount,
-             (jei.pretax_amount * SUM(paid.balance) / total.balance) - COALESCE(declared.pretax_amount, 0) AS pretax_amount,
-             jei.pretax_amount AS total_pretax_amount
-      FROM   journal_entry_items jei
+      SELECT     jei.id AS journal_entry_item_id,
+                 jei.account_id AS account_id,
+                 ((#{balance}) * SUM(#{paid_balance}) / total.balance) - COALESCE(declared.tax_amount, 0) AS tax_amount,
+                 (#{balance}) AS total_tax_amount,
+                 (jei.pretax_amount * SUM(#{paid_balance}) / total.balance) - COALESCE(declared.pretax_amount, 0) AS pretax_amount,
+                 jei.pretax_amount AS total_pretax_amount
+      FROM       journal_entry_items jei
+
+      INNER JOIN journal_entry_items iljei ON
+                   iljei.entry_id = jei.entry_id
+                   AND LENGTH(TRIM(iljei.letter)) > 0
+
       INNER JOIN (
-        SELECT   entry_id,
-                 account_id,
-                 letter,
-                 SUM(#{total_balance}) AS balance
-        FROM     journal_entry_items
-        WHERE    LENGTH(TRIM(letter)) > 0
-        GROUP BY entry_id,
-                 account_id,
-                 letter
-      ) AS total ON total.entry_id = jei.entry_id
-      INNER JOIN (
-        SELECT entry_id,
-               account_id,
-               letter,
-               #{paid_balance} AS balance
-        FROM   journal_entry_items
-        WHERE  LENGTH(TRIM(letter)) > 0
-               AND printed_on <= '#{stopped_on.to_s}'
-      ) AS paid ON total.letter = paid.letter AND total.account_id = paid.account_id AND total.entry_id != paid.entry_id
+        SELECT tjei.account_id,
+               tjei.letter,
+               SUM(#{total_balance}) AS balance
+        FROM   journal_entry_items tjei
+        WHERE  tjei.printed_on <= '#{stopped_on}'
+               AND EXISTS(
+                 SELECT 1
+                 FROM   journal_entry_items
+                 WHERE  entry_id = tjei.entry_id
+                        AND tax_id IS NOT NULL
+               )
+        GROUP BY account_id, letter
+      ) AS total ON total.letter = iljei.letter AND total.account_id = iljei.account_id
+
+      INNER JOIN journal_entry_items pjei ON
+                   pjei.letter = iljei.letter
+                   AND pjei.account_id = iljei.account_id
+                   AND pjei.printed_on <= '#{stopped_on}'
+                   AND NOT EXISTS(
+                     SELECT 1
+                     FROM   journal_entry_items
+                     WHERE  entry_id = pjei.entry_id
+                            AND tax_id IS NOT NULL
+                   )
+
       LEFT JOIN (
         SELECT   journal_entry_item_id,
                  direction,
-                 SUM(tax_amount) AS amount,
+                 SUM(tax_amount) AS tax_amount,
                  SUM(pretax_amount) AS pretax_amount
         FROM     tax_declaration_item_parts
         GROUP BY journal_entry_item_id, direction
       ) AS declared ON declared.journal_entry_item_id = jei.id AND declared.direction = '#{direction}'
+
       WHERE #{TaxDeclarationItem.send(:sanitize_sql_for_conditions, conditions)}
-      GROUP BY jei.id, total.balance, declared.amount, declared.pretax_amount
+      GROUP BY jei.id, total.balance, declared.tax_amount, declared.pretax_amount
     SQL
 
     part_rows = ActiveRecord::Base.connection.execute(sql)
