@@ -94,9 +94,9 @@ class TaxDeclarationItem < Ekylibre::Record::Base
     tax_account_ids_by_direction.each do |direction, account_id|
       balance =
         if direction == :collected
-          'journal_entry_items.credit - journal_entry_items.debit'
+          'journal_entry_items.real_credit - journal_entry_items.real_debit'
         else
-          'journal_entry_items.debit - journal_entry_items.credit'
+          'journal_entry_items.real_debit - journal_entry_items.real_credit'
         end
 
       select_sql = <<-SQL
@@ -104,8 +104,8 @@ class TaxDeclarationItem < Ekylibre::Record::Base
         journal_entry_items.account_id AS account_id,
         (#{balance}) AS tax_amount,
         (#{balance}) AS total_tax_amount,
-        journal_entry_items.pretax_amount AS pretax_amount,
-        journal_entry_items.pretax_amount AS total_pretax_amount
+        journal_entry_items.real_pretax_amount AS pretax_amount,
+        journal_entry_items.real_pretax_amount AS total_pretax_amount
       SQL
 
       part_rows = entry_items.where(account_id: account_id).select(select_sql)
@@ -145,13 +145,13 @@ class TaxDeclarationItem < Ekylibre::Record::Base
     conditions = [ conditions_sql ] + conditions_sql_values
 
     if direction == :collected
-      balance = 'jei.credit - jei.debit'
-      total_balance = 'tjei.debit - tjei.credit'
-      paid_balance = 'pjei.credit - pjei.debit'
+      balance = 'jei.real_credit - jei.real_debit'
+      total_balance = 'tjei.real_debit - tjei.real_credit'
+      paid_balance = 'pjei.real_credit - pjei.real_debit'
     else
-      balance = 'jei.debit - jei.credit'
-      total_balance = 'tjei.credit - tjei.debit'
-      paid_balance = 'pjei.debit - pjei.credit'
+      balance = 'jei.real_debit - jei.real_credit'
+      total_balance = 'tjei.real_credit - tjei.real_debit'
+      paid_balance = 'pjei.real_debit - pjei.real_credit'
     end
 
     sql = <<-SQL
@@ -159,8 +159,8 @@ class TaxDeclarationItem < Ekylibre::Record::Base
                  jei.account_id AS account_id,
                  ROUND(((#{balance}) * SUM(#{paid_balance}) / total.balance), 2) - COALESCE(declared.tax_amount, 0) AS tax_amount,
                  (#{balance}) AS total_tax_amount,
-                 ROUND((jei.pretax_amount * SUM(#{paid_balance}) / total.balance), 2) - COALESCE(declared.pretax_amount, 0) AS pretax_amount,
-                 jei.pretax_amount AS total_pretax_amount
+                 ROUND((jei.real_pretax_amount * SUM(#{paid_balance}) / total.balance), 2) - COALESCE(declared.pretax_amount, 0) AS pretax_amount,
+                 jei.real_pretax_amount AS total_pretax_amount
       FROM       journal_entry_items jei
 
       INNER JOIN journal_entry_items iljei ON
