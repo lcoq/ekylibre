@@ -992,15 +992,6 @@ class TaxDeclarationTest < ActiveSupport::TestCase
 
     assert_empty subject.items.select { |item| item.parts.any? }
   end
-  test 're-compute previous declaration with journal entry items on payment with payment declared on the next declaration' do
-    # 1. Create JEI on payment without payment
-    # 2. Create first declaration
-    # 3. Create payment in the first declaration interval
-    # 4. Create second declaration
-    # 5. Destroy first declaration
-    # 6. Re-create first declaration
-    # => The first declaration should remain empty
-  end
 
   def financial_year_in_debit_mode
     financial_years(:financial_years_008)
