@@ -86,7 +86,7 @@ class TaxDeclarationItem < Ekylibre::Record::Base
 
   def generate_debit_parts
     entry_items = JournalEntryItem
-      .where(printed_on: started_on..stopped_on)
+      .where('printed_on <= ? ', stopped_on)
       .where(tax_declaration_mode: 'debit')
       .where(tax: tax)
       .where.not(id: TaxDeclarationItemPart.select(:journal_entry_item_id))

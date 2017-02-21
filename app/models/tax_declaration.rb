@@ -198,7 +198,7 @@ class TaxDeclaration < Ekylibre::Record::Base
   def set_entry_items_tax_modes
     all = JournalEntryItem
       .where.not(tax_id: nil)
-      .where(printed_on: started_on..stopped_on)
+      .where('printed_on <= ?', stopped_on)
       .where(tax_declaration_mode: nil)
     set_non_purchase_entry_items_tax_modes all.where.not(resource_type: 'PurchaseItem')
     set_purchase_entry_items_tax_modes all.where(resource_type: 'PurchaseItem')

@@ -240,6 +240,86 @@ class TaxDeclarationTest < ActiveSupport::TestCase
 
     assert_equal -356, subject.global_balance
   end
+  test 'compute declaration with journal entry items on debit created previously but not declared' do
+    #
+    # Tax: 20%
+    #
+    # Purchase1 (on debit, deductible)
+    #    HT 1500
+    #   VAT 300
+    #   TTC 1800
+    #
+    # ======>
+    #
+    # Deductible
+    #   tax     300
+    #   pretax 1500
+    #
+    # Global balance
+    #   -380
+
+    tax = taxes(:taxes_003)
+
+    financial_year = financial_year_in_debit_mode
+    started_on = financial_year.started_on
+    stopped_on = started_on.end_of_month
+    printed_on = started_on + 1.day
+
+    purchases_account = create(:account, name: "Purchases")
+    suppliers_account = create(:account, name: "Suppliers")
+    clients_account = create(:account, name: "Clients")
+    revenues_account = create(:account, name: "Revenues")
+    vat_deductible_account = tax.deduction_account
+    vat_collected_account = tax.collect_account
+
+    # Create declaration before the journal entry
+    previous = build(:tax_declaration, financial_year: financial_year, started_on: started_on, stopped_on: stopped_on)
+    assert previous.save
+    assert_equal 0, previous.global_balance
+
+    purchase1 = create(:purchase,
+      nature: purchase_natures(:purchase_natures_001),
+      tax_payability: 'at_invoicing'
+    )
+    purchase1_item = create(:purchase_item,
+      purchase: purchase1,
+      tax: tax
+    )
+    purchase1_entry = build(:journal_entry,
+      printed_on: printed_on,
+      real_credit: 1800.0,
+      real_debit: 1800.0
+    )
+    purchase1_entry.items = [
+      build(:journal_entry_item,
+       entry: purchase1_entry,
+       account: suppliers_account,
+       real_credit: 1800.0
+     ),
+      build(:journal_entry_item,
+       entry: purchase1_entry,
+       account: vat_deductible_account,
+       real_debit: 300.0,
+       real_pretax_amount: 1500.0,
+       tax: tax,
+       resource: purchase1_item
+      ),
+      build(:journal_entry_item,
+        entry: purchase1_entry,
+        account: purchases_account,
+        real_debit: 1500.0
+      )
+    ]
+    assert purchase1_entry.save
+
+    subject = build(:tax_declaration,
+      financial_year: financial_year,
+      started_on: (started_on + 1.month).beginning_of_month,
+      stopped_on: (stopped_on + 1.month).end_of_month
+    )
+    assert subject.save
+    assert_equal -300, subject.global_balance
+  end
   test 'compute declaration with journal entry items on payment but without payment' do
     #
     # Tax: 20%
