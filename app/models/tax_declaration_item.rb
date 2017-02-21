@@ -204,6 +204,7 @@ class TaxDeclarationItem < Ekylibre::Record::Base
 
       WHERE #{TaxDeclarationItem.send(:sanitize_sql_for_conditions, conditions)}
       GROUP BY jei.id, total.balance, declared.tax_amount, declared.pretax_amount
+      HAVING ROUND(((#{balance}) * SUM(#{paid_balance}) / total.balance), 2) - COALESCE(declared.tax_amount, 0) != 0.0
     SQL
 
     part_rows = ActiveRecord::Base.connection.execute(sql)

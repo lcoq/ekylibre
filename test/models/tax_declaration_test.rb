@@ -907,6 +907,91 @@ class TaxDeclarationTest < ActiveSupport::TestCase
     end
     assert_equal -50.0, subject.global_balance
   end
+  test 'does not create tax declaration item parts with zero amount' do
+    tax = taxes(:taxes_003)
+
+    financial_year = financial_year_in_debit_mode
+    started_on = financial_year.started_on
+    stopped_on = started_on.end_of_month
+    printed_on = started_on + 1.day
+
+    purchases_account = create(:account, name: "Purchases")
+    suppliers_account = create(:account, name: "Suppliers")
+    bank_account = create(:account, name: "Brank")
+    vat_deductible_account = tax.deduction_account
+
+    purchase1 = create(:purchase,
+      nature: purchase_natures(:purchase_natures_001),
+      tax_payability: 'at_paying'
+    )
+    purchase1_item = create(:purchase_item,
+      purchase: purchase1,
+      tax: tax
+    )
+    purchase1_entry = build(:journal_entry,
+      printed_on: printed_on,
+      real_credit: 870.0,
+      real_debit: 870.0
+    )
+    purchase1_entry.items = [
+      build(:journal_entry_item,
+       entry: purchase1_entry,
+       account: suppliers_account,
+       real_credit: 870.0,
+       letter: 'A'
+     ),
+      build(:journal_entry_item,
+       entry: purchase1_entry,
+       account: vat_deductible_account,
+       real_debit: 145.0,
+       real_pretax_amount: 725.0,
+       tax: tax,
+       resource: purchase1_item
+      ),
+      build(:journal_entry_item,
+        entry: purchase1_entry,
+        account: purchases_account,
+        real_debit: 725.0
+      )
+    ]
+    assert purchase1_entry.save
+
+
+    payment1 = build(:journal_entry,
+      printed_on: printed_on,
+      real_credit: 870.0,
+      real_debit: 870.0
+    )
+    payment1.items = [
+      build(:journal_entry_item,
+        entry: payment1,
+        account: suppliers_account,
+        real_debit: 870.0,
+        letter: 'A'
+      ),
+      build(:journal_entry_item,
+        entry: payment1,
+        account: bank_account,
+        real_credit: 870.0
+      )
+    ]
+    assert payment1.save
+
+    previous = create(:tax_declaration,
+      financial_year: financial_year,
+      started_on: started_on,
+      stopped_on: stopped_on
+    )
+
+    subject = create(:tax_declaration,
+      financial_year: financial_year,
+      started_on: (started_on + 1.month).beginning_of_month,
+      stopped_on: (stopped_on + 1.month).end_of_month
+    )
+    assert subject.save
+
+    assert_empty subject.items.select { |item| item.parts.any? }
+  end
   test 're-compute previous declaration with journal entry items on payment with payment declared on the next declaration' do
     # 1. Create JEI on payment without payment
     # 2. Create first declaration
