@@ -74,8 +74,8 @@ class TaxDeclaration < Ekylibre::Record::Base
            to: :financial_year
 
   protect on: :destroy do
-    (validated? || sent?)
-  end
+    sent?
+ end
 
   state_machine :state, initial: :draft do
     state :draft
