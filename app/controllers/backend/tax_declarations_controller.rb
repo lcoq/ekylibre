@@ -23,7 +23,7 @@ module Backend
     unroll
 
     list(line_class: :status, order: { created_at: :desc, number: :desc }) do |t|
-      t.action :edit
+      t.action :edit, if: :draft?
       t.action :destroy, if: :destroyable?
       t.column :number, url: true
       t.column :responsible
