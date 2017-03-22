@@ -416,6 +416,8 @@ class Account < Ekylibre::Record::Base
     letter
   end
 
+  # Mark entry items with the given +letter+, even when the items are not balanced together.
+  # If no +letter+ given, it uses a new letter.
   def mark!(item_ids, letter = nil)
     letter ||= new_letter
     conditions = ['id IN (?) AND (letter IS NULL OR LENGTH(TRIM(letter)) <= 0)', item_ids]
