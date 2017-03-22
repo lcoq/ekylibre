@@ -108,7 +108,7 @@ class TaxDeclaration < Ekylibre::Record::Base
     self.created_at ||= Time.zone.now
   end
 
-  after_save :compute!, if: :draft?
+  after_create :compute!, if: :draft?
 
   def has_content?
     items.any?
