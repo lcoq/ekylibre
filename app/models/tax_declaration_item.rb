@@ -89,6 +89,7 @@ class TaxDeclarationItem < Ekylibre::Record::Base
       .where('printed_on <= ? ', stopped_on)
       .where(tax_declaration_mode: 'debit')
       .where(tax: tax)
+      .where.not(resource_type: 'TaxDeclarationItem')
       .where.not(id: TaxDeclarationItemPart.select(:journal_entry_item_id))
 
     tax_account_ids_by_direction.each do |direction, account_id|
@@ -134,12 +135,14 @@ class TaxDeclarationItem < Ekylibre::Record::Base
       jei.tax_declaration_mode = ?
       AND jei.tax_id = ?
       AND jei.account_id = ?
+      AND jei.resource_type != ?
     SQL
 
     conditions_sql_values = [
       'payment',
       tax.id,
-      account_id
+      account_id,
+      'TaxDeclarationItem'
     ]
 
     conditions = [ conditions_sql ] + conditions_sql_values
