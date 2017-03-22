@@ -75,7 +75,7 @@ class TaxDeclaration < Ekylibre::Record::Base
 
   protect on: :destroy do
     sent?
- end
+  end
 
   state_machine :state, initial: :draft do
     state :draft
