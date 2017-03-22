@@ -1316,6 +1316,9 @@ eng:
     journal_entries: "Journal's entries" #?
     journal_entries_states: "States of entries"
     journal_entry_items: "Journal entry items"
+    journal_entry_items_with_taxes_out_of_range:
+      one: "%{count} journal entry item with taxes before declaration started on"
+      other: "%{count} journal entry items with taxes before declaration started on"
     journal_entry_items_with_undeclared_taxes:
       one: "%{count} journal entry item with undeclared taxes"
       other: "%{count} journal entry items with undeclared taxes"

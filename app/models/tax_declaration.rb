@@ -164,6 +164,15 @@ class TaxDeclaration < Ekylibre::Record::Base
       .where('accounts.number LIKE ?', '445%')
   end
 
+  def out_of_range_tax_journal_entry_items
+    journal_entry_item_ids = TaxDeclarationItemPart.select('journal_entry_item_id').where(tax_declaration_item_id: items.select('id'))
+    JournalEntryItem
+      .includes(:entry)
+      .order('journal_entries.printed_on')
+      .where('journal_entry_items.printed_on < ?', started_on)
+      .where(id: journal_entry_item_ids)
+  end
+
   # FIXME: Too french
   def unidentified_revenues_journal_entry_items
     JournalEntryItem.includes(:entry, :account).order('journal_entries.printed_on, accounts.number').where(printed_on: started_on..stopped_on).where('accounts.number LIKE ? AND journal_entry_items.resource_id is null', '7%')
