@@ -388,11 +388,6 @@ class Affair < Ekylibre::Record::Base
 
   def unletterable?
     multi_thirds?
-    # TODO remove ?
-    #   * unbalanced?
-    #   * journal_entry_items_unbalanced?
-    #   * journal_entry_items_already_lettered?
-    #   * !match_with_accountancy?
   end
 
   def lettered?
